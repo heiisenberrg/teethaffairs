@@ -1,4 +1,4 @@
-# Welcome to DDS Native App
+# Welcome to DDS Native App.
 
 ### Setup
 
