@@ -1,0 +1,8 @@
+export const GET_ADD_MEMBER = 'GET_ADD_MEMBER';
+export const SET_ADD_MEMBER = 'SET_ADD_MEMBER';
+export const GET_USER_LIST = 'GET_USER_LIST';
+export const SET_USER_LIST = 'SET_USER_LIST';
+export const SET_USER_NOTE = 'SET_USER_NOTE';
+export const GET_USER_NOTE = 'GET_USER_NOTE';
+export const GET_DEACTIVATE_USER_ID = 'GET_DEACTIVATE_USER_ID';
+export const SET_DEACTIVATE_USER_ID = 'SET_DEACTIVATE_USER_ID';
