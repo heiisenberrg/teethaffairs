@@ -6,12 +6,13 @@ const styles = StyleSheet.create({
 	},
 	dentalBlock: {
 		borderWidth: 1,
-		backgroundColor: '#66CC80',
+		backgroundColor: '#00C57D',
 		borderColor: '#66CC80',
 		flexDirection: 'row',
 		padding: 20,
 		height: 130,
-		marginBottom: 20
+		marginBottom: 20,
+		borderRadius: 8
 	},
 	dentalHeaderWrapper: {
 		flexDirection: 'row',
@@ -33,6 +34,21 @@ const styles = StyleSheet.create({
 	dentalHeaderText3: {
 		textTransform: 'capitalize',
 		color: 'white'
+	},
+	journalNotification: {
+		width: 20,
+		height: 20,
+		backgroundColor: 'red',
+		position: 'absolute',
+		right: -5,
+		top: -5,
+		borderRadius: 50
+	},
+	journalNotificationText: {
+		display: 'flex',
+		justifyContent: 'center',
+		alignSelf: 'center',
+		color: '#ffffff'
 	}
 });
 

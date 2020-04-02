@@ -6,7 +6,9 @@ import {
 	SET_USER_NOTE,
 	GET_USER_NOTE,
 	GET_DEACTIVATE_USER_ID,
-	SET_DEACTIVATE_USER_ID
+	SET_DEACTIVATE_USER_ID,
+	GET_NOTE_LIST,
+	SET_NOTE_LIST
 } from '../constants/journal';
 
 function getAddMember(userInputData, onFailure, onSuccess) {
@@ -68,6 +70,21 @@ function setDeactivateUserId(DeactivatedUser) {
 		payload: DeactivatedUser
 	};
 }
+function setNotes(notesList) {
+	return {
+		type : SET_NOTE_LIST,
+		payload : notesList
+	};
+}
+
+function fetchNotes(onSuccess, onFailure) {
+	return {
+		type: GET_NOTE_LIST,
+		onSuccess,
+		onFailure
+	};
+}
+
 export {
 	getAddMember,
 	setAddMember,
@@ -76,5 +93,7 @@ export {
 	setUserNote,
 	getUserNote,
 	setDeactivateUserId,
-	getDeactivateUserId
+	getDeactivateUserId,
+	setNotes,
+	fetchNotes
 };

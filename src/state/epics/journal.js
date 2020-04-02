@@ -7,19 +7,22 @@ import {
 	GET_ADD_MEMBER,
 	GET_USER_LIST,
 	GET_USER_NOTE,
-	GET_DEACTIVATE_USER_ID
+	GET_DEACTIVATE_USER_ID,
+	GET_NOTE_LIST
 } from '../constants/journal';
 import {
 	setAddMember,
 	setUserList,
 	setUserNote,
-	setDeactivateUserId
+	setDeactivateUserId,
+	setNotes
 } from '../actions/journal';
 
 const addMemberURL = '/users/user-registration/';
 const userListURL = '/users/user/';
 const userNoteURL = '/notes/patient-notes/';
 const userDeactivateURL = '/users/deactivate-user/';
+const notesURL = '/notes/notes/';
 
 function customAxios(payload) {
 	return axiosInstance(payload);
@@ -169,9 +172,37 @@ function fetchUserDeactivateId(payload) {
 	);
 }
 
-export {
-	fetchAddMemberEpic,
-	fetchUserListEpic,
-	fetchUserNoteEpic,
-	fetchUserDeactivateIdEpic
-};
+function toNotes(response) {
+	return setNotes(response);
+}
+
+function fetchNotesEpic(action$) {
+	return action$.pipe(ofType(GET_NOTE_LIST), mergeMap(fetchNoteList));
+}
+
+
+function fetchNoteList(payload) {
+	const { onFailure } = payload;
+	const data = {
+		publicRoute: false,
+		headers: { }
+	};
+
+	return from(
+		customAxios({
+			url: notesURL,
+			method: 'GET',
+			data
+		})
+	).pipe(
+		map(response => toNotes(response.data)),
+		catchError(error => {
+			return of({
+				type: 'FETCH_NOTES_LIST_FAILURE',
+				payload: onFailure(error.response)
+			});
+		})
+	);
+}
+
+export { fetchAddMemberEpic, fetchUserListEpic, fetchUserNoteEpic, fetchNotesEpic, fetchUserDeactivateIdEpic };

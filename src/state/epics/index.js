@@ -13,7 +13,8 @@ import {
 	fetchAddMemberEpic,
 	fetchUserListEpic,
 	fetchUserNoteEpic,
-	fetchUserDeactivateIdEpic
+	fetchUserDeactivateIdEpic,
+	fetchNotesEpic
 } from './journal';
 
 const rootEpic = combineEpics(
@@ -26,7 +27,8 @@ const rootEpic = combineEpics(
 	fetchUserListEpic,
 	fetchUserNoteEpic,
 	fetchLogOutEpic,
-	fetchUserDeactivateIdEpic
+	fetchUserDeactivateIdEpic,
+	fetchNotesEpic
 );
 
 export default rootEpic;

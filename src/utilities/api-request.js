@@ -75,7 +75,6 @@ const getRequest = errorResponse =>
 		const response = errorResponse;
 
 		addSubscriber(accessToken => {
-			console.log('token', accessToken);
 			response.config.headers.AUTHORIZATION = `Bearer ${accessToken}`;
 			// response.config.headers['Content-Type'] = 'multipart/form-data';
 			if (process.env.NODE_ENV === 'test') {

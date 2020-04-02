@@ -24,7 +24,7 @@ function JournalStack() {
 						alignItems: 'center'
 					},
 					headerStyle: {
-						backgroundColor: '#14DF94',
+						backgroundColor: '#108E79',
 						height: 80
 					},
 					headerTitleStyle: {
@@ -44,14 +44,19 @@ function JournalStack() {
 						alignItems: 'center'
 					},
 					headerStyle: {
-						backgroundColor: '#14DF94',
-						height: 80
+						backgroundColor: '#108E79',
+						height: 80,
+						shadowOpacity: 0,
+						shadowOffset: { height: 0, width: 0 },
+						shadowRadius: 0,
+						elevation: 0
 					},
 					headerTitleStyle: {
 						color: 'white',
 						fontWeight: 'bold',
-						fontSize: 25
-					}
+						fontSize: 16
+					},
+					headerBackTitleVisible: false
 				} }
 			/>
 			<Stack.Screen name="AddDentalVisit" component={ AddDentalVisit } />

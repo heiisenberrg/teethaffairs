@@ -6,11 +6,14 @@ import {
 	GET_USER_NOTE,
 	SET_USER_NOTE,
 	GET_DEACTIVATE_USER_ID,
-	SET_DEACTIVATE_USER_ID
+	SET_DEACTIVATE_USER_ID,
+	GET_NOTE_LIST,
+	SET_NOTE_LIST
 } from '../constants/journal';
 
 const initialState = {
-	usersList: []
+	usersList: [],
+	notes: []
 };
 
 function journalReducer(state = initialState, action) {
@@ -38,6 +41,11 @@ function journalReducer(state = initialState, action) {
 			break;
 		case GET_DEACTIVATE_USER_ID:
 			return apply_get_deactivate_user_id(state, action);
+		case SET_NOTE_LIST:
+			return apply_setNotes(state, action);
+			break;
+		case GET_NOTE_LIST:
+			return apply_fetchNotes(state, action);
 			break;
 		default:
 			return state;
@@ -81,8 +89,20 @@ function apply_set_deactivate_user_id(state) {
 	let newState = { ...state };
 	return newState;
 }
+
 function apply_get_deactivate_user_id(state) {
 	let newState = { ...state };
+	return newState;
+}
+
+function apply_fetchNotes(state) {
+	let newState = { ...state };
+	return newState;
+}
+
+function apply_setNotes(state, action) {
+	let newState = { ...state };
+	newState.notes = action.payload;
 	return newState;
 }
 
