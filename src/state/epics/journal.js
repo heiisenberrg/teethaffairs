@@ -2,20 +2,24 @@ import { mergeMap, map, catchError } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
 import { from, of } from 'rxjs';
 
-import { axiosInstance } from '../../utilities/api-request';
+import { axiosInstance, getQueryParams } from '../../utilities/api-request';
 import {
 	GET_ADD_MEMBER,
 	GET_USER_LIST,
 	GET_USER_NOTE,
 	GET_DEACTIVATE_USER_ID,
-	GET_NOTE_LIST
+	GET_NOTE_LIST,
+	GET_DENTAL_VISITS,
+	CREATE_DENTAL_VISIT
 } from '../constants/journal';
 import {
 	setAddMember,
 	setUserList,
 	setUserNote,
 	setDeactivateUserId,
-	setNotes
+	setNotes,
+	setDentalVisits,
+	setCreateDentalVisits
 } from '../actions/journal';
 
 const addMemberURL = '/users/user-registration/';
@@ -23,6 +27,8 @@ const userListURL = '/users/user/';
 const userNoteURL = '/notes/patient-notes/';
 const userDeactivateURL = '/users/deactivate-user/';
 const notesURL = '/notes/notes/';
+const dentalVisitsURL = '/visit/doctor-visits/';
+const createDentalVisitsURL = '/visit/visits/';
 
 function customAxios(payload) {
 	return axiosInstance(payload);
@@ -180,7 +186,6 @@ function fetchNotesEpic(action$) {
 	return action$.pipe(ofType(GET_NOTE_LIST), mergeMap(fetchNoteList));
 }
 
-
 function fetchNoteList(payload) {
 	const { onFailure } = payload;
 	const data = {
@@ -205,4 +210,83 @@ function fetchNoteList(payload) {
 	);
 }
 
-export { fetchAddMemberEpic, fetchUserListEpic, fetchUserNoteEpic, fetchNotesEpic, fetchUserDeactivateIdEpic };
+function toDentalVisits(response) {
+	return setDentalVisits(response);
+}
+
+function fetchDentalVisitsEpic(action$) {
+	return action$.pipe(ofType(GET_DENTAL_VISITS), mergeMap(getDentalVisits));
+}
+
+function getDentalVisits(payload) {
+	const { onFailure } = payload;
+	const options = {
+		user_id: payload.payload.userId
+	};
+	const data = {
+		publicRoute: false,
+		headers: { }
+	};
+
+	return from(
+		customAxios({
+			url: `${dentalVisitsURL}${getQueryParams(options)}`,
+			method: 'GET',
+			data
+		})
+	).pipe(
+		map(response => toDentalVisits(response.data)),
+		catchError(error => {
+			return of({
+				type: 'GET_DENTAL_VISITS_LIST_FAILURE',
+				payload: onFailure(error)
+			});
+		})
+	);
+}
+
+function toCreateDentalVisit(response) {
+	return setCreateDentalVisits(response);
+}
+
+function createDentalVisitEpic(action$) {
+	return action$.pipe(ofType(CREATE_DENTAL_VISIT), mergeMap(createDentalVisit));
+}
+
+function createDentalVisit(payload) {
+	const { onFailure } = payload;
+	const data = {
+		...payload.payload,
+		publicRoute: false,
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'multipart/form-data'
+		}
+	};
+
+	return from(
+		customAxios({
+			url: createDentalVisitsURL,
+			method: 'POST',
+			data
+		})
+	).pipe(
+		map(response => toCreateDentalVisit(response)),
+		catchError(error =>
+			of({
+				type: 'CREATE_DENTAL_VISIT_FAILURE',
+				payload: onFailure(error)
+			})
+		)
+	);
+}
+
+export { 
+	fetchAddMemberEpic, 
+	fetchUserListEpic, 
+	fetchUserNoteEpic, 
+	fetchNotesEpic, 
+	fetchUserDeactivateIdEpic, 
+	fetchDentalVisitsEpic,
+	createDentalVisitEpic
+};

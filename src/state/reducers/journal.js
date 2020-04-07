@@ -8,12 +8,17 @@ import {
 	GET_DEACTIVATE_USER_ID,
 	SET_DEACTIVATE_USER_ID,
 	GET_NOTE_LIST,
-	SET_NOTE_LIST
+	SET_NOTE_LIST,
+	GET_DENTAL_VISITS,
+	SET_DENTAL_VISITS,
+	CREATE_DENTAL_VISIT,
+	SET_CREATE_DENTAL_VISIT
 } from '../constants/journal';
 
 const initialState = {
 	usersList: [],
-	notes: []
+	notes: [],
+	visits: []
 };
 
 function journalReducer(state = initialState, action) {
@@ -46,6 +51,18 @@ function journalReducer(state = initialState, action) {
 			break;
 		case GET_NOTE_LIST:
 			return apply_fetchNotes(state, action);
+			break;
+		case SET_DENTAL_VISITS:
+			return apply_setDentalVisits(state, action);
+			break;
+		case GET_DENTAL_VISITS:
+			return apply_getDentalVisits(state, action);
+			break;
+		case CREATE_DENTAL_VISIT:
+			return apply_createDentalVisit(state);
+			break;
+		case SET_CREATE_DENTAL_VISIT:
+			return apply_setCreateDentalVisit(state, action);
 			break;
 		default:
 			return state;
@@ -103,6 +120,28 @@ function apply_fetchNotes(state) {
 function apply_setNotes(state, action) {
 	let newState = { ...state };
 	newState.notes = action.payload;
+	return newState;
+}
+
+function apply_getDentalVisits(state) {
+	let newState = { ...state };
+	return newState;
+}
+
+function apply_setDentalVisits(state, action) {
+	let newState = { ...state };
+	newState.visits = action.payload;
+	return newState;
+}
+
+function apply_createDentalVisit(state) {
+	let newState = { ...state };
+	return newState;
+}
+
+function apply_setCreateDentalVisit(state, action) {
+	let newState = { ...state };
+	console.log('++++++++++======++++++++++++++', action.payload);
 	return newState;
 }
 

@@ -7,7 +7,7 @@ function DentalVisitBlock(props) {
 	const { navigation } = props;
 	return (
 		<TouchableOpacity
-			onPress={ () => navigation.navigate('AddDentalVisit') }
+			onPress={ () => navigation.navigate('DentalVisits') }
 			activeOpacity={ 0.8 }
 		>
 			<View style={ styles.dentalBlock }>

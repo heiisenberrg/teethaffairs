@@ -1,5 +1,6 @@
 import axios from 'axios';
 import store from '../state/store';
+import RNFetchBlob from 'rn-fetch-blob';
 import { refreshTheToken } from '../state/actions/user';
 import { isNonEmptyObject } from './object';
 
@@ -49,8 +50,8 @@ function isPropertyInObject(obj, property) {
 function isPrivateRoute(config = {}) {
 	return Boolean(
 		config.data &&
-			isPropertyInObject(config.data, 'publicRoute') &&
-			!config.data.publicRoute
+		isPropertyInObject(config.data, 'publicRoute') &&
+		!config.data.publicRoute
 	);
 }
 
@@ -84,7 +85,7 @@ const getRequest = errorResponse =>
 		});
 	});
 
-const onFailure = () => {};
+const onFailure = () => { };
 
 const getRefreshedTokens = async freshToken => {
 	await store.dispatch(
@@ -174,3 +175,38 @@ axiosInstance.interceptors.response.use(
 	response => successHandler(response),
 	error => errorHandler(error)
 );
+
+export function customRequest(endpoint, payload, onSuccess, onFailure) {
+	const requestUrl = `http://${hostName}/${endpoint}`;
+	return fetch(requestUrl, {
+		method: 'POST',
+		headers: new Headers({
+			Authorization: `Bearer ${store.getState().user.access}`
+		}),
+		body: payload
+	})
+		.then(response => response.json())
+		.then(response => {
+			onSuccess(response);
+		})
+		.catch(error => {
+			onFailure(error);
+		});
+}
+
+export const uploadFile = (params, onSuccess, onFailure) => {
+	const { method, path, headerConfig, data } = params;
+	const requestUrl = `http://${hostName}/${path}`;
+	const headers =  {
+		Authorization: `Bearer ${store.getState().user.access}`,
+		...headerConfig
+	};
+	RNFetchBlob.fetch(method, requestUrl, headers, data)
+	.then(response => response.json())
+	.then(response => {
+			onSuccess(response);
+		})
+		.catch(error => {
+			onFailure(error);
+		});
+};

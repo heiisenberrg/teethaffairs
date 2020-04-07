@@ -8,7 +8,11 @@ import {
 	GET_DEACTIVATE_USER_ID,
 	SET_DEACTIVATE_USER_ID,
 	GET_NOTE_LIST,
-	SET_NOTE_LIST
+	SET_NOTE_LIST,
+	GET_DENTAL_VISITS,
+	SET_DENTAL_VISITS,
+	CREATE_DENTAL_VISIT,
+	SET_CREATE_DENTAL_VISIT
 } from '../constants/journal';
 
 function getAddMember(userInputData, onFailure, onSuccess) {
@@ -70,6 +74,7 @@ function setDeactivateUserId(DeactivatedUser) {
 		payload: DeactivatedUser
 	};
 }
+
 function setNotes(notesList) {
 	return {
 		type : SET_NOTE_LIST,
@@ -85,6 +90,40 @@ function fetchNotes(onSuccess, onFailure) {
 	};
 }
 
+function setDentalVisits(dentalVisits) {
+	return {
+		type : SET_DENTAL_VISITS,
+		payload : dentalVisits
+	};
+}
+
+function getDentalVisits(userId, onSuccess, onFailure) {
+	return {
+		type: GET_DENTAL_VISITS,
+		payload: {
+			userId
+		},
+		onSuccess,
+		onFailure
+	};
+}
+
+function createDentalVisits(payload, onSuccess, onFailure) {
+	return {
+		type: CREATE_DENTAL_VISIT,
+		payload,
+		onSuccess,
+		onFailure
+	};
+}
+
+function setCreateDentalVisits(dentalVisitResponse) {
+	return {
+		type: SET_CREATE_DENTAL_VISIT,
+		payload: dentalVisitResponse
+	};
+}
+
 export {
 	getAddMember,
 	setAddMember,
@@ -95,5 +134,9 @@ export {
 	setDeactivateUserId,
 	getDeactivateUserId,
 	setNotes,
-	fetchNotes
+	fetchNotes,
+	setDentalVisits,
+	getDentalVisits,
+	createDentalVisits,
+	setCreateDentalVisits
 };
