@@ -1,8 +1,10 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+
+const { width } = Dimensions.get('screen');
 
 const globalStyles = StyleSheet.create({
 	primaryColor: {
-		color: '#0F8E79' //#66CC80
+		color: '#0F8E79'
 	},
 	secondaryColor: {
 		color: '#0A8A7B'
@@ -20,18 +22,19 @@ const globalStyles = StyleSheet.create({
 		borderRadius: 30,
 		borderWidth: 1,
 		borderColor: '#14DF94',
-		width: 345,
-		marginBottom: 10
+		marginBottom: 10,
+		alignSelf: 'center',
+		width: width - 50
 	},
-
 	secondaryButton: {
 		padding: 13,
 		backgroundColor: '#0A8A7B',
 		borderRadius: 30,
 		borderWidth: 1,
 		borderColor: '#0A8A7B',
-		width: 345,
-		marginBottom: 10
+		marginBottom: 10,
+		alignSelf: 'center',
+		width: width - 45
 	},
 	tertiaryButton: {
 		padding: 13,
@@ -39,7 +42,7 @@ const globalStyles = StyleSheet.create({
 		borderRadius: 30,
 		borderWidth: 1,
 		borderColor: 'white',
-		width: 345,
+		width: width - 45,
 		marginBottom: 10
 	},
 
@@ -49,7 +52,7 @@ const globalStyles = StyleSheet.create({
 		borderRadius: 30,
 		borderWidth: 2,
 		borderColor: 'white',
-		width: 345,
+		width: width - 45,
 		marginBottom: 10
 	},
 
@@ -59,8 +62,8 @@ const globalStyles = StyleSheet.create({
 		borderRadius: 30,
 		borderWidth: 2,
 		borderColor: '#0A8A7B',
-		width: 345,
-		marginBottom: 10
+		marginBottom: 10,
+		width: width - 45
 	},
 
 	buttonText: {

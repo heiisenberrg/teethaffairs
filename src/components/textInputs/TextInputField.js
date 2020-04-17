@@ -18,6 +18,7 @@ function TextInputField(props) {
 				value={ props.value }
 				onBlur={ props.onBlur }
 				secureTextEntry={ props.secureTextEntry }
+				keyboardType={ props.keyboardType }
 			/>
 			<Image source={ passwordIcon } style={ styles.searchIcon } />
 			<Text style={ styles.errorText }>{props.error}</Text>
@@ -35,6 +36,7 @@ function TextInputField(props) {
 				value={ props.value }
 				onBlur={ props.onBlur }
 				secureTextEntry={ props.secureTextEntry }
+				keyboardType={ props.keyboardType }
 			/>
 			<Text style={ styles.errorText }>{props.error}</Text>
 		</View>

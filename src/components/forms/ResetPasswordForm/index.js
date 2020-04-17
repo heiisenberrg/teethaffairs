@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import {
 	View,
 	Text,
 	TouchableOpacity,
 	ScrollView,
 	SafeAreaView,
-	KeyboardAvoidingView
+	KeyboardAvoidingView,
+	Image
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -18,6 +19,10 @@ import TextInputField from '../../textInputs/TextInputField';
 import styles from './styles';
 import globalStyles from '../../../globalStyles';
 
+
+/* eslint-disable no-undef */
+
+const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
 const resetPinSchema = yup.object({
 	password: yup
 		.string()
@@ -27,37 +32,41 @@ const resetPinSchema = yup.object({
 });
 
 function ResetPasswordForm(props) {
-	const { navigation, getPassword, reset } = props;
+	const { navigation, getPassword } = props;
+	const [ errorMessage, setErrorMessage ] = useState('');
 
 	const handleSubmit = data => {
 		getPassword(data, onGetResetPasswordSuccess, onGetResetPasswordFailure);
-		// navigation.navigate('EmailVerification')
 	};
-	const onGetResetPasswordSuccess = data => {
-		console.log('api success', data);
-	};
-	const onGetResetPasswordFailure = error => {
-		return alert(error.data.detail);
-	};
-	useEffect(
-		function storeLoginResponse() {
-			storeResponseData();
-		},
-		[ reset ]
-	);
 
-	const storeResponseData = () => {
-		if (reset !== undefined && reset !== '') {
-			reset === '';
-			navigation.navigate('Login');
+	const onGetResetPasswordSuccess = () => {
+		navigation.navigate('VerificationSuccess');
+	};
+
+	const onGetResetPasswordFailure = error => {
+		if(error.data.detail !== undefined) {
+			setErrorMessage(JSON.stringify(error.data.detail));
+		}
+		else {
+			setErrorMessage('Something went wrong!');
 		}
 	};
 
 	return (
+		<>
+		<View style={ styles.logoHeader }>
+		<TouchableOpacity style={ styles.filter } >
+			<View style={ styles.filterWrapper }>
+			<Image
+				style={ styles.avatar }
+				source={ require('../../../assets/logo-color.png') }
+			/>
+			</View>
+		</TouchableOpacity>
+		</View>
 		<SafeAreaView style={ styles.container }>
-			<KeyboardAvoidingView enabled>
-				<ScrollView style={ styles.scrollView }>
-					<Text style={ styles.header }>Change Password</Text>
+			<ScrollView>
+			<Text style={ styles.header }>Change Password</Text>
 					<Formik
 						initialValues={ { password: '', reset_code: '' } }
 						validationSchema={ resetPinSchema }
@@ -66,7 +75,10 @@ function ResetPasswordForm(props) {
 							handleSubmit(values);
 						} }>
 						{props => (
-							<View>
+							<View style={ styles.loginContainer }>
+								<KeyboardAvoidingView
+									behavior="absolute"
+									keyboardVerticalOffset={ keyboardVerticalOffset }>
 								<TextInputField
 									lable="Type New Password"
 									placeholder="Enter Your New Password"
@@ -75,35 +87,41 @@ function ResetPasswordForm(props) {
 									onBlur={ props.handleBlur('password') }
 									error={ props.touched.password && props.errors.password }
 									secureTextEntry={ false }
-									passwordIcon={ true }
-								/>
+								/>		
 								<TextInputField
-									lable="Reset Code"
-									placeholder="Enter reset code"
+									lable="Confirm Password"
+									placeholder="Retype New Password"
 									onChangeText={ props.handleChange('reset_code') }
 									value={ props.values.reset_code }
 									onBlur={ props.handleBlur('reset_code') }
 									error={ props.touched.reset_code && props.errors.reset_code }
-									secureTextEntry={ false }
+									secureTextEntry={ true }
 									passwordIcon={ true }
 								/>
+								<View style={ styles.responseWrap }>
+								{errorMessage !== undefined ? (
+										<Text style={ styles.failedResponse }>{errorMessage}</Text>
+									) : (
+										<Text style={ styles.failedResponse }>Something went wrong!</Text>
+									)}
+								</View>
 								<TouchableOpacity
 									style={ globalStyles.secondaryButton }
 									onPress={ props.handleSubmit }>
 									<Text style={ globalStyles.buttonText }>Reset</Text>
 								</TouchableOpacity>
+								</KeyboardAvoidingView>
 							</View>
 						)}
 					</Formik>
-				</ScrollView>
-			</KeyboardAvoidingView>
+					</ScrollView>
 		</SafeAreaView>
+		</>	
 	);
 }
 
-function mapStateToProps(state) {
+function mapStateToProps() {
 	return {
-		reset: state.user.detail
 	};
 }
 

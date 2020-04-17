@@ -1,11 +1,11 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+const {  width } = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
 	container: {
 		backgroundColor: '#1DCB86',
 		flexGrow: 1,
-		justifyContent: 'center',
-		alignItems: 'center'
+		width: width
 	},
 	textInput: {
 		borderWidth: 1,
@@ -14,10 +14,11 @@ const styles = StyleSheet.create({
 		fontSize: 12,
 		borderRadius: 10,
 		marginBottom: 10,
-		width: 340,
 		textAlign: 'center',
 		marginTop: 50,
-		color: 'white'
+		color: 'white',
+		flex: 1,
+		minHeight: 43
 	},
 	buttonWrap: { marginTop: 10 },
 	buttonContainer: {
@@ -42,8 +43,6 @@ const styles = StyleSheet.create({
 	errorText: {
 		color: '#CF0000',
 		fontSize: 12,
-		// marginBottom: 10,
-		// marginTop: 6,
 		textAlign: 'center'
 	},
 	forgetPassword: {
@@ -81,7 +80,8 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 		textAlign: 'center',
 		fontSize: 24,
-		color: 'white'
+		color: 'white',
+		marginTop: 30
 	},
 	label: {
 		marginLeft: 10,
@@ -94,25 +94,16 @@ const styles = StyleSheet.create({
 	scrollView: {
 		marginTop: 50
 	},
-	// lock: {
-	// 	alignContent: 'center',
-	// 	alignItems: 'center',
-	// 	justifyContent: 'center'
-	// }
-
 	resetContainer: {
-		marginTop: 350,
+		marginTop: 150,
 		alignItems: 'center',
 		justifyContent: 'center'
-	},
-	resetLogoContainer: {
-		// flexDirection: 'row'
 	},
 	lock: {
 		position: 'absolute'
 	},
 	questionIcon: {
-		top: 40,
+		top: 30,
 		left: 55
 	},
 	dummyEmailText: {
@@ -132,7 +123,14 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		marginTop: 50,
 		marginBottom: 10
+	},
+	resetContainer1: {
+		marginHorizontal: 25
+	},
+	buttonWrapper:{
+		flex: 1,
+		alignItems:'center',
+		marginTop: 20
 	}
 });
-
 export default styles;

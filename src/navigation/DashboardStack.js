@@ -1,5 +1,7 @@
 import React from 'react';
+
 import { createStackNavigator } from '@react-navigation/stack';
+
 import AddMembers from '../screens/AddMembers';
 import AddQuestion from '../screens/AddQuestion';
 import SetReminder from '../screens/SetReminder';
@@ -9,39 +11,8 @@ import UpdateMembers from '../screens/UpdateMembers';
 import UpdateReminder from '../screens/UpdateReminder';
 import Payment from '../screens/Payment';
 import ConfirmPay from '../screens/ConfirmPay';
-import styles from '../screens/Splash/styles';
-
-import { Image, Text, View } from 'react-native';
 
 const Stack = createStackNavigator();
-
-function LogoTitle() {
-	return (
-		<View style={ styles.profile }>
-			<View style={ styles.profilePicture }>
-				<Image
-					style={ styles.container2 }
-					source={ require('../assets/profile.png') }
-				/>
-			</View>
-			<View style={ styles.profileContent }>
-				<Text style={ styles.textHeaderStyle }>Bhunaa Pandian</Text>
-				<Text style={ styles.textStyle }>(Primary Member)</Text>
-				<Text style={ styles.textStyle }>bpandian@fleetstudio.com</Text>
-				<View style={ styles.editCameraWrap }>
-					<Image
-						style={ styles.iconStyle }
-						source={ require('../assets/camera.png') }
-					/>
-					<Image
-						style={ styles.iconStyle }
-						source={ require('../assets/edit.png') }
-					/>
-				</View>
-			</View>
-		</View>
-	);
-}
 
 function DashboardStack() {
 	return (
@@ -53,7 +24,6 @@ function DashboardStack() {
 				name="Home"
 				component={ Dashboard }
 				options={ {
-					headerTitle: props => <LogoTitle { ...props } />,
 					headerTitleAlign: 'center',
 					headerTitleContainerStyle: {
 						alignItems: 'center'

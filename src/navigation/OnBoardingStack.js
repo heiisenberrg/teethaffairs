@@ -8,6 +8,10 @@ import AppIntro from '../screens/AppIntro';
 import ForgetPassword from '../screens/ForgetPassword';
 import ResetPassword from '../screens/ResetPassword';
 import EmailVerification from '../screens/EmailVerification';
+import AccountSuccess from '../screens/AccountSuccess';
+import VerificationSuccess from '../screens/VerificationSuccess';
+import PasswordResetVerify from '../screens/PasswordResetVerify';
+
 import globalStyles from '../globalStyles';
 
 const Stack = createStackNavigator();
@@ -42,20 +46,22 @@ function OnBoarding() {
 				component={ Login }
 				options={ {
 					headerLeft: null,
-					headerTitle: props => <LogoTitle { ...props } />,
 					headerTitleAlign: 'center',
-					headerTitleStyle: {
-						fontWeight: 'bold',
-						color: 'white'
-					},
 					headerTitleContainerStyle: {
-						marginTop: 70,
 						alignItems: 'center'
 					},
 					headerStyle: {
-						backgroundColor: '#129079',
-						height: 83
-					}
+						backgroundColor: '#108E79',
+						height: 23,
+						shadowOpacity: 0,
+						shadowOffset: { height: 0, width: 0 },
+						shadowRadius: 0,
+						elevation: 0
+					},
+					headerTitleStyle: {
+						color: '#129079'
+					},
+					headerBackTitleVisible: false
 				} }
 			/>
 			<Stack.Screen
@@ -63,20 +69,36 @@ function OnBoarding() {
 				component={ SignUp }
 				options={ {
 					headerLeft: null,
-					headerTitle: props => <LogoTitle { ...props } />,
 					headerTitleAlign: 'center',
-					headerTitleStyle: {
-						fontWeight: 'bold',
-						color: 'white'
-					},
 					headerTitleContainerStyle: {
-						marginTop: 70,
 						alignItems: 'center'
 					},
 					headerStyle: {
-						backgroundColor: '#129079',
-						height: 83
-					}
+						backgroundColor: '#108E79',
+						height: 23,
+						shadowOpacity: 0,
+						shadowOffset: { height: 0, width: 0 },
+						shadowRadius: 0,
+						elevation: 0
+					},
+					headerTitleStyle: {
+						color: '#129079'
+					},
+					headerBackTitleVisible: false
+				} }
+			/>
+				<Stack.Screen
+				name="AccountSuccess"
+				component={ AccountSuccess }
+				options={ {
+					headerShown: false
+				} }
+			/>
+				<Stack.Screen
+				name="VerificationSuccess"
+				component={ VerificationSuccess }
+				options={ {
+					headerShown: false
 				} }
 			/>
 			<Stack.Screen
@@ -84,17 +106,13 @@ function OnBoarding() {
 				component={ ForgetPassword }
 				options={ {
 					headerShown: false
-					// header: null
-					// headerTitle: props => <LogoTitle {...props} />,
-					// headerTitleAlign: 'center',
-					// headerTitleContainerStyle: {
-					// 	marginTop: 40,
-					// 	alignItems: 'center'
-					// },
-					// headerStyle: {
-					// 	backgroundColor: '#14DF94',
-					// 	height: 100
-					// }
+				} }
+			/>
+			<Stack.Screen
+				name="PasswordResetVerify"
+				component={ PasswordResetVerify }
+				options={ {
+					headerShown: false
 				} }
 			/>
 			<Stack.Screen
@@ -117,16 +135,23 @@ function OnBoarding() {
 				name="ResetPassword"
 				component={ ResetPassword }
 				options={ {
-					headerTitle: props => <LogoTitle { ...props } />,
+					headerLeft: null,
 					headerTitleAlign: 'center',
 					headerTitleContainerStyle: {
-						marginTop: 70,
 						alignItems: 'center'
 					},
 					headerStyle: {
-						backgroundColor: '#129079',
-						height: 83
-					}
+						backgroundColor: '#108E79',
+						height: 23,
+						shadowOpacity: 0,
+						shadowOffset: { height: 0, width: 0 },
+						shadowRadius: 0,
+						elevation: 0
+					},
+					headerTitleStyle: {
+						color: '#129079'
+					},
+					headerBackTitleVisible: false
 				} }
 			/>
 		</Stack.Navigator>

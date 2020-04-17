@@ -1,18 +1,32 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+
+const { width, height } = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
 	container: {
 		backgroundColor: 'white',
-		justifyContent: 'center',
-		alignItems: 'center',
-		flexGrow: 1
+		width: width,
+		height: height
+	},
+	subContainer: {
+		width: width,
+		height: height-220
 	},
 	logoWrapper: {
-		flexDirection: 'row'
+		flexDirection: 'row',
+		justifyContent:'center',
+		alignContent:'center',
+		alignItems:'center',
+		alignSelf:'center',
+		flex: 2
 	},
 	logo: {
 		width: 46,
 		height: 47,
+		justifyContent:'center',
+		alignContent:'center',
+		alignItems:'center',
+		alignSelf:'center',
 		marginRight: 23,
 		marginTop: -8
 	},
@@ -34,18 +48,26 @@ const styles = StyleSheet.create({
 		fontSize: 21
 	},
 	slidesHome: {
-		marginTop: 100,
-		marginBottom: 34
+		alignSelf:'center',
+		flex: 4,
+		justifyContent:'center',
+		alignContent:'center',
+		alignItems:'center'
 	},
-	slideImage: {
-		width: 307,
-		height: 200
+	slideImage3: {
+		width:440,
+		height:281
+	},
+	contentWrap: {
+		alignSelf:'center',
+		flex: 1,
+		marginHorizontal: 10
 	},
 	decription: {
 		textAlign: 'center',
 		color: '#363636',
-		marginTop: 10,
-		lineHeight: 21
+		lineHeight: 21,
+		fontSize: 14
 	},
 	decription1: {
 		textAlign: 'center',

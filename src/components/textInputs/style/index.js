@@ -39,15 +39,10 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 25
 	},
 
-	/// textinput
-
-	///default button
 	label1: {
 		marginLeft: 10,
 		color: '#363636',
-		// width: 75,
 		backgroundColor: 'white',
-		// zIndex: 1,
 		textAlign: 'left',
 		fontWeight: 'bold',
 		marginBottom: 10,
@@ -94,7 +89,7 @@ const styles = StyleSheet.create({
 	errorText: {
 		color: '#CF0000',
 		fontSize: 12,
-		textAlign: 'left'
+		marginLeft: 17
 	},
 	forgetPassword: {
 		fontSize: 12,

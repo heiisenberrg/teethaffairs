@@ -64,8 +64,8 @@ function fetchLogin(payload) {
 	);
 }
 
-function toSignUp(response) {
-	return setSignUp(response);
+function toSignUp(response, onSuccess) {
+	return setSignUp(onSuccess(response));
 }
 
 function fetchSignUpEpic(action$) {
@@ -73,7 +73,7 @@ function fetchSignUpEpic(action$) {
 }
 
 function fetchSignup(payload) {
-	const { onFailure } = payload;
+	const { onFailure, onSuccess } = payload;
 	const data = {
 		...payload.payload,
 		publicRoute: true,
@@ -87,7 +87,7 @@ function fetchSignup(payload) {
 			data
 		})
 	).pipe(
-		map(response => toSignUp(response.data)),
+		map(response => toSignUp(response.data, onSuccess)),
 		catchError(error =>
 			of({
 				type: 'FETCH_SIGNUP_FAILURE',
@@ -133,8 +133,8 @@ function fetchVerifyEmail(payload) {
 	);
 }
 
-function toForgetPassword(response) {
-	return setForgetPassword(response);
+function toForgetPassword(response, onSuccess) {
+	return setForgetPassword(onSuccess(response));
 }
 
 function fetchForgetPasswordEpic(action$) {
@@ -142,7 +142,7 @@ function fetchForgetPasswordEpic(action$) {
 }
 
 function fetchForgetPassword(payload) {
-	const { onFailure } = payload;
+	const { onFailure, onSuccess } = payload;
 	const data = {
 		...payload.payload,
 		publicRoute: true,
@@ -156,7 +156,7 @@ function fetchForgetPassword(payload) {
 			data
 		})
 	).pipe(
-		map(response => toForgetPassword(response.data)),
+		map(response => toForgetPassword(response.data, onSuccess)),
 		catchError(error =>
 			of({
 				type: 'FETCH_FORGET_PASSWORD_FAILURE',
@@ -166,8 +166,8 @@ function fetchForgetPassword(payload) {
 	);
 }
 
-function toReset(response) {
-	return setPassword(response);
+function toReset(response, onSuccess) {
+	return setPassword(onSuccess(response));
 }
 
 function fetchResetPinEpic(action$) {
@@ -175,7 +175,7 @@ function fetchResetPinEpic(action$) {
 }
 
 function fetchResetPin(payload) {
-	const { onFailure } = payload;
+	const { onFailure, onSuccess } = payload;
 	const data = {
 		...payload.payload,
 		publicRoute: true,
@@ -189,7 +189,7 @@ function fetchResetPin(payload) {
 			data
 		})
 	).pipe(
-		map(response => toReset(response.data)),
+		map(response => toReset(response.data, onSuccess)),
 		catchError(error =>
 			of({
 				type: 'FAILURE_RESPONSE',

@@ -1,22 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Image, Text, View, FlatList, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
+import {
+	Image,
+	Text,
+	View,
+	FlatList,
+	TouchableOpacity,
+	SafeAreaView,
+	ScrollView
+} from 'react-native';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 
 import styles from './styles/index';
-import { getDentalVisits , setDentalVisits } from '../../state/actions/journal';
+import { getDentalVisits, setDentalVisits } from '../../state/actions/journal';
 
 function DentalVisit(props) {
-
 	const { getDentalVisits, visits, navigation } = props;
 
 	const [ list, setlist ] = useState([]);
 	const [ userId ] = useState('all-users');
 
-	const getDentalVisitsSuccess = data => {
+	const getDentalVisitsSuccess = (data) => {
 		console.log('api success', data);
 	};
-	
+
 	useEffect(function storeDentalVisitsListResponse() {
 		getDentalVisits(userId, getDentalVisitsSuccess, getDentalVisitsFailure);
 	}, []);
@@ -25,18 +32,16 @@ function DentalVisit(props) {
 		// alert('Network error');
 	};
 
-	useEffect(function storeDentalVisitsListResponse() {
-		setlist(visits);
-	}, [ visits ]);
+	useEffect(
+		function storeDentalVisitsListResponse() {
+			setlist(visits);
+		},
+		[ visits ]
+	);
 
 	const _renderDentalVisitCards = (visit) => (
-		<View
-			style={ styles.card }
-		>
-			<TouchableOpacity
-				style={ styles.cardHeader }
-				activeOpacity={ 0.8 }
-			>
+		<View style={ styles.card }>
+			<TouchableOpacity style={ styles.cardHeader } activeOpacity={ 0.8 }>
 				<Image
 					style={ styles.image }
 					source={ require('../../assets/profile.png') }
@@ -49,8 +54,10 @@ function DentalVisit(props) {
 						<Image
 							style={ styles.avatar }
 							source={ require('../../assets/profile.png') }
-						/>	
-						<Text style={ [ styles.normalText, styles.person ] }>{visit.patient}</Text>
+						/>
+						<Text style={ [ styles.normalText, styles.person ] }>
+							{visit.patient}
+						</Text>
 						<Text style={ styles.normalText }>{visit.issue_start_date}</Text>
 					</View>
 				</View>
@@ -58,13 +65,13 @@ function DentalVisit(props) {
 			<View style={ styles.descriptionContainer }>
 				<Text style={ styles.description }>{visit.visit_description}</Text>
 			</View>
-			<ScrollView 
+			<ScrollView
 				contentContainerStyle={ styles.reportContainer }
 				horizontal={ true }
-				showsHorizontalScrollIndicator={ false }
-			>
-				{
-					visit.media && visit.media.length > 0 && visit.media.map((item, index) => 
+				showsHorizontalScrollIndicator={ false }>
+				{visit.media &&
+					visit.media.length > 0 &&
+					visit.media.map((item, index) => (
 						<Image
 							key={ `index_${index}` }
 							style={ styles.imageReport }
@@ -72,8 +79,7 @@ function DentalVisit(props) {
 								uri: item.media
 							} }
 						/>
-					)
-				}
+					))}
 			</ScrollView>
 		</View>
 	);
@@ -81,10 +87,7 @@ function DentalVisit(props) {
 	return (
 		<>
 			<View style={ styles.divider } />
-			<TouchableOpacity 
-				style={ styles.filter }
-				activeOpacity={ 0.8 }
-			>
+			<TouchableOpacity style={ styles.filter } activeOpacity={ 0.8 }>
 				<View style={ styles.filterWrapper }>
 					<Image
 						style={ styles.avatar }
@@ -98,26 +101,22 @@ function DentalVisit(props) {
 				</View>
 			</TouchableOpacity>
 			<View style={ styles.container }>
-				<SafeAreaView
-					style={ styles.cardContainer }
-					>
-					{
-						list && list.length !== 0 ?
+				<SafeAreaView style={ styles.cardContainer }>
+					{list && list.length !== 0 ? (
 						<FlatList
 							data={ list }
 							renderItem={ ({ item }) => _renderDentalVisitCards(item) }
-							keyExtractor={ item => item.id }
+							keyExtractor={ (item) => item.id }
 						/>
-						:
+					) : (
 						<View style={ styles.emptyResult }>
 							<Text>No Dental Visits Found</Text>
 						</View>
-					}
-					<TouchableOpacity 
+					)}
+					<TouchableOpacity
 						style={ styles.fabButton }
 						activeOpacity={ 0.8 }
-						onPress={ () => navigation.navigate('CreateDentalVisit') }
-					>
+						onPress={ () => navigation.navigate('CreateDentalVisit') }>
 						<AntDesignIcon name="plus" size={ 30 } color="#ffffff" />
 					</TouchableOpacity>
 				</SafeAreaView>
@@ -125,7 +124,6 @@ function DentalVisit(props) {
 		</>
 	);
 }
-
 
 const mapStateToProps = (state) => {
 	return {

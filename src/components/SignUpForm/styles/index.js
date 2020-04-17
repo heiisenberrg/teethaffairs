@@ -1,11 +1,11 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+
+const { height } = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
 	container: {
 		backgroundColor: 'white',
-		flexGrow: 1,
-		justifyContent: 'center',
-		alignItems: 'center'
+		flexGrow: 1
 	},
 	inputText: {
 		borderWidth: 1,
@@ -27,23 +27,42 @@ const styles = StyleSheet.create({
 	errorText: {
 		color: '#CF0000',
 		marginBottom: 10,
-		marginTop: 6,
-		textAlign: 'left'
+		marginTop: 1,
+		textAlign: 'left',
+		fontSize: 12,
+		marginLeft: 10
 	},
 	dataPicker: {
-		width: 312,
-
-		borderColor: '#ddd',
-		padding: 10,
-		// fontSize: 18,
-		borderRadius: 6
-		// marginTop: 10,
-		// marginBottom: 10
+		flex: 1,
+		borderWidth: 1,
+		borderColor: '#A1A1A1',
+		justifyContent: 'flex-end',
+		borderRadius: 20,
+		paddingHorizontal: 25,
+		width: '100%'
+	},
+	labelContainer: {
+		position: 'absolute',
+		backgroundColor: '#FFF',
+		top: -15,
+		left: 14,
+		padding: 7,
+		zIndex: 1
+	},
+	textInputContainer: {
+		height: 45,
+		width: '100%',
+		position: 'relative'
+	},
+	label: {
+		color: '#6A6A6A',
+		backgroundColor: 'white',
+		fontSize: 12
 	},
 	header: {
 		textAlign: 'center',
 		fontSize: 22,
-		marginTop: 5,
+		marginTop: 90,
 		fontWeight: 'bold',
 		color: '#3F4440',
 		marginBottom: 10
@@ -89,7 +108,8 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		color: '#003CFF',
 		textDecorationLine: 'underline',
-		marginTop: 7
+		marginTop: 8,
+		marginLeft: 3
 	},
 	normalText: {
 		fontSize: 12,
@@ -105,11 +125,156 @@ const styles = StyleSheet.create({
 	},
 	termsWrapper: {
 		flexDirection: 'row',
-		justifyContent: 'center'
+		justifyContent: 'center',
+		marginLeft: 40
+	},
+	loginTermsWrapper: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		marginBottom: 50
 	},
 	checkBoxWrap: {
 		flexDirection: 'row',
-		marginTop: -20
+		marginBottom: 10,
+		marginLeft: 0
+	},
+	signupContainer: {
+		margin: 25
+	},
+	logoHeader: {
+		height: 60,
+		backgroundColor: '#108E79',
+		maxHeight: height - 210,
+		justifyContent: 'center',
+		zIndex: 1,
+		top: 0
+	},
+	filter: {
+		backgroundColor: '#ffffff',
+		borderRadius: 100,
+		paddingHorizontal: 10,
+		alignSelf: 'center',
+		position: 'absolute',
+		zIndex: 101,
+		top: 0,
+		alignItems: 'center',
+		shadowColor: '#707070',
+		shadowOffset: { width: 0, height: 2 },
+		shadowOpacity: 0.5,
+		shadowRadius: 10,
+		elevation: 10,
+		width: 126,
+		height: 120
+	},
+	filterWrapper: {
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		flexDirection: 'row',
+		flex: 1
+	},
+	avatar: {
+		width: 76,
+		height: 75
+	},
+	checkbox: {
+		width: 14,
+		height: 14,
+		position: 'absolute',
+		left: 10,
+		top: 4
+	},
+
+	radioContainer: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		marginBottom: 30
+	},
+	circle: {
+		height: 20,
+		width: 20,
+		borderRadius: 10,
+		borderWidth: 1,
+		borderColor: '#ACACAC',
+		alignItems: 'center',
+		justifyContent: 'center',
+		marginRight: 15
+	},
+	checkedCircle: {
+		width: 14,
+		height: 14,
+		borderRadius: 7,
+		backgroundColor: '#33D197'
+	},
+	radioWrap: {
+		flexDirection: 'row',
+		marginLeft: 1
+	},
+	questionContainer: {
+		flexDirection: 'row',
+		marginLeft: 5,
+		justifyContent: 'center',
+		alignItems: 'center',
+		alignContent: 'center'
+	},
+	questionText1: {
+		fontWeight: 'bold',
+		fontSize: 13,
+		marginLeft: 10,
+		margin: -10
+	},
+
+	genderContainer: {
+		marginBottom: 0,
+		marginLeft: 10
+	},
+	questionText: {
+		marginTop: 6,
+		marginBottom: 10,
+		color: '#6A6A6A',
+		fontSize: 12
+	},
+	genderText: {
+		marginRight: 10,
+		color: '#6A6A6A',
+		fontSize: 12
+	},
+	genderWrapper: {
+		flexDirection: 'row',
+		marginTop: 0,
+		marginLeft: 10
+	},
+	calenderStyle: {
+		position: 'absolute',
+		right: 10,
+		top: 10
+	},
+	calenderText: {
+		position: 'absolute',
+		left: 20,
+		top: 13,
+		color: 'grey',
+		fontSize: 12
+	},
+	customCheckbox: {
+		width: 15,
+		height: 15,
+		borderWidth: 1,
+		borderColor: '#2E2E2E',
+		position: 'relative',
+		top: 4,
+		borderRadius: 2
+	},
+	checkedStyle: {
+		position: 'absolute',
+		top: 2,
+		right: 1
+	},
+	eyeIcon: {
+		position: 'absolute',
+		right: 20,
+		top: 15
 	}
 });
 
