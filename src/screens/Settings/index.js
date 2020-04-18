@@ -66,7 +66,7 @@ function Settings(props) {
 				</LinearGradient>
 				<TouchableOpacity
 					style={ styles.linkContainer }
-					onPress={ () => navigation.navigate('AddMembers') }>
+					onPress={ () => navigation.navigate('Profile') }>
 					<View style={ styles.imageContainer }>
 						<Image source={ history } style={ styles.icons } />
 					</View>

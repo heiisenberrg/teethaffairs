@@ -10,9 +10,10 @@ const styles = StyleSheet.create({
 		padding: 10
 	},
 	stepIndicator: {
-		marginTop: 25,
-		alignItems: 'center',
-		marginBottom: 40
+		// marginTop: 25,
+		marginVertical: 20,
+		alignItems: 'center'
+		// marginBottom: 40
 	},
 	imageWrap: {
 		marginBottom: 20,
@@ -93,16 +94,16 @@ const styles = StyleSheet.create({
 	},
 	questionText1: {
 		fontWeight: 'bold',
-		fontSize: 13,
-		marginLeft: 4
+		fontSize: 13
 	},
 	painContainer: {
+		display: 'flex',
 		flexDirection: 'row',
-		marginTop: 20,
 		flex: 1,
-		position:'relative',
-		left: -60,
-		marginBottom: 10
+		marginVertical: 15
+	},
+	choices: {
+		flex: 1
 	},
 	activeButton: {
 		padding: 5,
@@ -135,10 +136,11 @@ const styles = StyleSheet.create({
 		textTransform: 'capitalize'
 	},
 	slider: {
-		borderRadius: 100,
-		width: width-200,
-		position: 'relative',
-		top: 15
+		borderRadius: 50,
+		width: width - 200,
+		marginHorizontal: 10
+		// position: 'relative',
+		// top: 15
 	},
 	rangeText: {
 		marginTop: 10,
@@ -219,8 +221,8 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	contentWrapText: {
-		marginTop: 17,
-		marginBottom: 17
+		marginVertical: 15,
+		marginHorizontal: 25
 	},
 	contentText: {
 		fontSize: 13,
@@ -238,19 +240,20 @@ const styles = StyleSheet.create({
 		backgroundColor: 'white'
 	},
 	profileWrapper: {
+		display: 'flex',
+		flex: 1,
 		borderColor: '#f5f5f5',
 		borderWidth: 1,
-		width: 370,
-		minHeight: 70,
-		backgroundColor: '#FFFFFF',
+		backgroundColor: 'white',
+		shadowOpacity: 2,
+		shadowOffset: { height: 2, width: 2 },
+		shadowRadius: 2,
+		elevation: 10,
 		shadowColor: '#f5f5f5',
-		shadowOpacity: 10,
-		shadowRadius: 1,
-		elevation: 20,
 		alignSelf: 'center',
-		marginTop: 15,
+		margin: 10,
 		borderRadius: 5,
-		padding: 30
+		padding: 10
 	},
 	title: {
 		flexDirection: 'row'

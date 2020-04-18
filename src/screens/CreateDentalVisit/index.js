@@ -2,7 +2,7 @@ import React from 'react';
 
 import DentalVisitForm from '../../components/forms/DentalVisitForm';
 
-function CreateDentalVisit(props) {
+function CreateDentalVisit(props) {	
 	return (
 		<DentalVisitForm { ...props } />
 	);

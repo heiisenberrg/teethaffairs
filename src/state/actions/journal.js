@@ -20,7 +20,11 @@ import {
 	GET_DENTAL_VISITS,
 	SET_DENTAL_VISITS,
 	CREATE_DENTAL_VISIT,
-	SET_CREATE_DENTAL_VISIT
+	SET_CREATE_DENTAL_VISIT,
+	SAVE_EDITED_DENTAL_VISIT,
+	SET_SAVE_EDITED_DENTAL_VISIT,
+	DELETE_DENTAL_VISIT,
+	SET_DELETE_DENTAL_VISIT
 } from '../constants/journal';
 
 function getAddMember(userInputData, onFailure, onSuccess) {
@@ -68,10 +72,11 @@ function getUserNote(userQueries, onFailure) {
 	};
 }
 
-function getDeactivateUserId(userDeactivateId, onFailure) {
+function getDeactivateUserId(data, onSuccess, onFailure) {
 	return {
 		type: GET_DEACTIVATE_USER_ID,
-		payload: userDeactivateId,
+		payload: { ...data },
+		onSuccess,
 		onFailure
 	};
 }
@@ -175,10 +180,12 @@ function getDentalVisits(userId, onSuccess, onFailure) {
 	};
 }
 
-function createDentalVisits(payload, onSuccess, onFailure) {
+function createDentalVisits(data, onSuccess, onFailure) {
 	return {
 		type: CREATE_DENTAL_VISIT,
-		payload,
+		payload: {
+			data: data
+		},
 		onSuccess,
 		onFailure
 	};
@@ -188,6 +195,41 @@ function setCreateDentalVisits(dentalVisitResponse) {
 	return {
 		type: SET_CREATE_DENTAL_VISIT,
 		payload: dentalVisitResponse
+	};
+}
+
+function updateDentalVisit(id, data, onSuccess, onFailure) {
+	return {
+		type: SAVE_EDITED_DENTAL_VISIT,
+		payload: {
+			data,
+			id
+		},
+		onSuccess,
+		onFailure
+	};
+}
+
+function setUpdateDentalVisit(response) {
+	return {
+		type: SET_SAVE_EDITED_DENTAL_VISIT,
+		payload: response
+	};
+}
+
+function deleteDentalVisit(id, onSuccess, onFailure) {
+	return {
+		type: DELETE_DENTAL_VISIT,
+		id,
+		onSuccess,
+		onFailure
+	};
+}
+
+function setDeleteDentalVisit(response) {
+	return {
+		type: SET_DELETE_DENTAL_VISIT,
+		payload: response
 	};
 }
 
@@ -213,5 +255,9 @@ export {
 	setDentalVisits,
 	getDentalVisits,
 	createDentalVisits,
-	setCreateDentalVisits
+	setCreateDentalVisits,
+	updateDentalVisit,
+	setUpdateDentalVisit,
+	deleteDentalVisit,
+	setDeleteDentalVisit
 };

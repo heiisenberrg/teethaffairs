@@ -5,6 +5,7 @@ import Settings from '../screens/Settings';
 import Payment from '../screens/Payment';
 import ContactUs from '../screens/ContactUs';
 import AboutUs from '../screens/AboutUs';
+import Profile from '../screens/Profile';
 
 const Stack = createStackNavigator();
 
@@ -20,6 +21,27 @@ function SettingStack() {
 				options={ { headerShown: false } }
 			/>
 			<Stack.Screen name="Payment" component={ Payment } />
+			<Stack.Screen
+				name="Profile"
+				component={ Profile }
+				options={ {
+					headerTitle: 'Profile',
+					headerTitleAlign: 'center',
+					headerTitleContainerStyle: {
+						alignItems: 'center',
+						justifyContent: 'center'
+					},
+					headerStyle: {
+						backgroundColor: '#108E79',
+						height: 100
+					},
+					headerTitleStyle: {
+						color: 'white',
+						fontSize: 20
+					},
+					headerBackTitleVisible: false
+				} }
+			/>
 			<Stack.Screen
 				name="ContactUs"
 				component={ ContactUs }

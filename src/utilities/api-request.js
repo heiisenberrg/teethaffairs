@@ -140,6 +140,9 @@ const requestHandler = request => {
 		request.headers.AUTHORIZATION = `Bearer ${accessToken}`;
 	}
 
+	delete request.data.headers;
+	delete request.data.publicRoute;
+
 	return request;
 };
 

@@ -9,7 +9,10 @@ import {
 	GET_ONE_TIME_PASSWORD,
 	GET_FORGET_EMAIL,
 	GET_PASSWORD,
-	GET_LOGOUT
+	GET_LOGOUT,
+	GET_USER,
+	UPDATE_USER,
+	GET_USERS
 } from '../constants/user';
 import {
 	setLogin,
@@ -17,8 +20,11 @@ import {
 	setOneTimePassword,
 	setForgetPassword,
 	setPassword,
-	setLogOut
+	setLogOut,
+	setUser,
+	setUsers
 } from '../actions/user';
+import { apiCall } from '../../utilities/axios-interceptor';
 
 const loginURL = '/dental_auth/login/';
 const signupURL = '/dental_auth/sign-up/';
@@ -26,6 +32,9 @@ const verifyEmailURL = '/dental_auth/verify-email/';
 const forgetPasswordURL = '/dental_auth/forgot-pin/';
 const resetPinURL = '/dental_auth/pin-reset/';
 const logoutURL = '/dental_auth/logout/';
+const getUserURL = '/users/user/me/';
+const updateUserURL = '/users/update-me/';
+const getUsersURL = '/users/user/';
 
 function customAxios(payload) {
 	return axiosInstance(payload);
@@ -232,11 +241,107 @@ function fetchLogOut(payload) {
 	);
 }
 
+function toGetUser(response) {
+	return setUser(response);
+}
+
+function getUserEpic(action$) {
+	return action$.pipe(ofType(GET_USER), mergeMap(fetchUser));
+}
+
+function fetchUser(payload) {
+	const { onFailure } = payload;
+
+	return from(
+		apiCall({
+			url: getUserURL,
+			method: 'GET',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json' 
+			},
+			withCredentials: true
+		})
+	).pipe(
+		map(response => toGetUser(response.data)),
+		catchError(error =>
+			of({
+				type: 'GET_USER_FAILURE',
+				payload: onFailure(error.response)
+			})
+		)
+	);
+}
+
+function toUpdateUser(response) {
+	return setUser(response);
+}
+
+function updateUserEpic(action$) {
+	return action$.pipe(ofType(UPDATE_USER), mergeMap(updateUser));
+}
+
+function updateUser(payload) {
+	const { onFailure } = payload;
+
+	return from(
+		apiCall({
+			url: updateUserURL,
+			method: 'POST',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json' 
+			},
+			data: { ...payload.payload.data },
+			withCredentials: true
+		})
+	).pipe(
+		map(response => toUpdateUser(response.data)),
+		catchError(error =>
+			of({
+				type: 'UPDATE_USER_FAILURE',
+				payload: onFailure(error.response)
+			})
+		)
+	);
+}
+
+function toSetUsers(response) {
+	return setUsers(response);
+}
+
+function getUsersEpic(action$) {
+	return action$.pipe(ofType(GET_USERS), mergeMap(getUsers));
+}
+
+
+function getUsers() {
+	return from(
+		apiCall({
+			url: getUsersURL,
+			method: 'GET',
+			withCredentials: true
+		})
+	).pipe(
+		map(response => toSetUsers(response.data)),
+		catchError(error => {
+			console.warn('error', error);
+			return of({
+				type: 'GET_USERS_FAILURE',
+				payload: error.response
+			});
+		})
+	);
+}
+
 export {
 	fetchLoginEpic,
 	fetchSignUpEpic,
 	fetchEmailVerifyEpic,
 	fetchForgetPasswordEpic,
 	fetchResetPinEpic,
-	fetchLogOutEpic
+	fetchLogOutEpic,
+	getUserEpic,
+	updateUserEpic,
+	getUsersEpic
 };

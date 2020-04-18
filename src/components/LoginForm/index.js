@@ -81,6 +81,11 @@ function LoginForm(props) {
 	const passwordHandler = () => {
 		setShowEye(!showEye);
 	};
+	// useEffect(function() {
+	// 	let deviceId = DeviceInfo.getUniqueId();
+	// 	console.log('deviceId', deviceId);
+	// }, []);
+
 	return (
 		<>
 		<View style={ styles.logoHeader }>
@@ -97,7 +102,7 @@ function LoginForm(props) {
 			<ScrollView>
 				<Text style={ loginStyles.header }>Login</Text>
 					<Formik
-						initialValues={ { username: '', password: '' } }
+						initialValues={ { username: 'primarypatient', password: 'fleet123' } }
 						validationSchema={ loginSchema }
 						onSubmit={ (values, actions) => {
 							actions.resetForm();

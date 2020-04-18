@@ -10,7 +10,11 @@ import {
 	GET_PASSWORD,
 	SET_PASSWORD,
 	GET_LOGOUT,
-	SET_LOGOUT
+	SET_LOGOUT,
+	GET_USER,
+	SET_USER,
+	GET_USERS,
+	SET_USERS
 } from '../constants/user';
 
 function getLogin(userInputData, onSuccess, onFailure) {
@@ -108,6 +112,34 @@ function setLogOut(logoutResponse) {
 	};
 }
 
+function getUser(onSuccess, onFailure) {
+	return {
+		type: GET_USER,
+		onSuccess,
+		onFailure
+	};
+}
+
+function setUser(userResponse) {
+	return {
+		type: SET_USER,
+		payload: userResponse
+	};
+}
+
+function getUsers() {
+	return {
+		type: GET_USERS
+	};
+}
+
+function setUsers(userList) {
+	return {
+		type: SET_USERS,
+		payload: userList
+	};
+}
+
 export {
 	getLogin,
 	setLogin,
@@ -120,5 +152,9 @@ export {
 	getPassword,
 	setPassword,
 	setLogOut,
-	getLogOut
+	getLogOut,
+	getUser,
+	setUser,
+	getUsers,
+	setUsers
 };

@@ -10,7 +10,11 @@ import {
 	SET_PASSWORD,
 	GET_PASSWORD,
 	SET_LOGOUT,
-	GET_LOGOUT
+	GET_LOGOUT,
+	GET_USER,
+	SET_USER,
+	SET_USERS,
+	GET_USERS
 } from '../constants/user';
 
 const initialState = {
@@ -22,9 +26,10 @@ const initialState = {
 	is_verified: false,
 	user_type: '',
 	gender: '',
-	profile_pic: '',
+	profile_pic: null,
 	zipcode: '',
-	errorMessage: ''
+	errorMessage: '',
+	users: []
 };
 
 function userReducer(state = initialState, action) {
@@ -65,6 +70,16 @@ function userReducer(state = initialState, action) {
 		case GET_LOGOUT:
 			return apply_getLogOut(state, action);
 			break;
+		case SET_USER:
+			return apply_setUser(state, action);
+			break;
+		case GET_USER:
+			return apply_getUser(state);
+			break;
+		case SET_USERS:
+			return apply_setUsers(state, action);
+		case GET_USERS:
+			return apply_getUsers(state, action);
 		default:
 			return state;
 			break;
@@ -130,6 +145,30 @@ function apply_setLogOut(state) {
 	let newState = { ...state };
 
 	newState.is_verified = false;
+	return newState;
+}
+
+function apply_getUser(state) {
+	let newState = { ...state };
+	return newState;
+}
+
+function apply_setUser(state, action) {
+	let newState = { ...state };
+	newState.user = {
+		...action.payload
+	};
+	return newState;
+}
+
+function apply_setUsers(state, action) {
+	let newState = { ...state };
+	newState.users = action.payload;
+	return newState;
+}
+
+function apply_getUsers(state) {
+	let newState = { ...state };
 	return newState;
 }
 

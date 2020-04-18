@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center'
 	},
-	dentalHeaderContainer: { marginLeft: 40 },
+	dentalHeaderContainer: { marginLeft: 20 },
 	dentalHeaderText1: {
 		fontWeight: 'bold',
 		textTransform: 'uppercase',

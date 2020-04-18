@@ -7,12 +7,15 @@ const styles = StyleSheet.create({
 	},
 	dentalVisitWrapper: { marginTop: 10 },
 	wrapper: {  
-		paddingVertical: 5,
+		paddingTop: 5,
 		display: 'flex'
 	},
 	title: {
 		margin: 5,
 		color: '#000',
+		textTransform: 'capitalize'
+	},
+	experienceText: {
 		textTransform: 'capitalize'
 	},
 	inputText: {
@@ -75,6 +78,29 @@ const styles = StyleSheet.create({
 	},
 	radioContainer: {
 		flexDirection: 'row'
+	},
+	dropdownContainer: {
+		marginHorizontal: 6,
+		elevation: 2,
+		borderLeftWidth: 1,
+		borderRightWidth: 1,
+		borderColor: '#A1A1A1'
+	},
+	dropDownContent: {
+		borderBottomWidth: 0.5, 
+		borderColor: '#A1A1A1', 
+		padding: 10, 
+		justifyContent: 'center', 
+		alignItems: 'center'
+	},
+	flexRow: {
+		flexDirection: 'row', 
+		justifyContent: 'space-between', 
+		alignItems: 'center'
+	},
+	flexEnd: {
+		justifyContent: 'flex-end', 
+		alignItems: 'flex-end'
 	}
 });
 

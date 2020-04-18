@@ -1,14 +1,12 @@
 import { StyleSheet, Dimensions } from 'react-native';
 
-const { width } = Dimensions.get('screen');
+const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
 	container: {
 		backgroundColor: 'white',
 		flexGrow: 1,
-		borderTopColor:'#D2D2D2',
-		borderTopWidth: 1,
-		width: width,
+		width,
 		padding: 10
 	},
 	profileNameContainer: {

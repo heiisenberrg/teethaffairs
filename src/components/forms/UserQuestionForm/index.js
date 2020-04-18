@@ -280,8 +280,11 @@ function AddQuestion(props) {
  },[]);
 
 	return (
-		<SafeAreaView style={ styles.container }>
-			<ScrollView>
+		<SafeAreaView>
+			<ScrollView
+				contentContainerStyle={ styles.container }
+				showsVerticalScrollIndicator={ false }
+			>
 				<View style={ styles.stepIndicator }>
 					{showStep1 === true ? (
 						<Image source={ stepIndicator1 } />
@@ -516,7 +519,7 @@ function AddQuestion(props) {
 					) : showStep2 ? (
 						props => (
 							<View style={ styles.step2Styles }>
-								<View style={ styles.questionContainer }>
+								<View>
 									<Text style={ styles.questionText1 }>Pain level</Text>
 									<View style={ styles.painContainer }>
 										<View style={ styles.choices }>
@@ -524,9 +527,8 @@ function AddQuestion(props) {
 												<Text style={ styles.activeButtonText }>No Pain</Text>
 											</TouchableOpacity>
 										</View>
-										<View>
+										<View style={ styles.slider }>
 											<Slider
-												style={ styles.slider }
 												step={ 1 }
 												minimumValue={ 0 }
 												maximumValue={ 9 }

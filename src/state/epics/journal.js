@@ -3,6 +3,8 @@ import { ofType } from 'redux-observable';
 import { from, of } from 'rxjs';
 
 import { axiosInstance, getQueryParams } from '../../utilities/api-request';
+import {  apiCall, uploadFile } from '../../utilities/axios-interceptor';
+
 import {
 	GET_ADD_MEMBER,
 	GET_USER_LIST,
@@ -14,7 +16,9 @@ import {
 	GET_DOCTOR_DETAIL,
 	GET_DENTAL_VISITS,
 	CREATE_DENTAL_VISIT,
-	GET_DELETE_NOTE
+	GET_DELETE_NOTE,
+	SAVE_EDITED_DENTAL_VISIT,
+	DELETE_DENTAL_VISIT
 } from '../constants/journal';
 import {
 	setAddMember,
@@ -26,7 +30,9 @@ import {
 	setDoctorDetail,
 	setDentalVisits,
 	setCreateDentalVisits,
-	setDeleteNote
+	setDeleteNote,
+	setUpdateDentalVisit,
+	setDeleteDentalVisit
 } from '../actions/journal';
 
 const addMemberURL = '/users/user-registration/';
@@ -37,6 +43,8 @@ const notesURL = '/notes/notes/';
 const doctorListURL = '/users/doctor-by-pin?pincode=';
 const dentalVisitsURL = '/visit/doctor-visits/';
 const createDentalVisitsURL = '/visit/visits/';
+const editDentalVisitsURL = '/visit/visits/';
+const deleteDentalVisitsURL = '/visit/visits/';
 
 function customAxios(payload) {
 	return axiosInstance(payload);
@@ -94,16 +102,11 @@ function fetchUserListEpic(action$) {
 
 function fetchUserList(payload) {
 	const { onFailure } = payload;
-	const data = {
-		publicRoute: false,
-		headers: {}
-	};
 
 	return from(
-		customAxios({
+		apiCall({
 			url: userListURL,
-			method: 'GET',
-			data
+			method: 'GET'
 		})
 	).pipe(
 		map(response => toUserList(response.data)),
@@ -130,23 +133,28 @@ function fetchUserNoteEpic(action$) {
 function fetchNote(payload) {
 	const { onFailure } = payload;
 
-	const formData = Object.entries({ ...payload.payload })
-		.map(pair => `${pair[0]}=${pair[1]}`)
-		.join('&');
+	// const formData = Object.entries({ ...payload.payload })
+	// 	.map(pair => `${pair[0]}=${pair[1]}`)
+	// 	.join('&');
 
-	const data = {
-		formData,
-		publicRoute: false,
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded'
-		}
-	};
+	// const data = {
+	// 	formData,
+	// 	publicRoute: false,
+	// 	headers: {
+	// 		'Content-Type': 'application/x-www-form-urlencoded'
+	// 	}
+	// };
 
 	return from(
-		customAxios({
+		apiCall({
 			url: userNoteURL,
 			method: 'POST',
-			data
+			data: { ...payload.payload },
+			headers: { 
+				Accept: 'application/json',
+				'Content-Type': 'application/x-www-form-urlencoded' 
+			},
+			withCredentials: true
 		})
 	).pipe(
 		map(response => toUserNote(response.data)),
@@ -172,17 +180,17 @@ function fetchUserDeactivateIdEpic(action$) {
 
 function fetchUserDeactivateId(payload) {
 	const { onFailure } = payload;
-	const data = {
-		...payload.payload,
-		publicRoute: false,
-		headers: {}
-	};
 
 	return from(
-		customAxios({
+		apiCall({
 			url: userDeactivateURL,
 			method: 'PUT',
-			data
+			data: { ...payload.payload },
+			headers: { 
+				Accept: 'application/json',
+				'Content-Type': 'application/json' 
+			},
+			withCredentials: true
 		})
 	).pipe(
 		map(response => toUserDeactivateId(response.data)),
@@ -354,15 +362,11 @@ function getDentalVisits(payload) {
 	const options = {
 		user_id: payload.payload.userId
 	};
-	const data = {
-		publicRoute: false,
-		headers: {}
-	};
 	return from(
-		customAxios({
+		apiCall({
 			url: `${dentalVisitsURL}${getQueryParams(options)}`,
 			method: 'GET',
-			data
+			withCredentials: true
 		})
 	).pipe(
 			map(response => toDentalVisits(response.data)),
@@ -378,7 +382,8 @@ function getDentalVisits(payload) {
 	
 
 
-function toCreateDentalVisit(response) {
+function toCreateDentalVisit(response, onSuccess) {
+	onSuccess(response);
 	return setCreateDentalVisits(response);
 }
 
@@ -390,23 +395,19 @@ function createDentalVisitEpic(action$) {
 }
 
 function createDentalVisit(payload) {
-	const { onFailure } = payload;
-	const data = {
-		...payload.payload,
-		publicRoute: false,
-		headers: {
-			Accept: 'application/json',
-			'Content-Type': 'multipart/form-data'
-		}
-	};
+	const { onSuccess, onFailure } = payload;
 	return from(
-		customAxios({
-			url: createDentalVisitsURL,
+		uploadFile({
+			url: `${createDentalVisitsURL}`,
 			method: 'POST',
-			data
+			data: payload.payload.data,
+			headerConfig: { 
+				Accept: 'application/json',
+				'Content-Type': 'multipart/form-data'
+			}
 		})
 	).pipe(
-		map(response => toCreateDentalVisit(response)),
+		map(response => toCreateDentalVisit(response, onSuccess)),
 		catchError(error =>
 			of({
 				type: 'CREATE_DENTAL_VISIT_FAILURE',
@@ -468,16 +469,80 @@ function fetchDoctorDetail(payload) {
 	});
 }
 
-export {
-	fetchAddMemberEpic,
-	fetchUserListEpic,
-	fetchUserNoteEpic,
-	fetchNotesEpic,
-	fetchUserDeactivateIdEpic,
-	fetchDoctorListEpic,
-	fetchUserNoteUpdateEpic,
-	fetchDoctorDetailEpic,
+
+function toEditDentalVisit(response, onSuccess) {
+	onSuccess(response);
+	return setUpdateDentalVisit(response);
+}
+
+function editSavedDentalVisitEpic(action$) {
+	return action$.pipe(ofType(SAVE_EDITED_DENTAL_VISIT), mergeMap(editDentalVisit));
+}
+
+function editDentalVisit(payload) {
+	const { onSuccess, onFailure } = payload;
+
+	return from(
+		apiCall({
+			url: `${editDentalVisitsURL}${payload.payload.id}/`,
+			method: 'PATCH',
+			headers: { 
+				Accept: 'application/json',
+				'Content-Type': 'multipart/form-data' 
+			},
+			data: payload.payload.data
+		})
+	).pipe(
+		map(response => toEditDentalVisit(response.data, onSuccess)),
+		catchError(error =>
+			of({
+				type: 'SAVE_EDITED_DENTAL_VISIT_FAILURE',
+				payload: onFailure(error)
+			})
+		)
+	);
+}
+
+function toDeleteDentalVisit(response) {
+	return setDeleteDentalVisit(response);
+}
+
+function deleteDentalVisitEpic(action$) {
+	return action$.pipe(ofType(DELETE_DENTAL_VISIT), mergeMap(deleteDentalVisit));
+}
+
+function deleteDentalVisit(payload) {
+	const { onFailure } = payload;
+
+	return from(
+		apiCall({
+			url: `${deleteDentalVisitsURL}${payload.id}/`,
+			method: 'DELETE',
+			withCredentials: true
+		})
+	).pipe(
+		map(response => toDeleteDentalVisit(response.data)),
+		catchError(error =>
+			of({
+				type: 'DELETE_DENTAL_VISIT_FAILURE',
+				payload: onFailure(error)
+			})
+		)
+	);
+}
+
+export { 
+	fetchAddMemberEpic, 
+	fetchUserListEpic, 
+	fetchUserNoteEpic, 
+	fetchNotesEpic, 
+	fetchUserDeactivateIdEpic, 
 	fetchDentalVisitsEpic,
 	createDentalVisitEpic,
+	editSavedDentalVisitEpic,
+	deleteDentalVisitEpic,
+	fetchUserNoteUpdateEpic,
+	fetchDoctorListEpic,
+	fetchDoctorDetailEpic,
 	fetchDeleteNoteEpic
 };

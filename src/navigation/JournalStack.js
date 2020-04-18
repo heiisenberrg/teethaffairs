@@ -12,9 +12,10 @@ const Stack = createStackNavigator();
 function JournalStack() {
 	return (
 		<Stack.Navigator
-			screenOptions={ {
+			screenOptions={ () => ({
+				gestureEnabled: false,
 				headerTintColor: 'white'
-			} }>
+			}) }>
 			<Stack.Screen
 				name="Journal"
 				component={ Journal }
@@ -31,7 +32,7 @@ function JournalStack() {
 					headerTitleStyle: {
 						color: 'white',
 						fontWeight: 'bold',
-						fontSize: 25
+						fontSize: 16
 					}
 				} }
 			/>

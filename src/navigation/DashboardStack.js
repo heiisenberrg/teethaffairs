@@ -12,6 +12,8 @@ import UpdateReminder from '../screens/UpdateReminder';
 import Payment from '../screens/Payment';
 import ConfirmPay from '../screens/ConfirmPay';
 import RemoteConsultation from '../screens/RemoteConsultation';
+import ListReminder from '../screens/Reminder/List';
+import CreateReminder from '../screens/Reminder/Create';
 
 import { Image, Text, View } from 'react-native';
 
@@ -34,9 +36,11 @@ function LogoTitle() {
 function DashboardStack() {
 	return (
 		<Stack.Navigator
-			screenOptions={ {
+			screenOptions={ () => ({
+				gestureEnabled: false,
 				headerTintColor: 'white'
-			} }>
+			}) }
+		>
 			<Stack.Screen
 				name="Home"
 				component={ Dashboard }
@@ -51,11 +55,11 @@ function DashboardStack() {
 					},
 					headerStyle: {
 						backgroundColor: 'white',
-						height: 93,
-						shadowOpacity: 0,
-						shadowOffset: { height: 0, width: 0 },
-						shadowRadius: 0,
-						elevation: 0
+						height: 90,
+						shadowOpacity: 2,
+						shadowOffset: { height: 2, width: 2 },
+						shadowRadius: 2,
+						elevation: 10
 					}
 				} }
 			/>
@@ -118,6 +122,52 @@ function DashboardStack() {
 						color: 'white',
 						fontSize: 20
 					}
+				} }
+			/>
+			<Stack.Screen
+				name="CreateReminder"
+				component={ CreateReminder }
+				options={ {
+					headerTitle: 'Brush/Floss Reminder',
+					headerTitleAlign: 'center',
+					headerTitleContainerStyle: {
+						alignItems: 'center'
+					},
+					headerStyle: {
+						backgroundColor: '#108E79',
+						height: 80
+					},
+					headerTitleStyle: {
+						color: 'white',
+						fontWeight: 'bold',
+						fontSize: 16
+					},
+					headerBackTitleVisible: false
+				} }
+			/>
+			<Stack.Screen
+				name="ListReminder"
+				component={ ListReminder }
+				options={ {
+					headerTitle: 'Brush/Floss Reminder',
+					headerTitleAlign: 'center',
+					headerTitleContainerStyle: {
+						alignItems: 'center'
+					},
+					headerStyle: {
+						backgroundColor: '#108E79',
+						height: 80,
+						shadowOpacity: 0,
+						shadowOffset: { height: 0, width: 0 },
+						shadowRadius: 0,
+						elevation: 0
+					},
+					headerTitleStyle: {
+						color: 'white',
+						fontWeight: 'bold',
+						fontSize: 16
+					},
+					headerBackTitleVisible: false
 				} }
 			/>
 			<Stack.Screen name="UpdateReminder" component={ UpdateReminder } />

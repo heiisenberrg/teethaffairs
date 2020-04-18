@@ -11,6 +11,7 @@ import {
 	TextInput
 } from 'react-native';
 import { connect } from 'react-redux';
+import ImagePicker from 'react-native-image-picker';
 
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -68,6 +69,17 @@ const updateMemberSchema = yup.object({
 	relation: yup.string()
 });
 
+const imageOptions = {
+	title: 'Choose Profile Photo',
+	customButtons: [ { name: 'image', title: 'Take a Photo' } ],
+	chooseFromLibraryButtonTitle: 'Choose from gallery',
+	takePhotoButtonTitle: null,
+	storageOptions: {
+		skipBackup: true,
+		path: 'images'
+	}
+};
+
 /* eslint-disable no-undef */
 const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
 
@@ -111,6 +123,7 @@ function AddMembersForm(props) {
 	const { navigation, getAddMember } = props;
 	const [ isModalVisible, setIsModalVisible ] = useState(false);
 	const [ addMember, setAddMember ] = useState(false);
+	const [ imageSource, setImageSource ] = useState(null);
 	const [ updateMember, setUpdateMember ] = useState(false);
 	const [ userId, setUserId ] = useState('');
 	const [ date, setDate ] = useState(new Date(1598051730000));
@@ -194,15 +207,62 @@ function AddMembersForm(props) {
 	const confirmPasswordHandler = () => {
 		setShowConfirmEye(!showConfirmEye);
 	};
+
+	const launchCamera = () => {
+		let options = {
+			skipBackup: true,
+			path: 'images'
+		};
+		ImagePicker.launchCamera(options, response => {
+			console.log('Response = ', response);
+			if (response.didCancel) {
+				console.log('User cancelled image picker');
+			} else if (response.error) {
+				console.log('ImagePicker Error: ', response.error);
+			} else if (response.customButton) {
+				console.log('User tapped custom button: ', response.customButton);
+			} else {
+				console.log('response', JSON.stringify(response));
+				let source = {
+					...response
+				};
+				setImageSource(source);
+			}
+		});
+	};
+
+
+	const takeImageHandler = () => {
+		ImagePicker.showImagePicker(imageOptions, response => {
+			console.log('========image picker=======', response);
+			if (response.didCancel) {
+				console.log('User cancelled image picker');
+			} else if (response.error) {
+				console.log('ImagePicker Error: ', response.error);
+			} else if (response.customButton) {
+				console.log('User tapped custom button: ', response.customButton);
+				launchCamera();
+			} else {
+				let source = {
+					...response
+				};
+				setImageSource(source);
+			}
+		});
+	};
+
 	return (
 		<SafeAreaView style={ styles.container }>
-			<ScrollView>
-				<View style={ styles.profileImageContainer }>
+			<ScrollView showsVerticalScrollIndicator={ false }>
+				<TouchableOpacity
+					activeOpacity={ 0.8 }
+					onPress={ takeImageHandler }
+					style={ styles.profileImageContainer }>
 					<Image
-						source={ require('../../../assets/profile.png') }
+						source={ imageSource ? { uri: imageSource.uri } : require('../../../assets/profile.png') }
 						style={ styles.profileImage }
 					/>
-				</View>
+				</TouchableOpacity>
 				<Formik
 					initialValues={ {
 						email:

@@ -1,116 +1,118 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet, Dimensions, Platform } from 'react-native';
 
-const { width } = Dimensions.get('screen');
+const { height, width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
 	container: {
+		padding: 10,
+		marginVertical: 5,
+		...Platform.select({
+            ios: {
+				height: (height - 170)
+            },
+            android: {
+				height: (height - 150)
+            }
+		}),
+		width
+	},
+	fabButton: {
+		position: 'absolute',
+		backgroundColor: '#00C57D',
+		width: 50,
+		height: 50,
+		borderRadius: 50,
+		alignItems: 'center',
+		justifyContent: 'center',
+		...Platform.select({
+            ios: {
+              bottom: 10
+            },
+            android: {
+              bottom: 25
+            }
+		}),
+		right: 10,
+		shadowColor: '#000000',
+		shadowOpacity: 0.8,
+		shadowRadius: 1,
+		shadowOffset: {
+			height: 1,
+			width: 0
+		},
+		elevation: 2,
+		zIndex: 101
+	},
+	expandedTitle: {
+		textTransform: 'capitalize',
+		fontSize: 14,
+		fontWeight: 'bold'
+	},
+	expandedSubTitle: {
+		fontSize: 12,
+		color: '#B1AFAF'
+	},
+	divider: {
+		height: 25,
+		backgroundColor: '#108E79'
+	},
+	cardContainer: {
 		backgroundColor: 'white',
-		width: width,
-		flexGrow: 1
-	},
-	profileContainer: {
-		flex: 1
-	},
-	profileWrapper: {
-		borderColor: '#ffffff',
-		flexDirection: 'row',
-		borderWidth: 1,
-		flex: 1,
-		shadowColor: '#707070',
+		borderRadius: 5,
+		marginVertical: 10,
+		marginHorizontal: 10,
+		shadowColor: '#000000',
+		shadowOpacity: 0.2,
 		shadowRadius: 2,
-		backgroundColor: '#ffffff',
-		borderTopRightRadius: 5,
-		borderTopLeftRadius: 5,
-		display: 'flex',
-		paddingHorizontal: 10,
-		shadowOffset: { width: 10, height: 2 },
-		elevation: 10,
-		minHeight: 100
+		shadowOffset: {
+			height: 1,
+			width: 1
+		},
+		elevation: 2
+	},
+	cardContent: {
+		padding: 10
 	},
 	profileImage: {
 		width: 45,
-		height: 45,
-		marginLeft: 10,
-		marginTop: 10
+		height: 45
 	},
-	userContentWrapper: {
-		flex: 6
+	titleContainer: {
+		marginHorizontal: 10,
+		width: '82%'
 	},
-	userName: {
-		fontWeight: 'bold',
-		color: '#363636',
-		textTransform: 'capitalize',
-		marginTop: 5
+	actionContainer: {
+		width: '35%'
 	},
-	userEmail: {
-		fontSize: 12,
-		color: '#6C6868',
-		marginTop: 5
+	mediumText: {
+		fontSize: 12
 	},
-	editChoice: {
-		borderColor: '#f2eded',
-		borderWidth: 1,
-		minHeight: 35,
-		backgroundColor: '#fcfafa',
-		flex: 1,
-		shadowColor: '#707070',
-		shadowRadius: 1,
-		borderBottomRightRadius: 5,
+	expandedContainer: {
+		borderTopColor: '#B1AFAF',
+		borderTopWidth: 0.2,
+		backgroundColor: '#fafafa',
+		padding: 10,
 		borderBottomLeftRadius: 5,
-		paddingHorizontal: 10,
-		shadowOffset: { width: 0, height: 0 },
-		elevation: 2
+		borderBottomRightRadius: 5
 	},
-	iconContainer: {
+	editContainer: {
 		flexDirection: 'row',
-		flex: 1,
-		justifyContent: 'flex-end',
-		alignItems: 'center',
-		alignContent: 'center',
-		position: 'relative',
-		right: 10
-	},
-	image: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		marginLeft: 60,
-		marginRight: 5
+		justifyContent: 'center',
+		alignItems: 'center'
 	},
 	editText: {
 		fontSize: 12,
-		color: '#363636',
-		textTransform: 'uppercase',
-		fontWeight: 'bold',
 		marginLeft: 5
+	},
+	deleteContainer: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center'
 	},
 	deleteText: {
-		fontSize: 12,
 		color: '#FA5050',
-		textTransform: 'uppercase',
-		fontWeight: 'bold',
+		fontSize: 12,
 		marginLeft: 5
-	},
-	noMemberList: {
-		fontWeight: 'bold',
-		textAlign: 'center',
-		flex: 1,
-		marginTop: 100
-	},
-	bottom: {
-		paddingTop: 100,
-		paddingBottom: 10,
-		position: 'relative',
-		left: '81%',
-		bottom: '4%'
-	},
-	containerButton: {
-		position: 'absolute',
-		top: 30,
-		left: 8
-	},
-	button: {
-		width: 53,
-		height: 53
 	},
 	modalWrap: {
 		backgroundColor: '#000000aa',

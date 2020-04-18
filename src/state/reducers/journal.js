@@ -14,7 +14,11 @@ import {
 	GET_DENTAL_VISITS,
 	SET_DENTAL_VISITS,
 	CREATE_DENTAL_VISIT,
-	SET_CREATE_DENTAL_VISIT
+	SET_CREATE_DENTAL_VISIT,
+	SAVE_EDITED_DENTAL_VISIT,
+	SET_SAVE_EDITED_DENTAL_VISIT,
+	DELETE_DENTAL_VISIT,
+	SET_DELETE_DENTAL_VISIT
 } from '../constants/journal';
 
 const initialState = {
@@ -74,6 +78,18 @@ function journalReducer(state = initialState, action) {
 			break;
 		case SET_CREATE_DENTAL_VISIT:
 			return apply_setCreateDentalVisit(state, action);
+			break;
+		case SAVE_EDITED_DENTAL_VISIT:
+			return apply_saveEditedDentalVisit(state);
+			break;
+		case SET_SAVE_EDITED_DENTAL_VISIT:
+			return apply_setSaveEditedDentalVisit(state);
+			break;
+		case DELETE_DENTAL_VISIT:
+			return apply_deleteDentalVisit(state);
+			break;
+		case SET_DELETE_DENTAL_VISIT:
+			return apply_setDeleteDentalVisit(state);
 			break;
 		default:
 			return state;
@@ -162,7 +178,27 @@ function apply_createDentalVisit(state) {
 
 function apply_setCreateDentalVisit(state, action) {
 	let newState = { ...state };
-	console.log('++++++++++======++++++++++++++', action.payload);
+	newState.visits = [ action.payload, ...newState.visits ];
+	return newState;
+}
+
+function apply_saveEditedDentalVisit(state) {
+	let newState = { ...state };
+	return newState;
+}
+
+function apply_setSaveEditedDentalVisit(state) {
+	let newState = { ...state };
+	return newState;
+}
+
+function apply_deleteDentalVisit(state) {
+	let newState = { ...state };
+	return newState;
+}
+
+function apply_setDeleteDentalVisit(state) {
+	let newState = { ...state };
 	return newState;
 }
 

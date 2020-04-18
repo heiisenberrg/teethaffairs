@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
+import Icon from '../global/Icon';
 
 import styles from './styles';
 
@@ -11,10 +12,15 @@ function DentalHistoryBlock(props) {
 			activeOpacity={ 0.8 }
 		>
 			<View style={ styles.dentalBlock }>
-				<View style={ styles.journalNotification }>
+				{/* <View style={ styles.journalNotification }>
 					<Text style={ styles.journalNotificationText }>2</Text>
-				</View>
+				</View> */}
 				<View style={ styles.dentalHeaderWrapper }>
+					<Icon
+						type={ 'Ionicons' }
+						name={ 'ios-chatbubbles' }
+						size={ 36 }
+					/>
 					<View style={ styles.dentalHeaderContainer }>
 						<Text style={ styles.dentalHeaderText1 }>
 							remote consultation
