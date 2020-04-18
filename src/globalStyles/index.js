@@ -84,8 +84,7 @@ const globalStyles = StyleSheet.create({
 		borderRadius: 30,
 		borderWidth: 1,
 		borderColor: '#0A8A7B',
-		width: 380,
-		marginBottom: 10
+		width: width-30
 	}
 });
 

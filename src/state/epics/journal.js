@@ -42,8 +42,8 @@ function customAxios(payload) {
 	return axiosInstance(payload);
 }
 
-function toAddMember(response) {
-	return setAddMember(response);
+function toAddMember(response, onSuccess) {
+	return setAddMember(onSuccess(response));
 }
 
 function fetchAddMemberEpic(action$) {
@@ -54,7 +54,7 @@ function fetchAddMemberEpic(action$) {
 }
 
 function fetchAddMember(payload) {
-	const { onFailure } = payload;
+	const { onFailure, onSuccess } = payload;
 	const data = {
 		...payload.payload,
 		publicRoute: false,
@@ -71,7 +71,7 @@ function fetchAddMember(payload) {
 			data
 		})
 	).pipe(
-		map(response => toAddMember(response.data)),
+		map(response => toAddMember(response.data, onSuccess)),
 		catchError(error =>
 			of({
 				type: 'FETCH_ADD_MEMBER_FAILURE',

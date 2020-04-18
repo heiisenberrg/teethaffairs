@@ -1,49 +1,40 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+
+const { width } = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
 	container: {
 		backgroundColor: 'white',
-		justifyContent: 'center',
-		alignSelf: 'stretch',
-		textAlign: 'center',
-		position: 'absolute',
-		top: 0,
-		bottom: 0,
-		left: 0,
-		right: 0
+		width: width,
+		flexGrow: 1
 	},
 	profileContainer: {
-		flex: 1,
-		backgroundColor: 'white'
+		flex: 1
 	},
 	profileWrapper: {
-		borderColor: '#f5f5f5',
-		borderWidth: 1,
-		width: 370,
-		minHeight: 70,
+		borderColor: '#ffffff',
 		flexDirection: 'row',
-		backgroundColor: '#FFFFFF',
-		shadowColor: '#555555',
-		shadowOpacity: 0.5,
-		shadowRadius: 1,
-		elevation: 10,
-		alignSelf: 'center',
-		marginTop: 15,
-		paddingTop: 5,
-		paddingBottom: 10,
+		borderWidth: 1,
+		flex: 1,
+		shadowColor: '#707070',
+		shadowRadius: 2,
+		backgroundColor: '#ffffff',
+		borderTopRightRadius: 5,
 		borderTopLeftRadius: 5,
-		borderTopEndRadius: 5
+		display: 'flex',
+		paddingHorizontal: 10,
+		shadowOffset: { width: 10, height: 2 },
+		elevation: 10,
+		minHeight: 100
 	},
 	profileImage: {
-		width: 40,
-		height: 40,
+		width: 45,
+		height: 45,
 		marginLeft: 10,
 		marginTop: 10
 	},
 	userContentWrapper: {
-		borderColor: 'grey',
-		marginLeft: 20,
-		marginTop: 10
+		flex: 6
 	},
 	userName: {
 		fontWeight: 'bold',
@@ -57,29 +48,27 @@ const styles = StyleSheet.create({
 		marginTop: 5
 	},
 	editChoice: {
-		borderColor: '#f5f5f5',
+		borderColor: '#f2eded',
 		borderWidth: 1,
-		width: 370,
-		minHeight: 20,
-		backgroundColor: '#f5f5f5',
-		shadowColor: '#555555',
-		shadowOpacity: 0.5,
+		minHeight: 35,
+		backgroundColor: '#fcfafa',
+		flex: 1,
+		shadowColor: '#707070',
 		shadowRadius: 1,
-		elevation: 10,
-		alignSelf: 'center',
-		marginTop: -1,
-		padding: 5,
-		borderBottomStartRadius: 5,
-		borderBottomEndRadius: 5,
-		flexDirection: 'row'
+		borderBottomRightRadius: 5,
+		borderBottomLeftRadius: 5,
+		paddingHorizontal: 10,
+		shadowOffset: { width: 0, height: 0 },
+		elevation: 2
 	},
 	iconContainer: {
 		flexDirection: 'row',
 		flex: 1,
 		justifyContent: 'flex-end',
-		alignSelf: 'center',
 		alignItems: 'center',
-		alignContent: 'center'
+		alignContent: 'center',
+		position: 'relative',
+		right: 10
 	},
 	image: {
 		flexDirection: 'row',
@@ -110,7 +99,9 @@ const styles = StyleSheet.create({
 	bottom: {
 		paddingTop: 100,
 		paddingBottom: 10,
-		marginLeft: 310
+		position: 'relative',
+		left: '81%',
+		bottom: '4%'
 	},
 	containerButton: {
 		position: 'absolute',
@@ -118,8 +109,8 @@ const styles = StyleSheet.create({
 		left: 8
 	},
 	button: {
-		width: 60,
-		height: 60
+		width: 53,
+		height: 53
 	},
 	modalWrap: {
 		backgroundColor: '#000000aa',
@@ -127,24 +118,24 @@ const styles = StyleSheet.create({
 		justifyContent: 'center'
 	},
 	successModalTextWrap: {
-		marginTop: 5,
-		marginBottom: 10,
-		marginRight: 20,
-		marginLeft: 10,
-		padding: 20,
-		borderRadius: 10
+		borderRadius: 10,
+		margin: 25
 	},
 	successTextWrap: {
 		alignItems: 'center',
-		marginBottom: 50
+		marginBottom: 40
 	},
 	closeIcon: {
-		marginLeft: 300
+		justifyContent: 'center',
+		alignItems: 'center',
+		alignContent: 'center',
+		textAlign: 'right',
+		marginLeft: 260,
+		marginTop: 10
 	},
 	successIcon: {
 		marginTop: 20
 	},
-
 	successModalText: {
 		marginTop: 10,
 		color: 'white'
@@ -173,6 +164,15 @@ const styles = StyleSheet.create({
 	modalButtonContainer: {
 		flexDirection: 'row',
 		justifyContent: 'center'
+	},
+	hideText: {
+		display: 'none'
+	},
+	membersContainer: {
+		padding: 10
+	},
+	profile: {
+		flex: 2
 	}
 });
 

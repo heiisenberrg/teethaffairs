@@ -102,10 +102,12 @@ function Profile(props) {
 								handleSubmit(values);
 							} }>
 							{props => (
-								<View>
+								<View >
 									<Text style={ styles.questionHeaderText }>
 										What's going on with your teeth?
 									</Text>
+									<View >
+
 									<TextInputBoxField
 										multiline
 										lable="Enter your Dental/Oral issue"
@@ -132,6 +134,7 @@ function Profile(props) {
 											props.touched.description && props.errors.description
 										}
 									/>
+									<View style={ styles.buttonContainer }>
 									<TouchableOpacity
 										style={ globalStyles.fullWidthButton }
 										onPress={ props.handleSubmit }>
@@ -139,6 +142,10 @@ function Profile(props) {
 											click here for detailed question
 										</Text>
 									</TouchableOpacity>
+									</View>
+
+									</View>
+
 								</View>
 							)}
 						</Formik>

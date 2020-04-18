@@ -3,7 +3,7 @@ import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 
 function CustomButton(props) {
 	return (
-		<View style={ styles.choices }>
+		<View style={ props.custom_style === true ?	styles.choices : styles.choices1 }>
 			<TouchableOpacity
 				style={
 					props.button === 'activeButton'
@@ -54,6 +54,9 @@ const styles = StyleSheet.create({
 
 	choices: {
 		marginRight: 10
+	},
+	choices1:{
+		flex:1
 	},
 	activeButton: {
 		padding: 5,

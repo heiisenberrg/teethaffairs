@@ -1,32 +1,28 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+
+const { width } = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
 	container: {
 		backgroundColor: 'white',
 		flexGrow: 1,
-		justifyContent: 'center',
-		alignItems: 'center'
+		width: width,
+		padding: 10
 	},
 	stepIndicator: {
 		marginTop: 25,
 		alignItems: 'center',
 		marginBottom: 40
 	},
-	keyBoardView: {
-		marginTop: 20
-	},
-	containerWrapper: {
-		margin: 5
-	},
 	imageWrap: {
-		marginTop: 2,
-		marginBottom: 30,
-		marginLeft: 10
+		marginBottom: 20,
+		flex: 1
 	},
 	addFiles: {
 		fontWeight: 'bold',
 		fontSize: 13,
-		marginBottom: 10
+		marginBottom: 10,
+		marginLeft: 5
 	},
 	imageContainer: {
 		flexDirection: 'row',
@@ -45,12 +41,21 @@ const styles = StyleSheet.create({
 		marginRight: 10,
 		flexDirection: 'row'
 	},
-
+	imagePreview2: {
+		width: 80,
+		height: 80,
+		marginBottom: 10,
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderColor: '#0A8A7B',
+		borderWidth: 1,
+		marginRight: 10,
+		flexDirection: 'row'
+	},
 	image: {
 		width: '100%',
 		height: '100%'
 	},
-
 	cameraTextPreview: {
 		width: 80,
 		height: 80,
@@ -59,25 +64,25 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		marginRight: 40
 	},
-
 	cameraText: {
 		fontSize: 14,
 		color: '#6A6A6A',
-		width: 250,
-		marginLeft: 200,
-		textAlign: 'justify'
+		textAlign: 'center',
+		width: width-100,
+		position: 'absolute',
+		left:0,
+		lineHeight: 20
 	},
-
 	symtamsContainer: {
-		marginTop: 1,
-		marginBottom: 15
+		marginBottom: 24
 	},
 	questionText: {
 		fontWeight: 'bold',
 		fontSize: 13
 	},
 	questionContainer: {
-		flexDirection: 'row'
+		flexDirection: 'row',
+		flex: 1
 	},
 	arrowWrap: {
 		flexDirection: 'row',
@@ -89,16 +94,16 @@ const styles = StyleSheet.create({
 	questionText1: {
 		fontWeight: 'bold',
 		fontSize: 13,
-		marginLeft: 10
+		marginLeft: 4
 	},
-
 	painContainer: {
 		flexDirection: 'row',
 		marginTop: 20,
-		marginLeft: -60,
+		flex: 1,
+		position:'relative',
+		left: -60,
 		marginBottom: 10
 	},
-
 	activeButton: {
 		padding: 5,
 		backgroundColor: '#F0F1F1',
@@ -108,7 +113,6 @@ const styles = StyleSheet.create({
 		marginBottom: 10,
 		marginTop: 10
 	},
-
 	worstButton: {
 		padding: 5,
 		backgroundColor: '#00C1F8',
@@ -118,40 +122,28 @@ const styles = StyleSheet.create({
 		marginBottom: 10,
 		marginTop: 10
 	},
-
 	activeButtonText: {
 		color: '#6A6A6A',
 		textAlign: 'center',
 		fontSize: 12,
 		textTransform: 'capitalize'
 	},
-
 	worstButtonText: {
 		color: 'white',
 		textAlign: 'center',
 		fontSize: 12,
 		textTransform: 'capitalize'
 	},
-
 	slider: {
-		width: 200,
-		height: 40,
-		borderRadius: 100
+		borderRadius: 100,
+		width: width-200,
+		position: 'relative',
+		top: 15
 	},
-
 	rangeText: {
-		marginTop: -10,
+		marginTop: 10,
 		textAlign: 'center',
 		fontWeight: 'bold'
-	},
-
-	choices: {
-		marginRight: 10
-	},
-
-	centerContainer: {
-		justifyContent: 'center',
-		alignSelf: 'center'
 	},
 	radioContainer: {
 		flexDirection: 'row'
@@ -179,8 +171,7 @@ const styles = StyleSheet.create({
 
 	closeIcon: {
 		alignSelf: 'flex-end',
-		marginTop: -15,
-		marginRight: -15
+		position: 'relative'
 	},
 	modalText: {
 		fontSize: 20,
@@ -197,7 +188,6 @@ const styles = StyleSheet.create({
 		borderColor: '#707070',
 		marginBottom: 10
 	},
-
 	savedButtonText: {
 		color: '#fff',
 		textAlign: 'left',
@@ -208,14 +198,13 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		marginLeft: 10
 	},
-
 	consultButton: {
 		padding: 15,
 		backgroundColor: '#0A8A7B',
 		borderRadius: 30,
 		borderWidth: 1,
 		borderColor: '#0A8A7B',
-		marginBottom: 10
+		marginBottom: 22
 	},
 	loginText: {
 		color: '#fff',
@@ -226,7 +215,6 @@ const styles = StyleSheet.create({
 		marginRight: 10
 	},
 	remoteButtonWrap: {
-		marginTop: -40,
 		alignContent: 'center',
 		alignItems: 'center'
 	},
@@ -238,6 +226,12 @@ const styles = StyleSheet.create({
 		fontSize: 13,
 		color: '#4A4A4A',
 		textAlign: 'center'
+	},
+	buttonContainer:{
+		marginBottom: 18
+	},
+	hideText: {
+		display:'none'
 	},
 	profileContainer: {
 		flex: 1,
@@ -314,7 +308,6 @@ const styles = StyleSheet.create({
 		width: 23,
 		height: 23,
 		marginRight: 8
-		// top: 1
 	},
 	timeImage: {
 		width: 23,
@@ -359,9 +352,6 @@ const styles = StyleSheet.create({
 		margin: 10,
 		color: 'green',
 		textAlign: 'center'
-	},
-	step2Styles: {
-		marginTop: 24
 	},
 	priorHistory: {
 		marginTop: 20

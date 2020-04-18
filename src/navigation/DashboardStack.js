@@ -41,7 +41,7 @@ function DashboardStack() {
 				name="Home"
 				component={ Dashboard }
 				options={ {
-					headerTitle: (props) => <LogoTitle { ...props } />,
+					headerTitle: props => <LogoTitle { ...props } />,
 					headerTitleAlign: 'center',
 					headerTitleContainerStyle: {
 						alignItems: 'center',
@@ -51,7 +51,11 @@ function DashboardStack() {
 					},
 					headerStyle: {
 						backgroundColor: 'white',
-						height: 93
+						height: 93,
+						shadowOpacity: 0,
+						shadowOffset: { height: 0, width: 0 },
+						shadowRadius: 0,
+						elevation: 0
 					}
 				} }
 			/>

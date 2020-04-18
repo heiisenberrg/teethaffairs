@@ -281,7 +281,7 @@ function AddQuestion(props) {
 
 	return (
 		<SafeAreaView style={ styles.container }>
-			<ScrollView style={ styles.keyBoardView }>
+			<ScrollView>
 				<View style={ styles.stepIndicator }>
 					{showStep1 === true ? (
 						<Image source={ stepIndicator1 } />
@@ -290,7 +290,7 @@ function AddQuestion(props) {
 					) : showStep3 === true ? (
 						<Image source={ stepIndicator3 } />
 					) : (
-						<Text />
+						<Text style={ styles.hideText } />
 					)}
 				</View>
 				<Formik
@@ -326,6 +326,8 @@ function AddQuestion(props) {
 								<KeyboardAvoidingView
 									behavior="position"
 									keyboardVerticalOffset={ keyboardVerticalOffset }>
+
+
 									<TextInputBoxField
 										multiline
 										lable="Enter your Dental/Oral issue"
@@ -363,13 +365,13 @@ function AddQuestion(props) {
 												</TouchableOpacity>
 											</View>
 										) : (
-											<Text />
+											<Text style={ styles.hideText } />
 										)}
 
 										{imageSource.length > 0 ? (
 											imageSource.map((img, index) => {
 												return (
-													<View key={ index } style={ styles.imagePreview1 }>
+													<View key={ index } style={ styles.imagePreview2 }>
 														<Image source={ img } style={ styles.image } />
 													</View>
 												);
@@ -417,6 +419,7 @@ function AddQuestion(props) {
 											value={ props.values.place_of_issue }
 											onBlur={ props.handleBlur('place_of_issue') }
 											secureTextEntry={ false }
+											custom_style={ true }
 										/>
 										<CustomButton
 											button={
@@ -431,6 +434,7 @@ function AddQuestion(props) {
 											value={ props.values.place_of_issue }
 											onBlur={ props.handleBlur('place_of_issue') }
 											secureTextEntry={ false }
+											custom_style={ true }
 										/>
 									</View>
 								</View>
@@ -497,7 +501,7 @@ function AddQuestion(props) {
 										/>
 									</View>
 								</View>
-								<View style={ styles.centerContainer }>
+								<View style={ styles.buttonContainer }>
 									<TouchableOpacity
 										style={ globalStyles.fullWidthButton }
 										onPress={ () => showStep2Screen('two') }>
@@ -556,7 +560,7 @@ function AddQuestion(props) {
 															? styles.worstButtonText
 															: styles.activeButtonText
 													}>
-													worst
+													worst pain
 												</Text>
 											</TouchableOpacity>
 										</View>
@@ -566,6 +570,7 @@ function AddQuestion(props) {
 									<View style={ styles.symtamsContainer }>
 										<Text style={ styles.questionText }>Pain Type</Text>
 										<View style={ styles.questionContainer }>
+
 											<CustomButton
 												button={
 													props.values.pain_type === 'throbbing'
@@ -579,6 +584,8 @@ function AddQuestion(props) {
 												value={ props.values.pain_type }
 												onBlur={ props.handleBlur('pain_type') }
 												secureTextEntry={ false }
+												custom_style={ true }
+
 											/>
 											<CustomButton
 												button={
@@ -593,6 +600,8 @@ function AddQuestion(props) {
 												value={ props.values.pain_type }
 												onBlur={ props.handleBlur('pain_type') }
 												secureTextEntry={ false }
+												custom_style={ true }
+
 											/>
 										</View>
 									</View>
@@ -750,6 +759,8 @@ function AddQuestion(props) {
 												value={ props.values.onset }
 												onBlur={ props.handleBlur('onset') }
 												secureTextEntry={ false }
+												custom_style={ true }
+
 											/>
 											<CustomButton
 												button={
@@ -762,11 +773,13 @@ function AddQuestion(props) {
 												value={ props.values.onset }
 												onBlur={ props.handleBlur('onset') }
 												secureTextEntry={ false }
+												custom_style={ true }
+
 											/>
 										</View>
 									</View>
 								</View>
-								<View style={ styles.step2Style }>
+								<View style={ styles.buttonContainer }>
 									<TouchableOpacity
 										style={ globalStyles.fullWidthButton }
 										onPress={ () => showStep2Screen('three') }>
@@ -821,7 +834,7 @@ function AddQuestion(props) {
 										</View>
 									</Modal>
 								) : (
-									<Text />
+									<Text style={ styles.hideText } />
 								)}
 								<View style={ styles.symtamsContainer }>
 									<Text style={ styles.questionText }>
@@ -1026,7 +1039,6 @@ function AddQuestion(props) {
 										/>
 									</View>
 								</View>
-								<View style={ styles.priorHistory }>
 									<NormalTextInput
 										multiline
 										lable="Prior history if any or other information"
@@ -1035,8 +1047,6 @@ function AddQuestion(props) {
 										onBlur={ props.handleBlur('prior_history') }
 										secureTextEntry={ false }
 									/>
-								</View>
-								<View style={ styles.priorHistory }>
 									<TouchableOpacity
 										style={ styles.consultButton }
 										onPress={ () => setIsModalVisible(true) }>
@@ -1045,7 +1055,6 @@ function AddQuestion(props) {
 											<Image source={ arrow } style={ styles.arrow } />
 										</View>
 									</TouchableOpacity>
-								</View>
 							</KeyboardAvoidingView>
 						)
 					) : (

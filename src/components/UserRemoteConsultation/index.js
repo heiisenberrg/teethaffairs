@@ -67,9 +67,9 @@ function UserRemoteConsultation(props) {
 	const [ userNoteId, setUserNoteId ] = useState('');
 	const [ userZipCode, setUserZipCode ] = useState('');
 
-	const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+	const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
-	const handleSubmit = data => {
+	const handleSubmit = (data) => {
 		var question_data = {
 			patient_zipcode: userZipCode,
 			doctor_zipcode: doctorZipcode,
@@ -93,14 +93,14 @@ function UserRemoteConsultation(props) {
 		if (isChecked === true) {
 			medical_conditions.push(value);
 		} else {
-			medical_conditions = medical_conditions.filter(data =>
+			medical_conditions = medical_conditions.filter((data) =>
 				(data !== value ? data : '')
 			);
 		}
 	};
 
-	const handleRemoveCheckBox = value => {
-		medical_conditions = medical_conditions.filter(data =>
+	const handleRemoveCheckBox = (value) => {
+		medical_conditions = medical_conditions.filter((data) =>
 			(data !== value ? data : '')
 		);
 	};
@@ -113,7 +113,7 @@ function UserRemoteConsultation(props) {
 		alert('Somthing went wrong!');
 	};
 
-	useEffect(function() {
+	useEffect(function () {
 		let user_zipcode = JSON.parse(store.getState().user.zipcodes);
 		setUserZipCode(user_zipcode);
 		getDoctorsList(user_zipcode, onFailure);
@@ -134,8 +134,8 @@ function UserRemoteConsultation(props) {
 		}
 	};
 
-	const onRemoveHandler = remove_item => {
-		allergies_array = allergies_array.filter(data =>
+	const onRemoveHandler = (remove_item) => {
+		allergies_array = allergies_array.filter((data) =>
 			(data !== remove_item ? data : '')
 		);
 		setArrayHolder(allergies_array);
@@ -159,7 +159,7 @@ function UserRemoteConsultation(props) {
 							actions.resetForm();
 							handleSubmit(values);
 						} }>
-						{props => (
+						{(props) => (
 							<View>
 								<View style={ styles.healthHistoryContainer }>
 									<Text style={ styles.healthHistoryText }>health history</Text>
@@ -246,7 +246,7 @@ function UserRemoteConsultation(props) {
 													<TextInput
 														placeholder="Enter Value Here"
 														multiline
-														onChangeText={ data => setTextInputHolder(data) }
+														onChangeText={ (data) => setTextInputHolder(data) }
 														value={ textInputHolder }
 														style={ styles.textInputStyle }
 														underlineColorAndroid="transparent"
@@ -846,12 +846,9 @@ function mapStateToProps(state) {
 		doctorZipcode: state.journal.doctor_zipcode
 	};
 }
-export default connect(
-	mapStateToProps,
-	{
-		getDoctorsList,
-		setDoctorsList,
-		getQuestion,
-		setQuestion
-	}
-)(UserRemoteConsultation);
+export default connect(mapStateToProps, {
+	getDoctorsList,
+	setDoctorsList,
+	getQuestion,
+	setQuestion
+})(UserRemoteConsultation);

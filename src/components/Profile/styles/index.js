@@ -1,11 +1,15 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+
+const { width } = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
 	container: {
 		backgroundColor: 'white',
 		flexGrow: 1,
-		justifyContent: 'center',
-		alignItems: 'center'
+		borderTopColor:'#D2D2D2',
+		borderTopWidth: 1,
+		width: width,
+		padding: 10
 	},
 	profileNameContainer: {
 		textAlign: 'center',
@@ -48,40 +52,44 @@ const styles = StyleSheet.create({
 		alignContent: 'center',
 		justifyContent: 'center',
 		alignItems: 'center',
-		alignSelf: 'center'
+		alignSelf: 'center',
+		flex: 1
 	},
 	imageContainer: {
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignSelf: 'center',
 		alignContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
+		flex: 1
 	},
 	imageWrap1: {
 		backgroundColor: '#129079',
 		marginRight: 10,
-		width: 120,
-		height: 120,
+		height: 122,
 		borderRadius: 5,
 		justifyContent: 'center',
-		marginLeft: 20
+		// marginLeft: 20,
+		flex: 1
 	},
 
 	imageWrap2: {
 		backgroundColor: '#00C1F8',
 		marginRight: 10,
-		width: 120,
-		height: 120,
+		height: 122,
 		borderRadius: 5,
-		justifyContent: 'center'
+		justifyContent: 'center',
+		flex: 1
+
 	},
 	imageWrap3: {
 		backgroundColor: '#1CD08F',
-		marginRight: 10,
-		width: 120,
-		height: 120,
+		// marginRight: 10,
+		height: 122,
 		borderRadius: 5,
-		justifyContent: 'center'
+		justifyContent: 'center',
+		flex: 1
+
 	},
 	contentWrap: {
 		alignItems: 'center'
@@ -104,8 +112,13 @@ const styles = StyleSheet.create({
 	},
 	centerContainer: {
 		flex: 1,
-		alignSelf:'center',
-		marginTop: 8
+		alignSelf:'center'
+	},
+	profileWrapper: {
+	flex: 1
+	},
+	buttonContainer: {
+		marginBottom: 36
 	}
 });
 

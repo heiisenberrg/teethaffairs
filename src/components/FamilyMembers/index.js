@@ -7,7 +7,6 @@ import {
 	TouchableOpacity,
 	Modal
 } from 'react-native';
-
 import { connect } from 'react-redux';
 
 import {
@@ -15,10 +14,9 @@ import {
 	setUserList,
 	getDeactivateUserId
 } from '../../state/actions/journal';
-import LinearGradient from 'react-native-linear-gradient';
 
-import deleteIcon from '../../assets/delete.png';
-import editIcon from '../../assets/edit-icon.png';
+import LinearGradient from 'react-native-linear-gradient';
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 
 import styles from './styles';
 
@@ -57,15 +55,17 @@ function FamilyMembers(props) {
 	const handleModal = userDeactivateId => {
 		setIsModalVisible(true), setUserDeactivateId(userDeactivateId);
 	};
+
 	return (
 		<View style={ styles.container }>
-			<ScrollView>
-				<View style={ styles.profileContainer }>
+			<View style={ styles.profileContainer }>
+				<ScrollView>
 					{usersList !== undefined ? (
 						usersList.length > 0 ? (
 							usersList.map((user, index) => {
 								return user.is_active === true ? (
-									<View key={ index }>
+									<View key={ index } style={ styles.membersContainer }>
+										{console.log(user)}
 										<View style={ styles.profileWrapper }>
 											<View style={ styles.profile }>
 												<Image
@@ -74,9 +74,11 @@ function FamilyMembers(props) {
 												/>
 											</View>
 											<View style={ styles.userContentWrapper }>
-												<Text style={ styles.userName }>{user.username}</Text>
+												<Text style={ styles.userName }>
+													{user.first_name} {user.last_name}
+												</Text>
 												<Text style={ styles.userEmail }>
-													Email: {user.email}
+													User ID: {user.username}
 												</Text>
 												<Text style={ styles.userEmail }>
 													Relation: {user.relation}
@@ -87,7 +89,12 @@ function FamilyMembers(props) {
 										<View style={ styles.editChoice }>
 											<View style={ styles.iconContainer }>
 												<View style={ styles.image }>
-													<Image source={ editIcon } />
+													<AntDesignIcon
+														name="edit"
+														size={ 13 }
+														color="#707070"
+														onPress={ () => handleClick(user) }
+													/>
 													<Text
 														style={ styles.editText }
 														onPress={ () => handleClick(user) }>
@@ -96,7 +103,12 @@ function FamilyMembers(props) {
 												</View>
 												<View>
 													<View style={ styles.image }>
-														<Image source={ deleteIcon } />
+														<AntDesignIcon
+															name="delete"
+															size={ 13 }
+															color="#FA5050"
+															onPress={ () => handleModal(user.id) }
+														/>
 														<Text
 															style={ styles.deleteText }
 															onPress={ () => handleModal(user.id) }>
@@ -108,7 +120,7 @@ function FamilyMembers(props) {
 										</View>
 									</View>
 								) : (
-									<Text key={ index } />
+									<Text key={ index } style={ styles.hideText } />
 								);
 							})
 						) : (
@@ -117,10 +129,10 @@ function FamilyMembers(props) {
 							</Text>
 						)
 					) : (
-						<Text />
+						<Text style={ styles.hideText } />
 					)}
-				</View>
-			</ScrollView>
+				</ScrollView>
+			</View>
 
 			<Modal transparent={ true } visible={ isModalVisible }>
 				<View style={ styles.modalWrap }>
@@ -130,9 +142,11 @@ function FamilyMembers(props) {
 						colors={ [ '#0F8E79', '#66CC80' ] }
 						style={ styles.successModalTextWrap }>
 						<View style={ styles.successTextWrap }>
-							<TouchableOpacity onPress={ () => setIsModalVisible(false) }>
-								<Image
-									source={ require('../../assets/cross.png') }
+							<TouchableOpacity onPressIn={ () => setIsModalVisible(false) }>
+								<AntDesignIcon
+									name="close"
+									size={ 20 }
+									color="#ffffff"
 									style={ styles.closeIcon }
 								/>
 							</TouchableOpacity>
@@ -163,8 +177,7 @@ function FamilyMembers(props) {
 
 			<View style={ styles.bottom }>
 				<TouchableOpacity
-					onPress={ () => navigation.navigate('UpdateMembers', { userdata: '' }) }
-					style={ styles.containerButton }>
+					onPress={ () => navigation.navigate('UpdateMembers', { userdata: '' }) }>
 					<Image
 						style={ styles.button }
 						source={ require('../../assets/round-plus.png') }

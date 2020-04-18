@@ -1,4 +1,6 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+
+const { width } = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
 	textInputContainer: {
@@ -28,17 +30,16 @@ const styles = StyleSheet.create({
 		fontSize: 13
 	},
 	boxTextInput: {
-		flex: 1,
 		borderWidth: 1,
 		borderColor: '#A1A1A1',
 		justifyContent: 'flex-end',
-		width: 380,
 		borderRadius: 5,
 		paddingTop:10,
 		paddingBottom: 10,
 		paddingRight:10,
 		paddingLeft:10,
-		minHeight: 80
+		minHeight: 80,
+		width: width-20
 	},
 	label1: {
 		color: '#363636',
