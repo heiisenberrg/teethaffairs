@@ -15,6 +15,7 @@ import {
 	fetchUserNoteEpic,
 	fetchUserDeactivateIdEpic,
 	fetchNotesEpic,
+	fetchDeleteNoteEpic,
 	fetchDentalVisitsEpic,
 	createDentalVisitEpic
 } from './journal';
@@ -31,6 +32,7 @@ const rootEpic = combineEpics(
 	fetchLogOutEpic,
 	fetchUserDeactivateIdEpic,
 	fetchNotesEpic,
+	fetchDeleteNoteEpic,
 	fetchDentalVisitsEpic,
 	createDentalVisitEpic
 );

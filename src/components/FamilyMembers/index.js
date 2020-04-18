@@ -108,7 +108,7 @@ function FamilyMembers(props) {
 										</View>
 									</View>
 								) : (
-									<Text key={ index }></Text>
+									<Text key={ index } />
 								);
 							})
 						) : (
@@ -117,7 +117,7 @@ function FamilyMembers(props) {
 							</Text>
 						)
 					) : (
-						<Text></Text>
+						<Text />
 					)}
 				</View>
 			</ScrollView>
@@ -181,8 +181,11 @@ function mapStateToProps(state) {
 	};
 }
 
-export default connect(mapStateToProps, {
-	getUserList,
-	setUserList,
-	getDeactivateUserId
-})(FamilyMembers);
+export default connect(
+	mapStateToProps,
+	{
+		getUserList,
+		setUserList,
+		getDeactivateUserId
+	}
+)(FamilyMembers);

@@ -181,7 +181,10 @@ function mapStateToProps(state) {
 	};
 }
 
-export default connect(mapStateToProps, {
-	getLogin,
-	setLogin
-})(LoginForm);
+export default connect(
+	mapStateToProps,
+	{
+		getLogin,
+		setLogin
+	}
+)(LoginForm);

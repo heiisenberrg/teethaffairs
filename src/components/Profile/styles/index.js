@@ -2,135 +2,110 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
 	container: {
-		padding: 10,
-		alignSelf: 'stretch',
 		backgroundColor: 'white',
-		flex: 1
-	},
-	viewPadding: {
-		marginTop: 10
-	},
-	dashboardWrapper: {
-		borderWidth: 1,
-		backgroundColor: '#0080ff',
-		borderColor: '#0080ff',
-		flexDirection: 'row',
-		marginBottom: 10
-	},
-	primaryUserWrapper: {
+		flexGrow: 1,
 		justifyContent: 'center',
-		alignItems: 'center',
-		flexDirection: 'row',
-		padding: 15
+		alignItems: 'center'
 	},
-	nameBlock: { paddingLeft: 10, paddingRight: 90 },
-	nameText: { fontSize: 20, color: 'white' },
-	subNameText: { fontSize: 10, color: 'white' },
-	reminderWrapper: {
-		backgroundColor: '#cce6ff',
-		borderColor: '#0080ff',
-		marginTop: 10,
-		marginLeft: 20,
-		marginRight: 20,
-		height: 200
+	profileNameContainer: {
+		textAlign: 'center',
+		marginTop: 41
 	},
-	reminderHeaderBlock: { flexDirection: 'row', padding: 10, marginBottom: 10 },
-	reminderText: {
-		fontWeight: 'bold',
-		textTransform: 'uppercase',
-		textAlign: 'left',
-		marginRight: 120
-	},
-	reminderButton: {
-		padding: 5,
-		backgroundColor: '#0080ff',
-		borderRadius: 15,
-		borderWidth: 1,
-		borderColor: '#0080ff',
-		height: 30,
-		width: 100
-	},
-	reminderButtonText: {
-		color: '#fff',
-		fontWeight: 'bold',
-		fontSize: 10,
-		textTransform: 'uppercase'
+	profileName: {
+		fontSize: 25,
+		textTransform: 'capitalize',
+		color: '#3F4440',
+		fontWeight: 'normal'
 	},
 
+	userName: {
+		fontSize: 25,
+		textTransform: 'capitalize',
+		color: '#3F4440',
+		fontWeight: 'bold'
+	},
+	welcomeText: {
+		fontSize: 25,
+		textTransform: 'capitalize',
+		color: '#3F4440',
+		textAlign: 'center'
+	},
+	contentWrapText: {
+		justifyContent: 'center',
+		alignContent: 'center',
+		alignItems: 'center',
+		alignSelf: 'center',
+		marginTop: 25
+	},
+	contentText: {
+		fontSize: 13,
+		textAlign: 'center',
+		color: '#3F4440',
+		lineHeight: 19
+	},
 	imageStyle: {
-		marginTop: 20,
+		marginTop: 24,
 		alignContent: 'center',
 		justifyContent: 'center',
-		flexWrap: 'wrap'
-	},
-	imageWrap1: {
-		backgroundColor: '#0F8E79',
-		marginRight: 10,
-		width: 110,
-		height: 110,
-		borderRadius: 6,
-		justifyContent: 'center'
-	},
-	imageWrap2: {
-		backgroundColor: '#f57674',
-		marginRight: 10,
-		width: 110,
-		height: 110,
-		borderRadius: 6,
-		justifyContent: 'center'
-	},
-	imageWrap3: {
-		backgroundColor: '#66CC80',
-		marginRight: 10,
-		width: 110,
-		height: 110,
-		borderRadius: 6,
-		justifyContent: 'center'
-	},
-	imageContent: {
-		textAlign: 'center',
-		textTransform: 'uppercase',
-		padding: 5,
-		color: 'white',
-		fontWeight: 'bold'
+		alignItems: 'center',
+		alignSelf: 'center'
 	},
 	imageContainer: {
 		flexDirection: 'row',
-		width: 350
-		// height: 300
+		justifyContent: 'center',
+		alignSelf: 'center',
+		alignContent: 'center',
+		alignItems: 'center'
 	},
-	questionWrap: {
-		backgroundColor: '#cce6ff',
-		borderColor: '#0080ff',
-		marginTop: 10,
-		marginLeft: 20,
-		marginRight: 20,
-		height: 200
+	imageWrap1: {
+		backgroundColor: '#129079',
+		marginRight: 10,
+		width: 120,
+		height: 120,
+		borderRadius: 5,
+		justifyContent: 'center',
+		marginLeft: 20
 	},
-	questionHeaderWrap: { flexDirection: 'row', padding: 10, marginBottom: 10 },
-	questionHeaderText: {
-		fontWeight: 'bold',
-		textTransform: 'uppercase',
-		textAlign: 'left',
-		marginRight: 70
+
+	imageWrap2: {
+		backgroundColor: '#00C1F8',
+		marginRight: 10,
+		width: 120,
+		height: 120,
+		borderRadius: 5,
+		justifyContent: 'center'
 	},
-	questionButton: {
-		padding: 5,
-		backgroundColor: '#0080ff',
-		borderRadius: 15,
-		borderWidth: 1,
-		borderColor: '#0080ff',
-		height: 30,
-		width: 100
-	},
-	questionButtonText: {
-		color: '#fff',
-		fontWeight: 'bold',
-		fontSize: 10,
-		textTransform: 'uppercase'
+	imageWrap3: {
+		backgroundColor: '#1CD08F',
+		marginRight: 10,
+		width: 120,
+		height: 120,
+		borderRadius: 5,
+		justifyContent: 'center'
 	},
 	contentWrap: {
 		alignItems: 'center'
+	},
+	imageContent: {
+		textAlign: 'center',
+		textTransform: 'capitalize',
+		padding: 5,
+		color: 'white',
+		fontSize: 15,
+		lineHeight: 20
+	},
+	questionHeaderText: {
+		fontSize: 19,
+		color: '#3F4440',
+		textAlign: 'center',
+		fontWeight: 'bold',
+		marginTop: 43,
+		marginBottom: 26
+	},
+	centerContainer: {
+		flex: 1,
+		alignSelf:'center',
+		marginTop: 8
 	}
 });
 

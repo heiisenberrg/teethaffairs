@@ -13,8 +13,8 @@ const globalStyles = StyleSheet.create({
 		color: '#14DF94'
 	},
 	con: {
-		width: 126,
-		height: 120
+		width: 110,
+		height: 110
 	},
 	primaryButton: {
 		padding: 13,
@@ -55,7 +55,6 @@ const globalStyles = StyleSheet.create({
 		width: width - 45,
 		marginBottom: 10
 	},
-
 	skipButton: {
 		padding: 13,
 		backgroundColor: 'transparent',
@@ -65,7 +64,6 @@ const globalStyles = StyleSheet.create({
 		marginBottom: 10,
 		width: width - 45
 	},
-
 	buttonText: {
 		color: '#fff',
 		textAlign: 'center',
@@ -79,6 +77,15 @@ const globalStyles = StyleSheet.create({
 		fontWeight: 'bold',
 		fontSize: 16,
 		textTransform: 'uppercase'
+	},
+	fullWidthButton: {
+		padding: 13,
+		backgroundColor: '#0A8A7B',
+		borderRadius: 30,
+		borderWidth: 1,
+		borderColor: '#0A8A7B',
+		width: 380,
+		marginBottom: 10
 	}
 });
 

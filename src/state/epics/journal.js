@@ -10,7 +10,8 @@ import {
 	GET_DEACTIVATE_USER_ID,
 	GET_NOTE_LIST,
 	GET_DENTAL_VISITS,
-	CREATE_DENTAL_VISIT
+	CREATE_DENTAL_VISIT,
+	GET_DELETE_NOTE
 } from '../constants/journal';
 import {
 	setAddMember,
@@ -19,7 +20,8 @@ import {
 	setDeactivateUserId,
 	setNotes,
 	setDentalVisits,
-	setCreateDentalVisits
+	setCreateDentalVisits,
+	setDeleteNote
 } from '../actions/journal';
 
 const addMemberURL = '/users/user-registration/';
@@ -39,7 +41,10 @@ function toAddMember(response) {
 }
 
 function fetchAddMemberEpic(action$) {
-	return action$.pipe(ofType(GET_ADD_MEMBER), mergeMap(fetchAddMember));
+	return action$.pipe(
+		ofType(GET_ADD_MEMBER),
+		mergeMap(fetchAddMember)
+	);
 }
 
 function fetchAddMember(payload) {
@@ -75,7 +80,10 @@ function toUserList(response) {
 }
 
 function fetchUserListEpic(action$) {
-	return action$.pipe(ofType(GET_USER_LIST), mergeMap(fetchUserList));
+	return action$.pipe(
+		ofType(GET_USER_LIST),
+		mergeMap(fetchUserList)
+	);
 }
 
 function fetchUserList(payload) {
@@ -107,7 +115,10 @@ function toUserNote(response) {
 }
 
 function fetchUserNoteEpic(action$) {
-	return action$.pipe(ofType(GET_USER_NOTE), mergeMap(fetchNote));
+	return action$.pipe(
+		ofType(GET_USER_NOTE),
+		mergeMap(fetchNote)
+	);
 }
 
 function fetchNote(payload) {
@@ -183,14 +194,17 @@ function toNotes(response) {
 }
 
 function fetchNotesEpic(action$) {
-	return action$.pipe(ofType(GET_NOTE_LIST), mergeMap(fetchNoteList));
+	return action$.pipe(
+		ofType(GET_NOTE_LIST),
+		mergeMap(fetchNoteList)
+	);
 }
 
 function fetchNoteList(payload) {
 	const { onFailure } = payload;
 	const data = {
 		publicRoute: false,
-		headers: { }
+		headers: {}
 	};
 
 	return from(
@@ -215,7 +229,10 @@ function toDentalVisits(response) {
 }
 
 function fetchDentalVisitsEpic(action$) {
-	return action$.pipe(ofType(GET_DENTAL_VISITS), mergeMap(getDentalVisits));
+	return action$.pipe(
+		ofType(GET_DENTAL_VISITS),
+		mergeMap(getDentalVisits)
+	);
 }
 
 function getDentalVisits(payload) {
@@ -225,9 +242,8 @@ function getDentalVisits(payload) {
 	};
 	const data = {
 		publicRoute: false,
-		headers: { }
+		headers: {}
 	};
-
 	return from(
 		customAxios({
 			url: `${dentalVisitsURL}${getQueryParams(options)}`,
@@ -250,7 +266,10 @@ function toCreateDentalVisit(response) {
 }
 
 function createDentalVisitEpic(action$) {
-	return action$.pipe(ofType(CREATE_DENTAL_VISIT), mergeMap(createDentalVisit));
+	return action$.pipe(
+		ofType(CREATE_DENTAL_VISIT),
+		mergeMap(createDentalVisit)
+	);
 }
 
 function createDentalVisit(payload) {
@@ -259,11 +278,10 @@ function createDentalVisit(payload) {
 		...payload.payload,
 		publicRoute: false,
 		headers: {
-			'Accept': 'application/json',
+			Accept: 'application/json',
 			'Content-Type': 'multipart/form-data'
 		}
 	};
-
 	return from(
 		customAxios({
 			url: createDentalVisitsURL,
@@ -281,12 +299,48 @@ function createDentalVisit(payload) {
 	);
 }
 
-export { 
-	fetchAddMemberEpic, 
-	fetchUserListEpic, 
-	fetchUserNoteEpic, 
-	fetchNotesEpic, 
-	fetchUserDeactivateIdEpic, 
+function toDeleteNote(onSuccess, response) {
+	return setDeleteNote(onSuccess(response));
+}
+
+function fetchDeleteNoteEpic(action$) {
+	return action$.pipe(
+		ofType(GET_DELETE_NOTE),
+		mergeMap(fetchDeleteMember)
+	);
+}
+
+function fetchDeleteMember(payload) {
+	const { onFailure, onSuccess } = payload;
+	const data = {
+		publicRoute: false,
+		headers: {}
+	};
+
+	return from(
+		customAxios({
+			url: notesURL + payload.payload + '/',
+			method: 'DELETE',
+			data
+		})
+	).pipe(
+		map(response => toDeleteNote(onSuccess, response)),
+		catchError(error =>
+			of({
+				type: 'FETCH_DELETE_NOTE_FAILURE',
+				payload: onFailure(error.response)
+			})
+		)
+	);
+}
+
+export {
+	fetchAddMemberEpic,
+	fetchUserListEpic,
+	fetchUserNoteEpic,
+	fetchNotesEpic,
+	fetchUserDeactivateIdEpic,
 	fetchDentalVisitsEpic,
-	createDentalVisitEpic
+	createDentalVisitEpic,
+	fetchDeleteNoteEpic
 };

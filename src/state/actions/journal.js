@@ -9,6 +9,8 @@ import {
 	SET_DEACTIVATE_USER_ID,
 	GET_NOTE_LIST,
 	SET_NOTE_LIST,
+	GET_DELETE_NOTE,
+	SET_DELETE_NOTE,
 	GET_DENTAL_VISITS,
 	SET_DENTAL_VISITS,
 	CREATE_DENTAL_VISIT,
@@ -90,6 +92,22 @@ function fetchNotes(onSuccess, onFailure) {
 	};
 }
 
+function getDeleteNote(noteId, onSuccess, onFailure ) {
+	return {
+		type: GET_DELETE_NOTE,
+		payload: noteId,
+		onSuccess,
+		onFailure
+	};
+}
+
+function setDeleteNote(deleteNoteResponse) {
+	return {
+		type: SET_DELETE_NOTE,
+		payload: deleteNoteResponse
+	};
+}
+
 function setDentalVisits(dentalVisits) {
 	return {
 		type : SET_DENTAL_VISITS,
@@ -135,6 +153,8 @@ export {
 	getDeactivateUserId,
 	setNotes,
 	fetchNotes,
+	getDeleteNote,
+	setDeleteNote,
 	setDentalVisits,
 	getDentalVisits,
 	createDentalVisits,

@@ -9,6 +9,10 @@ function TextInputBoxField(props) {
 				<Text style={ styles.label }>{props.lable}</Text>
 			</View>
 			<TextInput
+				multiline = { props.multiline }
+				numberOfLines = { props.numberOfLines }
+				editable={ props.editable }
+				placeholderTextColor="#B3B3B3"
 				style={ styles.boxTextInput }
 				placeholder={ props.placeholder }
 				onChangeText={ props.onChangeText }

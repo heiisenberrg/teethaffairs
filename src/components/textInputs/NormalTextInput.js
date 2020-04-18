@@ -8,7 +8,8 @@ function NormalTextInput(props) {
 		<View>
 			<Text style={ styles.label1 }>{props.lable}</Text>
 			<TextInput
-				style={ styles.textInput1 }
+				multiline
+				style={ props.saveas !== undefined ? styles.saveAs: styles.textInput1 }
 				placeholder={ props.placeholder }
 				onChangeText={ props.onChangeText }
 				value={ props.value }
@@ -16,7 +17,7 @@ function NormalTextInput(props) {
 				secureTextEntry={ props.secureTextEntry }
 				keyboardType={ props.keyboardType }
 			/>
-			<Text style={ styles.errorText }>{props.error}</Text>
+			<Text style={ props.saveas !== undefined ? styles.saveAsText : styles.errorText }>{props.error}</Text>
 		</View>
 	);
 }

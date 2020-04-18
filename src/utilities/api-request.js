@@ -76,6 +76,7 @@ const getRequest = errorResponse =>
 		const response = errorResponse;
 
 		addSubscriber(accessToken => {
+			console.log('token', accessToken);
 			response.config.headers.AUTHORIZATION = `Bearer ${accessToken}`;
 			// response.config.headers['Content-Type'] = 'multipart/form-data';
 			if (process.env.NODE_ENV === 'test') {
@@ -176,6 +177,24 @@ axiosInstance.interceptors.response.use(
 	error => errorHandler(error)
 );
 
+export function customNoteRequest(noteData, onSuccess, onFailure) {
+	return fetch('http://test1.teethaffairs.com:8000/notes/patient-notes/', {
+		method: 'POST',
+		headers: new Headers({
+			Authorization: `Bearer ${store.getState().user.access}`
+		}),
+		body: noteData
+	})
+	.then(response => response.json())
+	.then(response => {
+		onSuccess(response);
+	})
+	.catch(error => {
+		onFailure(error);
+	});
+
+}
+	
 export function customRequest(endpoint, payload, onSuccess, onFailure) {
 	const requestUrl = `http://${hostName}/${endpoint}`;
 	return fetch(requestUrl, {
@@ -185,13 +204,13 @@ export function customRequest(endpoint, payload, onSuccess, onFailure) {
 		}),
 		body: payload
 	})
-		.then(response => response.json())
-		.then(response => {
-			onSuccess(response);
-		})
-		.catch(error => {
-			onFailure(error);
-		});
+	.then(response => response.json())
+	.then(response => {
+		onSuccess(response);
+	})
+	.catch(error => {
+		onFailure(error);
+	});
 }
 
 export const uploadFile = (params, onSuccess, onFailure) => {

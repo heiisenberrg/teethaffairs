@@ -19,7 +19,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 
 import styles from './styles';
-
+import globalStyles from '../../../globalStyles';
 const emailVerifySchema = yup.object({
 	email: yup
 		.string()
@@ -69,50 +69,44 @@ function EmailVerificationForm(props) {
 			<KeyboardAvoidingView enabled>
 				<ScrollView style={ styles.scrollView }>
 					<Text style={ styles.header }>One Time Password</Text>
-					<View>
-						<Formik
-							initialValues={ {
-								email: props.route.params.email,
-								otp: ''
-							} }
-							validationSchema={ emailVerifySchema }
-							onSubmit={ (values, actions) => {
-								actions.resetForm();
-								handleSubmit(values);
-							} }>
-							{props => (
-								<View>
-									<TextInputField
-										lable="Email"
-										placeholder="Enter Your Email"
-										onChangeText={ props.handleChange('email') }
-										value={ props.values.email }
-										onBlur={ props.handleBlur('email') }
-										error={ props.touched.email && props.errors.email }
-										secureTextEntry={ false }
-									/>
-									<TextInputField
-										lable="OTP"
-										placeholder="OTP"
-										onChangeText={ props.handleChange('otp') }
-										value={ props.values.otp }
-										onBlur={ props.handleBlur('otp') }
-										error={ props.touched.otp && props.errors.otp }
-										secureTextEntry={ true }
-									/>
-									<TouchableOpacity
-										style={ styles.loginButton }
-										onPress={ props.handleSubmit }>
-										<Text style={ styles.loginText }>Continue</Text>
-									</TouchableOpacity>
-								</View>
-							)}
-						</Formik>
-
-						<Text>
-							Please enter the OTP received on you registered email account
-						</Text>
-					</View>
+					<Formik
+						initialValues={ {
+							email: props.route.params.email,
+							otp: ''
+						} }
+						validationSchema={ emailVerifySchema }
+						onSubmit={ (values, actions) => {
+							actions.resetForm();
+							handleSubmit(values);
+						} }>
+						{props => (
+							<View>
+								<TextInputField
+									lable="Email"
+									placeholder="Enter Your Email"
+									onChangeText={ props.handleChange('email') }
+									value={ props.values.email }
+									onBlur={ props.handleBlur('email') }
+									error={ props.touched.email && props.errors.email }
+									secureTextEntry={ false }
+								/>
+								<TextInputField
+									lable="OTP"
+									placeholder="OTP"
+									onChangeText={ props.handleChange('otp') }
+									value={ props.values.otp }
+									onBlur={ props.handleBlur('otp') }
+									error={ props.touched.otp && props.errors.otp }
+									secureTextEntry={ true }
+								/>
+								<TouchableOpacity
+									style={ globalStyles.secondaryButton }
+									onPress={ props.handleSubmit }>
+									<Text style={ globalStyles.buttonText }>Continue</Text>
+								</TouchableOpacity>
+							</View>
+						)}
+					</Formik>
 				</ScrollView>
 			</KeyboardAvoidingView>
 		</SafeAreaView>

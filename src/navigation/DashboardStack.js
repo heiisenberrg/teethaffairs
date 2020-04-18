@@ -12,7 +12,23 @@ import UpdateReminder from '../screens/UpdateReminder';
 import Payment from '../screens/Payment';
 import ConfirmPay from '../screens/ConfirmPay';
 
+import { Image, Text, View } from 'react-native';
+
+import styles from './styles';
+
 const Stack = createStackNavigator();
+
+function LogoTitle() {
+	return (
+		<View style={ styles.container }>
+			<Image style={ styles.icon } source={ require('../assets/logo-color.png') } />
+			<View style={ styles.companyTextWrap }>
+				<Text style={ styles.companyText1 }>teeth</Text>
+				<Text style={ styles.companyText2 }>affairs</Text>
+			</View>
+		</View>
+	);
+}
 
 function DashboardStack() {
 	return (
@@ -24,13 +40,17 @@ function DashboardStack() {
 				name="Home"
 				component={ Dashboard }
 				options={ {
+					headerTitle: props => <LogoTitle { ...props } />,
 					headerTitleAlign: 'center',
 					headerTitleContainerStyle: {
-						alignItems: 'center'
+						alignItems: 'center',
+						justifyContent: 'center',
+						alignContent: 'center',
+						alignSelf: 'center'
 					},
 					headerStyle: {
-						backgroundColor: '#14DF94',
-						height: 170
+						backgroundColor: 'white',
+						height: 93
 					}
 				} }
 			/>
@@ -57,7 +77,8 @@ function DashboardStack() {
 				name="AddQuestion"
 				component={ AddQuestion }
 				options={ {
-					headerTitle: 'Ask Your Dental Question',
+					headerTitle: 'What the issue?',
+					headerTitleAlign: 'center',
 					headerTitleContainerStyle: {
 						alignItems: 'center'
 					},
@@ -68,7 +89,8 @@ function DashboardStack() {
 					headerTitleStyle: {
 						color: 'white',
 						fontSize: 25,
-						fontWeight: 'bold'
+						fontWeight: 'bold',
+						alignSelf: 'center'
 					}
 				} }
 			/>

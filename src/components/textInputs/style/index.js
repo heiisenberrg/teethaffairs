@@ -2,9 +2,8 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
 	textInputContainer: {
-		height: 60,
 		position: 'relative',
-		marginBottom: 20
+		marginBottom: 14
 	},
 	labelContainer: {
 		position: 'absolute',
@@ -23,24 +22,25 @@ const styles = StyleSheet.create({
 		borderRadius: 20,
 		paddingHorizontal: 25
 	},
-
 	label: {
-		color: '#6A6A6A',
+		color: '#363636',
 		backgroundColor: 'white',
-		fontSize: 12
+		fontSize: 13
 	},
 	boxTextInput: {
 		flex: 1,
 		borderWidth: 1,
 		borderColor: '#A1A1A1',
 		justifyContent: 'flex-end',
-		width: 350,
+		width: 380,
 		borderRadius: 5,
-		paddingHorizontal: 25
+		paddingTop:10,
+		paddingBottom: 10,
+		paddingRight:10,
+		paddingLeft:10,
+		minHeight: 80
 	},
-
 	label1: {
-		marginLeft: 10,
 		color: '#363636',
 		backgroundColor: 'white',
 		textAlign: 'left',
@@ -48,16 +48,25 @@ const styles = StyleSheet.create({
 		marginBottom: 10,
 		fontSize: 13
 	},
-
 	textInput1: {
 		borderWidth: 1,
 		borderColor: '#A1A1A1',
 		padding: 10,
 		fontSize: 14,
 		borderRadius: 6,
-		marginRight: 20,
 		minWidth: 100,
-		marginLeft: 10
+		height: 57
+	},
+	saveAs: {
+		borderWidth: 1,
+		borderColor: '#A1A1A1',
+		padding: 10,
+		fontSize: 14,
+		borderRadius: 6,
+		minWidth: 100,
+		height:62,
+		marginTop: 11,
+		marginBottom: 34
 	},
 	container: {
 		backgroundColor: 'white',
@@ -65,8 +74,9 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center'
 	},
-
-	buttonWrap: { marginTop: 10 },
+	buttonWrap: {
+		marginTop: 10
+	},
 	buttonContainer: {
 		marginTop: 10,
 		paddingTop: 10,
@@ -81,8 +91,12 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		textTransform: 'uppercase'
 	},
-	inputContainer: { marginTop: 10 },
-	inputContainer1: { marginTop: 20 },
+	inputContainer: {
+		marginTop: 10
+	},
+	inputContainer1: {
+		marginTop: 20
+	},
 	buttonStyle: {
 		marginTop: 10
 	},
@@ -91,6 +105,13 @@ const styles = StyleSheet.create({
 		fontSize: 12,
 		marginLeft: 17
 	},
+	saveAsText: {
+		color: '#CF0000',
+		fontSize: 12,
+		textAlign: 'center',
+		marginBottom: 10,
+		marginTop: -20
+	},
 	forgetPassword: {
 		fontSize: 12,
 		textAlign: 'center',
@@ -98,7 +119,6 @@ const styles = StyleSheet.create({
 		textDecorationLine: 'underline',
 		marginTop: 15
 	},
-
 	signupButton: {
 		padding: 13,
 		backgroundColor: '#0A8A7B',

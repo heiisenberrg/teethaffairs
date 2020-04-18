@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
 		fontSize: 12,
 		// marginBottom: 10,
 		// marginTop: 6,
-		textAlign: 'left'
+		textAlign: 'center'
 	},
 	forgetPassword: {
 		marginTop: 20,
@@ -91,9 +91,7 @@ const styles = StyleSheet.create({
 		zIndex: 1,
 		textAlign: 'center'
 	},
-	scrollView: {
-		marginTop: 50
-	}
+	scrollView: { marginTop: 50 }
 });
 
 export default styles;
