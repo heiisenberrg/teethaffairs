@@ -133,13 +133,10 @@ function SignUpForm(props) {
 	};
 
 	const passwordHandler = () => {
-		console.log('dkhfhkdajk');
 		setShowEye(!showEye);
 	};
 
 	const confirmPasswordHandler = () => {
-		console.log('dkhfhkdajk');
-		// setShowEye(!showEye);
 		setShowConfirmEye(!showConfirmEye);
 	};
 

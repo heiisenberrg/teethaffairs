@@ -33,9 +33,10 @@ import crossIcon from '../../../assets/cross-Icon.png';
 import { TextInputMask } from 'react-native-masked-text';
 import ImagePicker from 'react-native-image-picker';
 import LinearGradient from 'react-native-linear-gradient';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import { customNoteRequest } from '../../../utilities/api-request';
-import { getDeleteNote, setDeleteNote } from '../../../state/actions/journal';
+import { getDeleteNote, setDeleteNote , getUserNote, setUserNote } from '../../../state/actions/journal';
 /* eslint-disable no-undef */
 const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
 
@@ -252,9 +253,14 @@ function AddQuestion(props) {
 		});
 	};
 
-	const handleRemote = () => {
-		// navigation.navigate('RemoteConsultation', { noteId: id });
+	const handleRemote = async (id) => {
+		// var id = 'dxW8uEBnA68u6M6uBEXgMi';
+		console.log(id);
+		await AsyncStorage.setItem('noteId', id);
+
+		navigation.navigate('RemoteConsultation');
 	};
+	
 
 	const onGetDeleteNoteSuccess = () => {
 		setIsDeleteModalVisible(false);
@@ -1319,5 +1325,8 @@ function mapStateToProps(state) {
 
 export default connect(
 	mapStateToProps,
-	{ getDeleteNote, setDeleteNote }
+	{	getUserNote,
+		setUserNote,
+		getDeleteNote, 
+		setDeleteNote }
 )(AddQuestion);

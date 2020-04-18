@@ -7,7 +7,7 @@ function Question(props) {
 	const { navigation } = props;
 	return (
 		<View>
-			<View style={ styles.container }>
+			{/* <View style={ styles.container }>
 				<View style={ styles.headerContainer }>
 					<Text style={ styles.headerText }>your recent question</Text>
 				</View>
@@ -22,7 +22,7 @@ function Question(props) {
 						<Text>map</Text>
 					</View>
 				</View>
-			</View>
+			</View> */}
 
 			<TouchableOpacity
 				style={ styles.signupButton }

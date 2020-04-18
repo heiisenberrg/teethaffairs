@@ -9,6 +9,9 @@ import {
 	GET_USER_NOTE,
 	GET_DEACTIVATE_USER_ID,
 	GET_NOTE_LIST,
+	GET_DOCTORS_LIST,
+	GET_QUESTION,
+	GET_DOCTOR_DETAIL,
 	GET_DENTAL_VISITS,
 	CREATE_DENTAL_VISIT,
 	GET_DELETE_NOTE
@@ -19,6 +22,8 @@ import {
 	setUserNote,
 	setDeactivateUserId,
 	setNotes,
+	setQuestion,
+	setDoctorDetail,
 	setDentalVisits,
 	setCreateDentalVisits,
 	setDeleteNote
@@ -29,6 +34,7 @@ const userListURL = '/users/user/';
 const userNoteURL = '/notes/patient-notes/';
 const userDeactivateURL = '/users/deactivate-user/';
 const notesURL = '/notes/notes/';
+const doctorListURL = '/users/doctor-by-pin?pincode=';
 const dentalVisitsURL = '/visit/doctor-visits/';
 const createDentalVisitsURL = '/visit/visits/';
 
@@ -224,6 +230,114 @@ function fetchNoteList(payload) {
 	);
 }
 
+function toDoctorList(response) {
+	return setUserList(response);
+}
+
+function fetchDoctorListEpic(action$) {
+	return action$.pipe(
+		ofType(GET_DOCTORS_LIST),
+		mergeMap(fetchDoctorList)
+	);
+}
+
+function fetchDoctorList(payload) {
+	const { onFailure } = payload;
+
+	const data = {
+		publicRoute: false,
+		headers: {}
+	};
+	return from(
+		customAxios({
+			url: doctorListURL + payload.payload,
+			method: 'GET',
+			data
+		})
+	).pipe(
+		map(response => toDoctorList(response.data)),
+		catchError(error =>
+			of({
+				type: 'FETCH_DOCTOR_LIST_FAILURE',
+				payload: onFailure(error.response)
+			})
+		)
+	);
+}
+
+function toUserNoteUpdate(response, onSuccess) {
+	return setQuestion(onSuccess(response));
+}
+
+function fetchUserNoteUpdateEpic(action$) {
+	return action$.pipe(
+		ofType(GET_QUESTION),
+		mergeMap(fetchNoteUpdate)
+	);
+}
+
+function fetchNoteUpdate(payload) {
+	const { onSuccess, onFailure, userNoteId } = payload;
+	const formData = Object.entries({ ...payload.payload })
+		.map(pair => `${pair[0]}=${pair[1]}`)
+		.join('&');
+
+	const formData1 = Object.entries({ ...payload.payload1 })
+		.map(pair => `${pair[0]}=${pair[1]}`)
+		.join('&');
+
+	const data = {
+		formData,
+		publicRoute: false,
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		}
+	};
+
+	return from(
+		customAxios({
+			url: userNoteURL + userNoteId + '/',
+			method: 'PUT',
+			data
+		})
+	).pipe(
+		response =>
+			fetchSendQuestion(response.data, formData1, onSuccess, onFailure, userNoteId),
+		catchError(error =>
+			of({
+				type: 'FETCH_USER_NOTE_FAILURE',
+				payload: onFailure(error.response)
+			})
+			)
+		);
+	}
+
+	function fetchSendQuestion(note, formData, onSuccess, onFailure, userNoteId) {
+		const data = {
+			formData,
+			publicRoute: false,
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			}
+		};
+		return from(
+			customAxios({
+				url: notesURL + userNoteId + '/question-create/',
+				method: 'PUT',
+				data
+			})
+		).pipe(
+			map(response => toUserNoteUpdate(response.data, onSuccess)),
+			catchError(error =>
+				of({
+					type: 'FETCH_SEND_QUESTION_FAILURE',
+					payload: onFailure(error.response)
+				})
+			)
+		);
+	}
+	
+	
 function toDentalVisits(response) {
 	return setDentalVisits(response);
 }
@@ -251,15 +365,18 @@ function getDentalVisits(payload) {
 			data
 		})
 	).pipe(
-		map(response => toDentalVisits(response.data)),
-		catchError(error => {
-			return of({
-				type: 'GET_DENTAL_VISITS_LIST_FAILURE',
-				payload: onFailure(error)
-			});
-		})
-	);
-}
+			map(response => toDentalVisits(response.data)),
+
+			catchError(error => {
+				return of({
+					type: 'GET_DENTAL_VISITS_LIST_FAILURE',
+					payload: onFailure(error)
+				});
+			})
+		);
+	}
+	
+
 
 function toCreateDentalVisit(response) {
 	return setCreateDentalVisits(response);
@@ -294,10 +411,13 @@ function createDentalVisit(payload) {
 			of({
 				type: 'CREATE_DENTAL_VISIT_FAILURE',
 				payload: onFailure(error)
+
 			})
-		)
-	);
-}
+			)
+		);
+	}
+
+
 
 function toDeleteNote(onSuccess, response) {
 	return setDeleteNote(onSuccess(response));
@@ -334,12 +454,29 @@ function fetchDeleteMember(payload) {
 	);
 }
 
+function fetchDoctorDetailEpic(action$) {
+	return action$.pipe(
+		ofType(GET_DOCTOR_DETAIL),
+		mergeMap(fetchDoctorDetail)
+	);
+}
+
+function fetchDoctorDetail(payload) {
+	return of({
+		type: 'SET_DOCTOR_DETAIL',
+		payload: setDoctorDetail(payload)
+	});
+}
+
 export {
 	fetchAddMemberEpic,
 	fetchUserListEpic,
 	fetchUserNoteEpic,
 	fetchNotesEpic,
 	fetchUserDeactivateIdEpic,
+	fetchDoctorListEpic,
+	fetchUserNoteUpdateEpic,
+	fetchDoctorDetailEpic,
 	fetchDentalVisitsEpic,
 	createDentalVisitEpic,
 	fetchDeleteNoteEpic

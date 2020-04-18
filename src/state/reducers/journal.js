@@ -9,6 +9,8 @@ import {
 	SET_DEACTIVATE_USER_ID,
 	GET_NOTE_LIST,
 	SET_NOTE_LIST,
+	GET_DOCTORS_LIST,
+	GET_DOCTOR_DETAIL,
 	GET_DENTAL_VISITS,
 	SET_DENTAL_VISITS,
 	CREATE_DENTAL_VISIT,
@@ -18,6 +20,8 @@ import {
 const initialState = {
 	usersList: [],
 	notes: [],
+	doctor_zipcode: '',
+	doctor:'',
 	visits: []
 };
 
@@ -52,6 +56,13 @@ function journalReducer(state = initialState, action) {
 		case GET_NOTE_LIST:
 			return apply_fetchNotes(state, action);
 			break;
+		case GET_DOCTORS_LIST:
+			return apply_getDoctorsList(state, action);
+			break;
+		case GET_DOCTOR_DETAIL:
+			return apply_getDoctorDetails(state, action);
+			break;
+			
 		case SET_DENTAL_VISITS:
 			return apply_setDentalVisits(state, action);
 			break;
@@ -120,6 +131,16 @@ function apply_fetchNotes(state) {
 function apply_setNotes(state, action) {
 	let newState = { ...state };
 	newState.notes = action.payload;
+	return newState;
+}
+function apply_getDoctorsList(state) {
+	let newState = { ...state };
+	return newState;
+}
+function apply_getDoctorDetails(state, action) {
+	let newState = { ...state };
+	newState.doctor_zipcode = action.payload.zipcode;
+	newState.doctor = action.payload.id;
 	return newState;
 }
 

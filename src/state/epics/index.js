@@ -15,6 +15,9 @@ import {
 	fetchUserNoteEpic,
 	fetchUserDeactivateIdEpic,
 	fetchNotesEpic,
+	fetchDoctorListEpic,
+	fetchUserNoteUpdateEpic,
+	fetchDoctorDetailEpic,
 	fetchDeleteNoteEpic,
 	fetchDentalVisitsEpic,
 	createDentalVisitEpic
@@ -32,6 +35,9 @@ const rootEpic = combineEpics(
 	fetchLogOutEpic,
 	fetchUserDeactivateIdEpic,
 	fetchNotesEpic,
+	fetchDoctorListEpic,
+	fetchUserNoteUpdateEpic,
+	fetchDoctorDetailEpic,
 	fetchDeleteNoteEpic,
 	fetchDentalVisitsEpic,
 	createDentalVisitEpic

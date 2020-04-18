@@ -11,6 +11,7 @@ import UpdateMembers from '../screens/UpdateMembers';
 import UpdateReminder from '../screens/UpdateReminder';
 import Payment from '../screens/Payment';
 import ConfirmPay from '../screens/ConfirmPay';
+import RemoteConsultation from '../screens/RemoteConsultation';
 
 import { Image, Text, View } from 'react-native';
 
@@ -40,7 +41,7 @@ function DashboardStack() {
 				name="Home"
 				component={ Dashboard }
 				options={ {
-					headerTitle: props => <LogoTitle { ...props } />,
+					headerTitle: (props) => <LogoTitle { ...props } />,
 					headerTitleAlign: 'center',
 					headerTitleContainerStyle: {
 						alignItems: 'center',
@@ -118,6 +119,27 @@ function DashboardStack() {
 			<Stack.Screen name="UpdateReminder" component={ UpdateReminder } />
 			<Stack.Screen name="Payment" component={ Payment } />
 			<Stack.Screen name="ConfirmPay" component={ ConfirmPay } />
+			<Stack.Screen
+				name="RemoteConsultation"
+				component={ RemoteConsultation }
+				options={ {
+					headerTitle: 'Start Remote Consultation',
+					headerTitleAlign: 'center',
+					headerTitleContainerStyle: {
+						alignItems: 'center'
+					},
+					headerStyle: {
+						backgroundColor: '#129079',
+						height: 85
+					},
+					headerTitleStyle: {
+						color: '#FFFFFF',
+						fontSize: 20,
+						alignSelf: 'center',
+						alignItems: 'center'
+					}
+				} }
+			/>
 		</Stack.Navigator>
 	);
 }
