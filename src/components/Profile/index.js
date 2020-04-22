@@ -30,6 +30,7 @@ function Profile(props) {
 	const { navigation } = props;
 	const [ firstName, setFirstName ] = useState('');
 	const [ lastName, setLastName ] = useState('');
+	const [ isLoading, setIsLoading ] = useState(true);
 
 	const handleSubmit = userNotes => {
 		navigation.navigate('AddQuestion', { data: userNotes });
@@ -38,6 +39,9 @@ function Profile(props) {
 	useEffect(function() {
 		setFirstName(store.getState().user.first_name);
 		setLastName(store.getState().user.last_name);
+		if(store.getState().user.access !== '') {
+			setIsLoading(false);
+		}
 	}, []);
 
 	return (
@@ -45,6 +49,7 @@ function Profile(props) {
 			behavior="padding"
 			keyboardVerticalOffset={ keyboardVerticalOffset }
 		>
+			{isLoading === false ? 
 			<ScrollView 
 				showsVerticalScrollIndicator={ false }
 				contentContainerStyle={ styles.container }>
@@ -151,7 +156,7 @@ function Profile(props) {
 						)}
 					</Formik>
 				</View>
-			</ScrollView>
+			</ScrollView> : <Text>Loading....</Text>}
 		</KeyboardAvoidingView>
 	);
 }

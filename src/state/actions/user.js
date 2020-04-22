@@ -27,6 +27,7 @@ function getLogin(userInputData, onSuccess, onFailure) {
 }
 
 function setLogin(userResponse) {
+	console.log('see', userResponse);
 	return {
 		type: SET_LOGIN,
 		payload: userResponse

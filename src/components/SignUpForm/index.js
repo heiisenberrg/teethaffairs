@@ -85,8 +85,9 @@ function SignUpForm(props) {
 		navigation.navigate('AccountSuccess');
 	};
 
-	const onGetSignupFailure = () => {
-		alert('Something went wrong!');
+	const onGetSignupFailure = (response) => {
+		alert(JSON.stringify(response, null, 4));
+		navigation.navigate('AccountSuccess');
 	};
 
 	const handleSubmit = data => {

@@ -1,6 +1,7 @@
 import { mergeMap, map, catchError } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
 import { from, of } from 'rxjs';
+import axios from 'axios';
 
 import { axiosInstance } from '../../utilities/api-request';
 import {
@@ -26,7 +27,7 @@ import {
 } from '../actions/user';
 import { apiCall } from '../../utilities/axios-interceptor';
 
-const loginURL = '/dental_auth/login/';
+// const loginURL = '/dental_auth/login/';
 const signupURL = '/dental_auth/sign-up/';
 const verifyEmailURL = '/dental_auth/verify-email/';
 const forgetPasswordURL = '/dental_auth/forgot-pin/';
@@ -40,16 +41,19 @@ function customAxios(payload) {
 	return axiosInstance(payload);
 }
 
-function toLogin(response) {
-	return setLogin(response);
+function toLogin(response, onSuccess) {
+	return setLogin(onSuccess(response));
 }
 
 function fetchLoginEpic(action$) {
-	return action$.pipe(ofType(GET_LOGIN), mergeMap(fetchLogin));
+	return action$.pipe(
+		ofType(GET_LOGIN),
+		mergeMap(fetchLogin)
+	);
 }
 
 function fetchLogin(payload) {
-	const { onFailure } = payload;
+	const { onFailure, onSuccess } = payload;
 	const data = {
 		...payload.payload,
 		publicRoute: true,
@@ -57,13 +61,13 @@ function fetchLogin(payload) {
 	};
 
 	return from(
-		customAxios({
-			url: loginURL,
+		axios({
+			url: 'http://test1.teethaffairs.com:8000/dental_auth/login/',
 			method: 'POST',
 			data
 		})
 	).pipe(
-		map(response => toLogin(response.data)),
+		map(response => toLogin(response.data, onSuccess)),
 		catchError(error =>
 			of({
 				type: 'FETCH_LOGIN_FAILURE',
@@ -78,7 +82,10 @@ function toSignUp(response, onSuccess) {
 }
 
 function fetchSignUpEpic(action$) {
-	return action$.pipe(ofType(GET_SIGNUP), mergeMap(fetchSignup));
+	return action$.pipe(
+		ofType(GET_SIGNUP),
+		mergeMap(fetchSignup)
+	);
 }
 
 function fetchSignup(payload) {
@@ -147,7 +154,10 @@ function toForgetPassword(response, onSuccess) {
 }
 
 function fetchForgetPasswordEpic(action$) {
-	return action$.pipe(ofType(GET_FORGET_EMAIL), mergeMap(fetchForgetPassword));
+	return action$.pipe(
+		ofType(GET_FORGET_EMAIL),
+		mergeMap(fetchForgetPassword)
+	);
 }
 
 function fetchForgetPassword(payload) {
@@ -180,7 +190,10 @@ function toReset(response, onSuccess) {
 }
 
 function fetchResetPinEpic(action$) {
-	return action$.pipe(ofType(GET_PASSWORD), mergeMap(fetchResetPin));
+	return action$.pipe(
+		ofType(GET_PASSWORD),
+		mergeMap(fetchResetPin)
+	);
 }
 
 function fetchResetPin(payload) {
@@ -213,7 +226,10 @@ function toLogOut(response) {
 }
 
 function fetchLogOutEpic(action$) {
-	return action$.pipe(ofType(GET_LOGOUT), mergeMap(fetchLogOut));
+	return action$.pipe(
+		ofType(GET_LOGOUT),
+		mergeMap(fetchLogOut)
+	);
 }
 
 function fetchLogOut(payload) {
@@ -246,7 +262,10 @@ function toGetUser(response) {
 }
 
 function getUserEpic(action$) {
-	return action$.pipe(ofType(GET_USER), mergeMap(fetchUser));
+	return action$.pipe(
+		ofType(GET_USER),
+		mergeMap(fetchUser)
+	);
 }
 
 function fetchUser(payload) {
@@ -258,7 +277,7 @@ function fetchUser(payload) {
 			method: 'GET',
 			headers: {
 				Accept: 'application/json',
-				'Content-Type': 'application/json' 
+				'Content-Type': 'application/json'
 			},
 			withCredentials: true
 		})
@@ -278,7 +297,10 @@ function toUpdateUser(response) {
 }
 
 function updateUserEpic(action$) {
-	return action$.pipe(ofType(UPDATE_USER), mergeMap(updateUser));
+	return action$.pipe(
+		ofType(UPDATE_USER),
+		mergeMap(updateUser)
+	);
 }
 
 function updateUser(payload) {
@@ -290,7 +312,7 @@ function updateUser(payload) {
 			method: 'POST',
 			headers: {
 				Accept: 'application/json',
-				'Content-Type': 'application/json' 
+				'Content-Type': 'application/json'
 			},
 			data: { ...payload.payload.data },
 			withCredentials: true
@@ -311,9 +333,11 @@ function toSetUsers(response) {
 }
 
 function getUsersEpic(action$) {
-	return action$.pipe(ofType(GET_USERS), mergeMap(getUsers));
+	return action$.pipe(
+		ofType(GET_USERS),
+		mergeMap(getUsers)
+	);
 }
-
 
 function getUsers() {
 	return from(

@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
 	note: {
 		fontSize:11,
-		marginTop: -22,
+		marginTop: -15,
 		marginBottom: 20,
 		color:'#6A6A6A',
 		marginLeft: 15
@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
 		marginTop: 21
 	},
 	responseWrap: {
-		marginTop: -20,
+		marginTop: -10,
 		marginBottom: 10
 	},
 	failedResponse: {
@@ -36,6 +36,32 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 		color: '#3F4440',
 		marginBottom: 10
+	},
+	textInput: {
+		flex: 1,
+		borderWidth: 1,
+		borderColor: '#A1A1A1',
+		justifyContent: 'flex-end',
+		height: 44,
+		borderRadius: 20,
+		paddingHorizontal: 25
+	},
+	textInputContainer: {
+		position: 'relative',
+		marginBottom: 14
+	},
+	labelContainer: {
+		position: 'absolute',
+		backgroundColor: '#FFF',
+		top: -15,
+		left: 14,
+		padding: 5,
+		zIndex: 1
+	},
+	errorText: {
+		color: '#CF0000',
+		fontSize: 12,
+		marginLeft: 17
 	}
 });
 
