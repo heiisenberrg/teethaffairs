@@ -10,10 +10,8 @@ const styles = StyleSheet.create({
 		padding: 10
 	},
 	stepIndicator: {
-		// marginTop: 25,
 		marginVertical: 20,
 		alignItems: 'center'
-		// marginBottom: 40
 	},
 	imageWrap: {
 		marginBottom: 20,
@@ -274,6 +272,13 @@ const styles = StyleSheet.create({
 		backgroundColor: '#F77474',
 		borderRadius: 15
 	},
+	editWrap: {
+		width: 30,
+		height: 30,
+		backgroundColor: '#959CAC',
+		borderRadius: 15,
+		marginBottom: 2
+	},
 	deleteIcon: {
 		position: 'absolute',
 		top: 7,
@@ -320,8 +325,8 @@ const styles = StyleSheet.create({
 	},
 	deleteEditLogoContainer: {
 		flexDirection: 'column',
-		marginLeft: -5,
-		marginTop: -14
+		marginLeft: 0,
+		marginTop: 0
 	},
 	image2: {
 		width: 30,
@@ -399,9 +404,8 @@ const styles = StyleSheet.create({
 		marginTop: 20
 	},
 	successModalText1: {
-		marginTop: 25,
-		color: 'white',
-		textAlign: 'center'
+		marginTop: 10,
+		color: 'white'
 	},
 	modalButtonContainer: {
 		flexDirection: 'row',

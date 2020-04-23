@@ -95,9 +95,10 @@ function setNotes(notesList) {
 	};
 }
 
-function fetchNotes(onSuccess, onFailure) {
+function fetchNotes(userID, onSuccess, onFailure) {
 	return {
 		type: GET_NOTE_LIST,
+		payload: userID,
 		onSuccess,
 		onFailure
 	};

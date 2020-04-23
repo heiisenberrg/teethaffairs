@@ -45,6 +45,8 @@ const dentalVisitsURL = '/visit/doctor-visits/';
 const createDentalVisitsURL = '/visit/visits/';
 const editDentalVisitsURL = '/visit/visits/';
 const deleteDentalVisitsURL = '/visit/visits/';
+const userNoteIdURL = '/notes/user-notes?user-id=';
+
 
 function customAxios(payload) {
 	return axiosInstance(payload);
@@ -223,7 +225,7 @@ function fetchNoteList(payload) {
 
 	return from(
 		customAxios({
-			url: notesURL,
+			url: payload.payload === '' ? notesURL : userNoteIdURL+payload.payload,
 			method: 'GET',
 			data
 		})

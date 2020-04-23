@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet, Platform } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -6,27 +6,36 @@ const styles = StyleSheet.create({
 	container: {
         padding: 10,
         marginTop: 20,
-        height: height,
+        height: (height - 210),
         width: width
     },
     cardContainer: {
-        height: height - 200
+        display: 'flex',
+        flex: 1,
+        maxHeight: (height - 210),
+        paddingBottom: 10
     },
     card: {
         backgroundColor: '#ffffff',
         width: '100%',
-        height: 90,
-        borderRadius: 10,
+        height: 'auto',
+        borderRadius: 5,
         display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingHorizontal: 10,
+        flexDirection: 'column',
+        padding: 10,
         marginVertical: 10,
         shadowColor: '#707070',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.5,
         shadowRadius: 2,
-        elevation: 2
+				elevation: 2,
+				flex: 1
+    },
+    cardHeader: {
+        display: 'flex',
+        flexDirection: 'row',
+				alignItems: 'center',
+				flex: 1
     },
     image: {
         width: 50,
@@ -49,8 +58,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     title: {
-        fontSize: 18,
-        fontWeight: '400'
+        fontSize: 14,
+        fontWeight: '500'
     },
     avatarContent: {
         margin: 5,
@@ -74,7 +83,14 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         alignItems: 'center',
         justifyContent: 'center',
-        bottom: 20,
+        ...Platform.select({
+            ios: {
+              bottom: 10
+            },
+            android: {
+              bottom: 25
+            }
+        }),
         right: 20,
         shadowColor: '#000000',
         shadowOpacity: 0.8,
@@ -86,34 +102,6 @@ const styles = StyleSheet.create({
         elevation: 2,
         zIndex: 101
     },
-    filter: {
-        backgroundColor: '#ffffff',
-        borderRadius: 20,
-        paddingHorizontal: 10,
-        width: '75%',
-        alignSelf: 'center',
-        position: 'absolute',
-        zIndex: 101,
-        top: 0,
-        height: 50,
-        flexDirection: 'row',
-        alignItems: 'center',
-        shadowColor: '#707070',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.5,
-        shadowRadius: 2,
-        elevation: 2
-    },
-    filterWrapper: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        flexDirection: 'row',
-        flex: 1
-    },
-    filterArrow: {
-        justifyContent: 'flex-end'
-    },
     fabIcon: {
         width: 50,
         height: 50
@@ -121,7 +109,211 @@ const styles = StyleSheet.create({
     divider: {
         height: 25,
         backgroundColor: '#108E79'
-    }
+    },
+    descriptionContainer: {
+        display: 'flex',
+				// paddingVertical: 10,
+				flex: 1,
+				position:'relative',
+				top: -20,
+				flexDirection:'row'
+    },
+    description: {
+        fontSize: 14,
+        color: '#707070',
+        paddingHorizontal: 5
+    },
+    reportContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        padding: 10
+    },
+    imageReport: {
+        width: 75,
+        height: 75,
+        marginRight: 10
+    },
+    emptyResult: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    filterContainer: {
+		position: 'absolute',
+		width: '75%',
+		alignSelf: 'center',
+		zIndex: 101
+	},
+	filter: {
+		flexDirection: 'column',
+		backgroundColor: '#ffffff',
+		borderRadius: 20,
+		paddingHorizontal: 10,
+		zIndex: 101,
+		top: 0,
+		maxHeight: 600,
+		shadowColor: '#707070',
+		shadowOffset: { width: 0, height: 2 },
+		shadowOpacity: 0.5,
+		shadowRadius: 2,
+		elevation: 2
+	},
+	filterWrapper: {
+		paddingHorizontal: 10,
+		paddingVertical: 10
+	},
+	filterImage: {
+		width: 35,
+		height: 35
+	},
+	filterContent: {
+		width: '80%',
+		marginHorizontal: 10
+	},
+	filterText: {
+		fontSize: 14,
+		color: '#363636'
+	},
+	filterArrow: {
+		width: 25,
+		height: 25,
+		borderRadius: 20,
+		shadowOpacity: 0.2,
+		shadowOffset: {
+			height: 1,
+			width: 1
+		},
+		shadowRadius: 3,
+		elevation: 2,
+		borderColor: 'grey',
+		backgroundColor: 'white',
+		justifyContent: 'center',
+		alignItems: 'center',
+		paddingLeft: 2,
+		paddingTop: 2
+    },
+    scrollViewContainer: {
+		maxHeight: 300
+	}, 
+	scrollView: {
+		flexGrow: 1
+	},
+	userContent: {
+		flexDirection: 'row',
+		justifyContent: 'flex-start',
+		alignItems: 'center',
+		width: '80%',
+		marginHorizontal: 10
+	},
+	userContentText: {
+		fontSize: 14,
+		color: '#363636'
+	},
+	profileWrapper: {
+		paddingVertical: 5
+	},
+	separator: {
+		borderBottomWidth: 1,
+		borderRadius: 5,
+		borderStyle: 'dashed',
+		borderColor: '#CAC7C7'
+    },
+    visitContainer: {
+        flex: 1,
+        height,
+        width
+    },
+    visitHeader: {
+        display: 'flex',
+        padding: 10
+    },
+    visitWrapper: {
+        paddingLeft: 10,
+        flex: 1,
+        display: 'flex',
+        margin: 15,
+        shadowColor: '#707070',
+		shadowOffset: { width: 0, height: 2 },
+		shadowOpacity: 0.5,
+		shadowRadius: 2,
+        elevation: 2,
+        backgroundColor: 'white',
+        borderRadius: 5
+    },
+    circleWrapper: {
+        width: 50,
+        height: 50,
+        borderRadius: 50,
+        backgroundColor: '#959CAC',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    iconWrapper: {
+        width: 30,
+        height: 30,
+        borderRadius: 50,
+        backgroundColor: '#959CAC',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 5
+    },
+    deleteWrapper: {
+        width: 30,
+        height: 30,
+        borderRadius: 50,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#F77474'
+    },
+    titleWrapper: {
+        flex: 1,
+        display: 'flex',
+        justifyContent: 'center',
+        paddingHorizontal: 10
+    },
+    visitTitle: {
+        fontWeight: 'bold',
+        fontSize: 16
+    },
+    nameWrapper: {
+        paddingVertical: 4,
+        justifyContent: 'space-between'
+    },
+    light: {
+        color: '#8E8B8B',
+        textAlign: 'center'
+    },
+    boldText: {
+        fontWeight: 'bold',
+        paddingVertical: 10,
+        textTransform: 'capitalize'
+    },
+    rowContainer: {
+        marginHorizontal: 10,
+        marginVertical: 10
+    },
+    backButton: {
+        marginHorizontal: 10
+		},
+		timeImage: {
+			width: 23,
+			height: 23,
+			justifyContent:'center',
+			alignItems:'center',
+			alignContent:'center',
+			alignSelf:'center',
+			marginLeft: 10
+		},
+		dummy: {
+			flexDirection:'row'
+		},
+		title1: {
+			fontSize: 12,
+			color:'#363636'
+		}
 });
 
 export default styles;

@@ -231,3 +231,24 @@ export const uploadFile = (params, onSuccess, onFailure) => {
 			onFailure(error);
 		});
 };
+
+export function customNoteUpdateRequest(noteID, noteData, onSuccess, onFailure) {
+	return fetch('http://test1.teethaffairs.com:8000/notes/patient-notes/'+ noteID + '/', {
+		method: 'PUT',
+		headers: new Headers({
+			Authorization: `Bearer ${store.getState().user.access}`
+		}),
+		body: noteData
+	})
+
+	.then(response => response.json())
+	.then(response => {
+		onSuccess(response);
+	})
+	.catch(error => {
+		onFailure(error);
+	});
+
+}
+
+	

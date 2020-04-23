@@ -1,11 +1,17 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
+import { Text } from 'react-native';
+
 import Journal from '../screens/Journal';
 import AddDentalNote from '../screens/AddDentalNote';
 import DentalVisits from '../screens/DentalVisits';
 import CreateDentalVisit from '../screens/CreateDentalVisit';
 import DentalHistory from '../screens/DentalHistory';
+import NotePreview from '../screens/Preview';
+import AddQuestion from '../screens/AddQuestion';
+
+import styles from './styles';
 
 const Stack = createStackNavigator();
 
@@ -112,6 +118,50 @@ function JournalStack() {
 				} }
 			/>
 			<Stack.Screen name="DentalHistory" component={ DentalHistory } />
+			<Stack.Screen
+				name="Note Preview"
+				component={ NotePreview }
+				options={ {
+					headerTitle: props => (
+						<Text style={ styles.noteTitle }>{props.children}</Text>
+					),
+					headerTitleAlign: 'center',
+					headerTitleContainerStyle: {
+						alignItems: 'center'
+					},
+					headerStyle: {
+						backgroundColor: '#129079',
+						height: 85
+					},
+					headerTitleStyle: {
+						color: '#FFFFFF',
+						fontSize: 20,
+						alignSelf: 'center',
+						alignItems: 'center'
+					}
+				} }
+			/>
+			<Stack.Screen
+				name="AddQuestion"
+				component={ AddQuestion }
+				options={ {
+					headerTitle: 'What the issue?',
+					headerTitleAlign: 'center',
+					headerTitleContainerStyle: {
+						alignItems: 'center'
+					},
+					headerStyle: {
+						backgroundColor: '#129079',
+						height: 83
+					},
+					headerTitleStyle: {
+						color: 'white',
+						fontSize: 25,
+						fontWeight: 'bold',
+						alignSelf: 'center'
+					}
+				} }
+			/>
 		</Stack.Navigator>
 	);
 }

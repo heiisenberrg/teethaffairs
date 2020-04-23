@@ -14,6 +14,8 @@ import ConfirmPay from '../screens/ConfirmPay';
 import RemoteConsultation from '../screens/RemoteConsultation';
 import ListReminder from '../screens/Reminder/List';
 import CreateReminder from '../screens/Reminder/Create';
+import AddDentalNote from '../screens/AddDentalNote';
+import NotePreview from '../screens/Preview';
 
 import { Image, Text, View } from 'react-native';
 
@@ -178,6 +180,54 @@ function DashboardStack() {
 				component={ RemoteConsultation }
 				options={ {
 					headerTitle: 'Start Remote Consultation',
+					headerTitleAlign: 'center',
+					headerTitleContainerStyle: {
+						alignItems: 'center'
+					},
+					headerStyle: {
+						backgroundColor: '#129079',
+						height: 85
+					},
+					headerTitleStyle: {
+						color: '#FFFFFF',
+						fontSize: 20,
+						alignSelf: 'center',
+						alignItems: 'center'
+					}
+				} }
+			/>
+			<Stack.Screen
+				name="AddDentalNote"
+				component={ AddDentalNote }
+				options={ {
+					headerTitle: 'Notes',
+					headerTitleAlign: 'center',
+					headerTitleContainerStyle: {
+						alignItems: 'center'
+					},
+					headerStyle: {
+						backgroundColor: '#108E79',
+						height: 80,
+						shadowOpacity: 0,
+						shadowOffset: { height: 0, width: 0 },
+						shadowRadius: 0,
+						elevation: 0
+					},
+					headerTitleStyle: {
+						color: 'white',
+						fontWeight: 'bold',
+						fontSize: 16
+					},
+					headerBackTitleVisible: false
+				} }
+			/>
+			<Stack.Screen
+				name="Note Preview"
+				component={ NotePreview }
+				options={ {
+					headerTitle: props => (
+						<Text style={ styles.noteTitle }>{props.children}</Text>
+					),
 					headerTitleAlign: 'center',
 					headerTitleContainerStyle: {
 						alignItems: 'center'

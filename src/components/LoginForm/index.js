@@ -33,7 +33,7 @@ const loginSchema = yup.object({
 });
 
 function LoginForm(props) {
-	const { getLogin, navigation , setLogin } = props;
+	const { getLogin, navigation, setLogin } = props;
 	const [ showEye, setShowEye ] = useState(true);
 	const [ errorMessage, setErrorMessage ] = useState('');
 
@@ -42,11 +42,10 @@ function LoginForm(props) {
 		setLogin(userDetails);
 	};
 
-	const onGetLoginFailure = (error) => {
-		if(error.data.detail !== undefined) {
+	const onGetLoginFailure = error => {
+		if (error.data.detail !== undefined) {
 			setErrorMessage(error.data.detail);
-		}
-		else {
+		} else {
 			setErrorMessage('Please check your password or username');
 		}
 	};
@@ -112,7 +111,6 @@ function LoginForm(props) {
 										)}
 									</View>
 									<Text style={ loginStyles.note }>
-										{' '}
 										If you are a doctor please enter your email ID
 									</Text>
 									<View style={ loginStyles.textInputContainer }>

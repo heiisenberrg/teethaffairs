@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "472174605121",
+    "firebase_url": "https://teethaffairs-d1a63.firebaseio.com",
+    "project_id": "teethaffairs-d1a63",
+    "storage_bucket": "teethaffairs-d1a63.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:472174605121:android:2867a3284685038905a7c0",
+        "android_client_info": {
+          "package_name": "com.teethaffairs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "472174605121-5ff3tp5kii05ir6e7luom4f2v366jljr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvwbyIMnntTGlSSfCSvRv0-WnLdiIhEvY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "472174605121-5ff3tp5kii05ir6e7luom4f2v366jljr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -31,6 +31,12 @@ const styles = StyleSheet.create({
 		justifyContent:'center',
 		alignContent:'center',
 		alignSelf:'center'
+	},
+	noteTitle: {
+		color: 'white',
+		fontWeight: 'bold',
+		textTransform:'uppercase',
+		fontSize: 21
 	}
 });
 
