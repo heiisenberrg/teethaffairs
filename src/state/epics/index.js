@@ -9,7 +9,8 @@ import {
 	fetchLogOutEpic,
 	getUserEpic,
 	updateUserEpic,
-	getUsersEpic
+	getUsersEpic,
+	getMyProfileEpic
 } from './user';
 
 import {
@@ -29,6 +30,14 @@ import {
 } from './journal';
 
 import { fetchReminderListEpic, updateReminderEpic, deleteReminderEpic, createReminderEpic, fetchReminderListBasedOnFilterEpic } from './reminder';
+
+import { 
+	fetchDentalQuestionsEpic, 
+	answerQuestionsEpic, 
+	rejectQuestionsEpic, 
+	verifyPinEpic,
+	updateDoctorProfileEpic
+} from './doctor';
 
 const rootEpic = combineEpics(
 	fetchLoginEpic,
@@ -57,7 +66,13 @@ const rootEpic = combineEpics(
 	createReminderEpic,
 	getUserEpic,
 	updateUserEpic,
-	fetchReminderListBasedOnFilterEpic
+	fetchReminderListBasedOnFilterEpic,
+	fetchDentalQuestionsEpic,
+	answerQuestionsEpic,
+	rejectQuestionsEpic,
+	getMyProfileEpic,
+	verifyPinEpic,
+	updateDoctorProfileEpic
 );
 
 export default rootEpic;

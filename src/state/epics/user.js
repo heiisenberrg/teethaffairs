@@ -13,7 +13,8 @@ import {
 	GET_LOGOUT,
 	GET_USER,
 	UPDATE_USER,
-	GET_USERS
+	GET_USERS,
+	GET_MY_PROFILE
 } from '../constants/user';
 import {
 	setLogin,
@@ -23,9 +24,11 @@ import {
 	setPassword,
 	setLogOut,
 	setUser,
-	setUsers
+	setUsers,
+	setMyProfile
 } from '../actions/user';
 import { apiCall } from '../../utilities/axios-interceptor';
+import Endpoints from '../../constants/endPoint';
 
 // const loginURL = '/dental_auth/login/';
 const signupURL = '/dental_auth/sign-up/';
@@ -358,6 +361,36 @@ function getUsers() {
 	);
 }
 
+function toSetProfileData(response) {
+	return setMyProfile(response);
+}
+
+function getMyProfileEpic(action$) {
+	return action$.pipe(
+		ofType(GET_MY_PROFILE),
+		mergeMap(getMyProfile)
+	);
+}
+
+function getMyProfile() {
+	return from(
+		apiCall({
+			url: Endpoints.GET_MY_PROFILE,
+			method: 'GET',
+			withCredentials: true
+		})
+	).pipe(
+		map(response => toSetProfileData(response.data)),
+		catchError(error => {
+			console.warn('error', error);
+			return of({
+				type: 'GET_MY_PROFILE_FAILURE',
+				payload: error.response
+			});
+		})
+	);
+}
+
 export {
 	fetchLoginEpic,
 	fetchSignUpEpic,
@@ -367,5 +400,6 @@ export {
 	fetchLogOutEpic,
 	getUserEpic,
 	updateUserEpic,
-	getUsersEpic
+	getUsersEpic,
+	getMyProfileEpic
 };

@@ -1,24 +1,25 @@
 import React from 'react';
-import { View, Text, Picker } from 'react-native';
+import { connect } from 'react-redux';
 
-import styles from './styles';
+import Profile from '../../components/Profile';
+import DoctorHistory from '../../components/DoctorHistory';
 
-function History() {
+function History(props) {
+	const { userRole } = props;
+
 	return (
-		<View>
-			<Text>history block</Text>
-			<View style={ styles.pickerWrapper }>
-				<Picker style={ styles.pickerHeader }>
-					<Picker.Item label="Select Doctor" value="" />
-					<Picker.Item label="User" value="User" />
-					<Picker.Item label="Doctor" value="User" />
-					<Picker.Item label="Doctor" value="User" />
-					<Picker.Item label="Doctor" value="User" />
-					<Picker.Item label="Doctor" value="User" />
-				</Picker>
-			</View>
-		</View>
-	);
+		userRole === 'DOCTOR' 
+		? <DoctorHistory { ...props } />
+		: <Profile { ...props } />	);
 }
 
-export default History;
+const mapStateToProps = (state) => {
+	return {
+		userRole: state.user.user_type
+	};
+};
+
+export default connect(
+	mapStateToProps,
+	null
+)(History);

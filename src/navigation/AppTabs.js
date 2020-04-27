@@ -1,10 +1,11 @@
 import React from 'react';
 import { Image } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { connect } from 'react-redux';
 
 import Dashboard from './DashboardStack';
 import Journal from './JournalStack';
-import History from '../screens/History';
+import History from './HistoryStack';
 import Settings from './SettingsStack';
 import Reminder from '../screens/Reminder';
 
@@ -17,13 +18,18 @@ import NotificationIcon from '../assets/notification.png';
 import styles from './styles';
 const Tab = createBottomTabNavigator();
 
-function AppTabs() {
+function AppTabs(props) {
+	const { user_type } = props;
+	console.warn('inside navigator', user_type);
+	// if (user_type === 'DOCTOR') {
+	// 	navigation.jumpTo('Teledental');
+	// }
 	return (
 		<Tab.Navigator
 			tabBarOptions={ {
 				activeTintColor: '#00C57D'
 			} }
-			initialRouteName="Home">
+			initialRouteName={ user_type === 'DOCTOR' ? 'Teledental' : 'Home' }>
 			<Tab.Screen
 				name="History"
 				component={ History }
@@ -35,10 +41,10 @@ function AppTabs() {
 				} }
 			/>
 			<Tab.Screen
-				name="Journal"
-				component={ Journal }
+				name= { user_type === 'DOCTOR' ? 'Teledental' : 'Journal' }
+				component={ user_type === 'DOCTOR' ? Dashboard : Journal }
 				options={ {
-					tabBarLabel: 'Journal',
+					tabBarLabel: user_type === 'DOCTOR' ? 'Teledental' : 'Journal',
 					tabBarIcon: ({ color }) => {
 						return <Image source={ JournalIcon } color={ color } />;
 					}
@@ -81,4 +87,8 @@ function AppTabs() {
 	);
 }
 
-export default AppTabs;
+const mapStateToProps = state => ({
+	user_type: state.user.user_type
+});
+
+export default connect(mapStateToProps, null)(AppTabs);

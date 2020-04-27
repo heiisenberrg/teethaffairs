@@ -2,16 +2,19 @@ import axios from 'axios';
 import store from '../state/store';
 // import { refreshTheToken } from '../state/actions/user';
 import RNFetchBlob from 'rn-fetch-blob';
+import Config from 'react-native-config';
 
 const baseHeaders = {
 	'Content-Type': 'application/json'
 };
 
+// const protocol = 'http://';
+// const hostname = process.env.NODE_ENV === 'development'
+// ? 'test1.teethaffairs.com:8000'
+// : 'api.teethaffairs.com';
+// const hostname = 'test1.teethaffairs.com:8000';
 export const client = axios.create({
-	baseURL:
-		process.env.NODE_ENV === 'development'
-			? 'http://test1.teethaffairs.com:8000'
-			: 'api.teethaffairs.com'
+	baseURL: `${Config.PROTOCOL}${Config.HOST_NAME}`
 });
 
 export const apiCall = (params = {}) => {
@@ -52,7 +55,7 @@ const formData = (data = {}) => {
 					let count = 0;
 					for (let key in data.data) {
 						if (typeof data.data[key] === 'string') {
-							queryParams += `${key}=${data.data[key]}${Object.keys(data.data).length > count ? '&' : ''}`;
+							queryParams += `${key}=${data.data[key]}${Object.keys(data.data).length - 1 > count ? '&' : ''}`;
 						} else if (typeof data.data[key] === 'object') {
 							queryParams += `${key}=${encodeURIComponent(
 								JSON.stringify(data.data[key])
@@ -87,6 +90,11 @@ const formData = (data = {}) => {
 	}
 	return data;
 };
+
+client.interceptors.request.use((request) => {
+	console.log('inside axios ============>>>>>>>>>', request);
+	return request;
+});
 
 client.interceptors.response.use(
 	response => {

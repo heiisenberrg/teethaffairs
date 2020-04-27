@@ -14,7 +14,9 @@ import {
 	GET_USER,
 	SET_USER,
 	GET_USERS,
-	SET_USERS
+	SET_USERS,
+	GET_MY_PROFILE,
+	SET_MY_PROFILE
 } from '../constants/user';
 
 function getLogin(userInputData, onSuccess, onFailure) {
@@ -27,7 +29,6 @@ function getLogin(userInputData, onSuccess, onFailure) {
 }
 
 function setLogin(userResponse) {
-	console.log('see', userResponse);
 	return {
 		type: SET_LOGIN,
 		payload: userResponse
@@ -141,6 +142,21 @@ function setUsers(userList) {
 	};
 }
 
+function getMyProfile(onSuccess, onFailure) {
+	return {
+		type: GET_MY_PROFILE,
+		onSuccess,
+		onFailure
+	};
+}
+
+function setMyProfile(response) {
+	return {
+		type: SET_MY_PROFILE,
+		payload: response
+	};
+}
+
 export {
 	getLogin,
 	setLogin,
@@ -157,5 +173,7 @@ export {
 	getUser,
 	setUser,
 	getUsers,
-	setUsers
+	setUsers,
+	getMyProfile,
+	setMyProfile
 };

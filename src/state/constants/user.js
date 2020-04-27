@@ -16,3 +16,5 @@ export const SET_USER = 'SET_USER';
 export const UPDATE_USER = 'UPDATE_USER';
 export const GET_USERS = 'GET_USERS';
 export const SET_USERS = 'SET_USERS';
+export const GET_MY_PROFILE = 'GET_MY_PROFILE';
+export const SET_MY_PROFILE = 'SET_MY_PROFILE';

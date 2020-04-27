@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
 		alignSelf:'center'
 	},
 	profileWrapper: {
-	flex: 1
+		flex: 1
 	},
 	buttonContainer: {
 		marginBottom: 36

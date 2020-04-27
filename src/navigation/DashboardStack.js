@@ -16,6 +16,7 @@ import ListReminder from '../screens/Reminder/List';
 import CreateReminder from '../screens/Reminder/Create';
 import AddDentalNote from '../screens/AddDentalNote';
 import NotePreview from '../screens/Preview';
+import RemoteConsultationRequest from '../screens/RemoteConsultationRequest';
 
 import { Image, Text, View } from 'react-native';
 
@@ -194,6 +195,28 @@ function DashboardStack() {
 						alignSelf: 'center',
 						alignItems: 'center'
 					}
+				} }
+			/>
+			<Stack.Screen
+				name="RemoteConsultationRequest"
+				component={ RemoteConsultationRequest }
+				options={ {
+					headerTitle: 'Remote Consultation Request',
+					headerTitleAlign: 'center',
+					headerTitleContainerStyle: {
+						alignItems: 'center'
+					},
+					headerStyle: {
+						backgroundColor: '#129079',
+						height: 85
+					},
+					headerTitleStyle: {
+						color: '#FFFFFF',
+						fontSize: 20,
+						alignSelf: 'center',
+						alignItems: 'center'
+					},
+					headerBackTitleVisible: false
 				} }
 			/>
 			<Stack.Screen

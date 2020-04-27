@@ -372,7 +372,6 @@ function getDentalVisits(payload) {
 		})
 	).pipe(
 			map(response => toDentalVisits(response.data)),
-
 			catchError(error => {
 				return of({
 					type: 'GET_DENTAL_VISITS_LIST_FAILURE',

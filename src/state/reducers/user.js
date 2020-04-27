@@ -14,7 +14,9 @@ import {
 	GET_USER,
 	SET_USER,
 	SET_USERS,
-	GET_USERS
+	GET_USERS,
+	GET_MY_PROFILE,
+	SET_MY_PROFILE
 } from '../constants/user';
 
 const initialState = {
@@ -29,7 +31,8 @@ const initialState = {
 	profile_pic: null,
 	zipcode: '',
 	errorMessage: '',
-	users: []
+	users: [],
+	user: {}
 };
 
 function userReducer(state = initialState, action) {
@@ -80,6 +83,15 @@ function userReducer(state = initialState, action) {
 			return apply_setUsers(state, action);
 		case GET_USERS:
 			return apply_getUsers(state, action);
+		case GET_MY_PROFILE:
+			return {
+				...state
+			};
+		case SET_MY_PROFILE:
+			return {
+				...state,
+				user: action.payload
+			};
 		default:
 			return state;
 			break;
