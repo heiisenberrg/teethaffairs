@@ -82,7 +82,8 @@ function DashboardStack() {
 					headerTitleStyle: {
 						color: 'white',
 						fontSize: 20
-					}
+					},
+					headerBackTitleVisible: false
 				} }
 			/>
 			<Stack.Screen
@@ -103,7 +104,8 @@ function DashboardStack() {
 						fontSize: 25,
 						fontWeight: 'bold',
 						alignSelf: 'center'
-					}
+					},
+					headerBackTitleVisible: false
 				} }
 			/>
 			<Stack.Screen name="SetReminder" component={ SetReminder } />
@@ -124,7 +126,8 @@ function DashboardStack() {
 					headerTitleStyle: {
 						color: 'white',
 						fontSize: 20
-					}
+					},
+					headerBackTitleVisible: false
 				} }
 			/>
 			<Stack.Screen
@@ -194,7 +197,8 @@ function DashboardStack() {
 						fontSize: 20,
 						alignSelf: 'center',
 						alignItems: 'center'
-					}
+					},
+					headerBackTitleVisible: false
 				} }
 			/>
 			<Stack.Screen
@@ -264,7 +268,8 @@ function DashboardStack() {
 						fontSize: 20,
 						alignSelf: 'center',
 						alignItems: 'center'
-					}
+					},
+					headerBackTitleVisible: false
 				} }
 			/>
 		</Stack.Navigator>

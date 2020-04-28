@@ -1,65 +1,62 @@
 import React, { useState, useEffect } from 'react';
-import { Image, Text, TouchableOpacity, SafeAreaView, KeyboardAvoidingView } from 'react-native';
+import { Image, Text, TouchableOpacity, ScrollView, TextInput, Platform } from 'react-native';
 import View from '../global/View';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import ImagePicker from 'react-native-image-picker';
-import DatePicker from 'react-native-datepicker';
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { getUser } from '../../state/actions/user';
-import TextInputField from '../textInputs/TextInputField';
 
 import styles from './styles';
-import globalStyles from '../../globalStyles';
+import passwordStyle from '../textInputs/style';
+import globalStyles from '../../globalStyles/index';
+import TextInputField from '../textInputs/TextInputField';
+import calender from '../../assets/calender.png';
 
-const imageOptions = {
-	title: 'Profile Photo',
-	customButtons: [
-		{ name: 'image', title: 'Take a Photo' }
-	],
-	chooseFromLibraryButtonTitle: 'Choose from gallery',
-	takePhotoButtonTitle: null
-};
+import { getMyProfile } from '../../state/actions/user';
 
 const profileSchema = yup.object({
-	email: yup
-		.string()
-		.email()
-		.matches(
-			/[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$/,
-			'Is not in correct format'
-		)
-		.required(),
-	first_name: yup.string().required(),
-	last_name: yup.string().required(),
-	password: yup
-		.string()
-		.label('Password')
-		.required(),
-	date_of_birth: yup.string()
+    zipcode: yup.string(),
+    email: yup.string(), //office email,
+	first_name: yup.string(),
+    last_name: yup.string()
 });
 
-const UpdateProfile = props => {
-    const { getUser } = props;
-    const [ imageSource, setImageSource ] = useState(null);
-    const [ user, setUser  ] = useState(props.user);
-
-    useEffect(() => {
-        getUser((res) => {
-            console.log(res);
-        }, (error) => {
-            console.log(error);
-        });
-    });
-
-    useEffect(() => {
-        setUser(user);
-    }, [ user ]);
-
-    const saveProfileInfo = (values) => {
-        console.log(values);
+const UpdateProfile = (props) => {
+    const { user } = props;
+    
+    const imageOptions = {
+        title: 'Profile Photo',
+        customButtons: [
+            { name: 'image', title: 'Take a Photo' }
+        ],
+        chooseFromLibraryButtonTitle: 'Choose from gallery',
+        takePhotoButtonTitle: null
     };
+    
+    const [ profileImage, setProfileImage ] = useState({ uri: user.profile_pic });
+    const doesUserProfileExists = () => user && user.user_profile && user.user_profile.length > 0;
+    const [ initialValues, setInitialValues ] = useState({});
+    const [ showEye, setShowEye ] = useState(true);
+    const [ date, setDate ] = useState(new Date());
+	const [ mode, setMode ] = useState('date');
+	const [ show, setShow ] = useState(false);
+	const [ birthDate, setBirthDate ] = useState(user.date_of_birth);
+
+    useEffect(() => {
+        if(doesUserProfileExists()) {
+            const values = {
+                email: user.email,
+                first_name: user.first_name,
+                last_name: user.last_name
+            };
+            setInitialValues(values);
+        }
+        setProfileImage({ uri: user.profile_pic });
+    }, [ user ]);
 
     const launchCamera = () => {
 		let options = {
@@ -79,11 +76,10 @@ const UpdateProfile = props => {
 				let source = {
 					...response
 				};
-				setImageSource(source);
+				setProfileImage(source);
 			}
 		});
 	};
-
 
 	const takeImageHandler = () => {
 		ImagePicker.showImagePicker(imageOptions, response => {
@@ -99,137 +95,205 @@ const UpdateProfile = props => {
 				let source = {
 					...response
 				};
-				setImageSource(source);
+				setProfileImage(source);
 			}
 		});
     };
 
+    const handleOnSave = () => {
+        // const data = {
+            // first_name: values.first_name,
+            // last_name: values.first_name,
+            // phone: 'string',
+            // email: values.email,
+            // zipcode: [
+            //   '621001'
+            // ],
+            // profile: {
+            //   city: values.city,
+            //   state: values.state,
+            //   office_name: values.office_name,
+            //   office_phone: values.office_phone,
+            //   office_address1: values.office_address1,
+            //   office_address2: values.office_address2,
+            //   office_tax_id: values.office_tax_id,
+            //   license_exp_date: values.license_exp_date,
+            //   license_no: values.licence_no,
+            //   routing_number: values.routing_routing_number,
+            //   account_number: values.account_number
+            // }
+        // };
+    };
+
+    const onChange = (event, selectedDate) => {
+		setShow(Platform.OS === 'ios');
+
+		var currentDate = '';
+		if (selectedDate !== undefined && selectedDate !== '') {
+			var date = new Date(selectedDate).toISOString();
+			setBirthDate(date);
+			currentDate = selectedDate;
+		} else {
+			setBirthDate('');
+			currentDate = new Date();
+		}
+
+		setDate(currentDate);
+	};
+
+	const showMode = currentMode => {
+		setShow(true);
+		setMode(currentMode);
+	};
+
+    const passwordHandler = () => {
+		setShowEye(!showEye);
+	};
+
+    const showDatepicker = () => {
+		showMode('date');
+	};
+
     return (
-        <SafeAreaView style={ styles.container }>
-            <KeyboardAvoidingView enabled>
-                <TouchableOpacity
-                    activeOpacity={ 0.8 }
-                    onPress={ takeImageHandler }
-                    style={ styles.imageWrapper }
-                >
-                    <View style={ styles.imageContainer }>
-                        <Image 
-                            source={ imageSource ? { uri: imageSource.uri } : require('../../assets/profile.png') }
-                            style={ styles.image }
-                        />
-                    </View>
-                </TouchableOpacity>
-                <Formik
-                    initialValues={ {
-                        email: user && user.email ? user.email : '',
-                        first_name: user && user.first_name ? user.first_name : '',
-                        last_name: user && user.last_name ? user.last_name : '',
-                        password: user && user.password ? user.password : '',
-                        date_of_birth: user && user.date_of_birth ? user.date_of_birth : ''
-                    } }
-                    validationSchema={ profileSchema }
-                    onSubmit={ (values, actions) => {
-                        actions.resetForm();
-                        saveProfileInfo(values);
-                    } }>
-                    {props => (
-                        <View style={ styles.formWrapper }>
-                            <TextInputField
-                                lable="First Name"
-                                placeholder="Enter First Name"
-                                onChangeText={ props.handleChange('first_name') }
-                                value={ props.values.first_name }
-                                onBlur={ props.handleBlur('first_name') }
-                                error={ props.touched.first_name && props.errors.first_name }
-                                secureTextEntry={ false }
-                            />
-                            <TextInputField
-                                lable="Last Name"
-                                placeholder="Enter Last Name"
-                                onChangeText={ props.handleChange('last_name') }
-                                value={ props.values.last_name }
-                                onBlur={ props.handleBlur('last_name') }
-                                error={ props.touched.last_name && props.errors.last_name }
-                                secureTextEntry={ false }
-                            />
-                            <TextInputField
-                                lable="Email"
-                                placeholder="Enter Email Id"
-                                onChangeText={ props.handleChange('email') }
-                                value={ props.values.email }
-                                onBlur={ props.handleBlur('email') }
-                                error={ props.touched.email && props.errors.email }
-                                secureTextEntry={ false }
-                            />
-                            <TextInputField
-                                lable="Password"
-                                placeholder="Enter Password"
-                                onChangeText={ props.handleChange('password') }
-                                value={ props.values.password }
-                                onBlur={ props.handleBlur('password') }
-                                error={ props.touched.password && props.errors.password }
-                                secureTextEntry={ true }
-                                passwordIcon={ true }
-                            />
-                            <View style={ styles.datePickerContainer }>
-                                <View style={ styles.labelContainer }>
-                                    <Text style={ styles.label }>Date Of Birth</Text>
-                                </View>
-
-                                <DatePicker
-                                    style={ styles.dataPicker }
-                                    date={ props.values.date_of_birth }
-                                    mode="date"
-                                    placeholder="YYYY-MM-DD"
-                                    androidMode="spinner"
-                                    format="YYYY-MM-DD"
-                                    minDate="1900-01-01"
-                                    maxDate="3000-01-01"
-                                    confirmBtnText="Confirm"
-                                    cancelBtnText="Cancel"
-                                    customStyles={ {
-                                        dateIcon: {
-                                            position: 'absolute',
-                                            right: 0
-                                        },
-                                        dateInput: {
-                                            borderWidth: 1,
-                                            borderColor: 'grey',
-                                            marginHorizontal: 0,
-                                            fontSize: 12,
-                                            borderRadius: 20,
-                                            width: 200
-                                        }
-                                    } }
-                                    onDateChange={ props.handleChange('date_of_birth') }
-                                    onBlur={ props.handleBlur('date_of_birth') }
+        <ScrollView 
+            showsVerticalScrollIndicator={ false }
+            contentContainerStyle={ styles.background }
+        >
+            <TouchableOpacity
+                activeOpacity={ 0.8 }
+                onPress={ takeImageHandler }
+                style={ styles.imageWrapper }
+            >
+                <View style={ styles.imageContainer }>
+                    <Image 
+                        source={ profileImage ? { uri: profileImage.uri } : require('../../assets/profile.png') }
+                        style={ styles.image }
+                    />
+                </View>
+            </TouchableOpacity>
+            <Formik
+                initialValues={ initialValues }
+                enableReinitialize
+                validationSchema={ profileSchema }
+                onSubmit={ values => {
+                    handleOnSave(values);
+                } }
+            >
+                {
+                    props => (
+                        <View style={ styles.container }>
+                            <View style={ styles.content }>
+                                <TextInputField
+                                    lable="First Name"
+                                    placeholder="Enter First Name"
+                                    onChangeText={ props.handleChange('first_name') }
+                                    value={ props.values.first_name }
+                                    onBlur={ props.handleBlur('first_name') }
+                                    error={ props.touched.first_name && props.errors.first_name }
+                                    secureTextEntry={ false }
                                 />
-
+                                <TextInputField
+                                    lable="Last Name"
+                                    placeholder="Enter Last Name"
+                                    onChangeText={ props.handleChange('last_name') }
+                                    value={ props.values.last_name }
+                                    onBlur={ props.handleBlur('last_name') }
+                                    error={ props.touched.last_name && props.errors.last_name }
+                                    secureTextEntry={ false }
+                                />
+                                <TextInputField
+                                    lable="Email"
+                                    placeholder="Enter Email"
+                                    onChangeText={ props.handleChange('email') }
+                                    value={ props.values.email }
+                                    onBlur={ props.handleBlur('email') }
+                                    error={ props.touched.email && props.errors.email }
+                                    secureTextEntry={ false }
+                                />
+                                <View style={ passwordStyle.textInputContainer }>
+                                    <View style={ passwordStyle.labelContainer }>
+                                        <Text style={ passwordStyle.label }>Password</Text>
+                                    </View>
+                                    <TextInput
+                                        style={ passwordStyle.textInput }
+                                        placeholder="Enter Your Password"
+                                        onChangeText={ props.handleChange('password') }
+                                        value={ props.values.password }
+                                        onBlur={ props.handleBlur('password') }
+                                        secureTextEntry={ showEye ? true : false }
+                                    />
+                                    <TouchableOpacity
+                                        onPress={ passwordHandler }
+                                        style={ styles.eyeIcon }>
+                                        {showEye ? (
+                                            <AntDesignIcon name="eye" size={ 17 } color="#5C5C5C" />
+                                        ) : (
+                                            <AntDesignIcon name="eyeo" size={ 17 } color="#5C5C5C" />
+                                        )}
+                                    </TouchableOpacity>
+                                    {props.touched.password && props.errors.password ? (
+                                        <Text style={ passwordStyle.errorText }>
+                                            {props.errors.password}
+                                        </Text>
+                                    ) : (
+                                        <Text style={ passwordStyle.errorText } />
+                                    )}
+                                </View>
+                                <View style={ styles.textInputContainer }>
+									<View style={ styles.labelContainer }>
+										<Text style={ styles.label }>Date of birth</Text>
+									</View>
+									<TouchableOpacity
+										style={ styles.dataPicker }
+										onPress={ showDatepicker }>
+										{birthDate !== '' ? (
+											<Text style={ styles.calenderText }>{moment(birthDate).format('MMM/DD/YYYY')}</Text>
+										) : (
+											<Text style={ styles.calenderText }>
+												Month / Date / Year
+											</Text>
+										)}
+										<Image source={ calender } style={ styles.calenderStyle } />
+									</TouchableOpacity>
+								</View>
+								<Text style={ styles.errorText }>
+									{props.touched.date_of_birth && props.errors.date_of_birth}
+								</Text>
+								{show && (
+									<DateTimePicker
+										testID="dateTimePicker"
+										timeZoneOffsetInMinutes={ 0 }
+										value={ date }
+										mode={ mode }
+										display="default"
+										onChange={ onChange }
+										neutralButtonLabel="clear"
+									/>
+								)}
                             </View>
-                            <View style={ styles.wrapper }>
-                                <TouchableOpacity
-                                    style={ globalStyles.secondaryButton }
-                                    onPress={ props.handleSubmit }>
-                                    <Text style={ globalStyles.buttonText }>Save</Text>
-                                </TouchableOpacity>
-                            </View>
+                            <TouchableOpacity
+                                style={ globalStyles.secondaryButton }
+                                onPress={ props.handleSubmit }
+                                activeOpacity={ 0.8 }
+                            >
+                                <Text style={ globalStyles.buttonText }>save</Text>
+                            </TouchableOpacity>
                         </View>
-                    )}
-                </Formik>
-            </KeyboardAvoidingView>
-        </SafeAreaView>
+                    )
+                }
+            </Formik>
+        </ScrollView>
     );
 };
 
-function mapStateToProps(state) {
+const mapStateToProps = (state) => {
 	return {
-		user: state.user.user
+        userRole: state.user.user_type,
+        user: state.user.user
 	};
-}
+};
 
 export default connect(
 	mapStateToProps,
-	{
-		getUser
-	}
+	{ getMyProfile }
 )(UpdateProfile);

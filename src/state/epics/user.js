@@ -224,8 +224,8 @@ function fetchResetPin(payload) {
 	);
 }
 
-function toLogOut(response) {
-	return setLogOut(response);
+function toLogOut() {
+	return setLogOut();
 }
 
 function fetchLogOutEpic(action$) {
@@ -238,19 +238,14 @@ function fetchLogOutEpic(action$) {
 function fetchLogOut(payload) {
 	const { onFailure } = payload;
 
-	const data = {
-		publicRoute: true,
-		headers: {}
-	};
-
 	return from(
-		customAxios({
+		apiCall({
 			url: logoutURL,
 			method: 'POST',
-			data
+			withCredentials: true
 		})
 	).pipe(
-		map(response => toLogOut(response.data)),
+		map(() => toLogOut()),
 		catchError(error =>
 			of({
 				type: 'FETCH_LOGOUT_FAILURE',

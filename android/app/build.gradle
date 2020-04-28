@@ -146,9 +146,9 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file('your_key_name.keystore')
+            storeFile file('TA.keystore')
             storePassword 'fleet123'
-            keyAlias 'your_key_alias'
+            keyAlias 'ta_alias'
             keyPassword 'fleet123'
         }
         debug {

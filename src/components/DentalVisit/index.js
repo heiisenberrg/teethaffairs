@@ -150,10 +150,10 @@ function DentalVisit(props) {
 					<View style={ styles.avatarContent }>
 						<Image
 							style={ styles.avatar }
-							source={ require('../../assets/profile.png') }
+							source={ visit.profile_pic ? { uri: visit.profile_pic } : require('../../assets/profile.png') }
 						/>
 						<Text style={ [ styles.normalText, styles.person ] }>{visit.patient_name}</Text>
-						<Text style={ styles.normalText }>{visit.issue_start_date}</Text>
+						<Text style={ styles.normalText }>{moment(visit.issue_start_date).format('DD MMM YYYY')}</Text>
 					</View>
 				</View>
 			</View>
@@ -205,13 +205,13 @@ function DentalVisit(props) {
 						<View column style={ styles.titleWrapper }>
 							<Text style={ styles.visitTitle }>{currentVisit.visit_reason}</Text>
 							<View row style={ styles.nameWrapper }>
-								<Text style={ [ styles.light ] }>John Doe</Text>
+								<Text style={ [ styles.light ] }>{currentVisit.patient_name}</Text>
 								<Text style={ styles.light }>
 									<Icon
 										type={ 'SimpleLineIcon' }
 										name={ 'clock' }
 										color="#8E8B8B"
-									/> `${moment(currentVisit.updated_on ? currentVisit.updated_on : currentVisit.created_on).format('DD MMM YYYY')}`</Text>
+									/> {moment(currentVisit.updated_on ? currentVisit.updated_on : currentVisit.created_on).format('DD MMM YYYY')}</Text>
 							</View>
 						</View>
 						<View column>

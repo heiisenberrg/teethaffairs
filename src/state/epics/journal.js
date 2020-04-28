@@ -40,7 +40,7 @@ const userListURL = '/users/user/';
 const userNoteURL = '/notes/patient-notes/';
 const userDeactivateURL = '/users/deactivate-user/';
 const notesURL = '/notes/notes/';
-const doctorListURL = '/users/doctor-by-pin?pincode=';
+const doctorListURL = '/users/doctor-by-pin/?pincode=';
 const dentalVisitsURL = '/visit/doctor-visits/';
 const createDentalVisitsURL = '/visit/visits/';
 const editDentalVisitsURL = '/visit/visits/';
@@ -66,19 +66,18 @@ function fetchAddMemberEpic(action$) {
 function fetchAddMember(payload) {
 	const { onFailure, onSuccess } = payload;
 	const data = {
-		...payload.payload,
-		publicRoute: false,
-		headers: {}
+		...payload.payload
 	};
-
+	console.log('==========',data);
 	return from(
-		customAxios({
+		apiCall({
 			url:
 				payload.payload.id === ''
 					? addMemberURL
 					: userListURL + payload.payload.id + '/',
 			method: payload.payload.id === '' ? 'POST' : 'PUT',
-			data
+			data,
+			withCredentials: true
 		})
 	).pipe(
 		map(response => toAddMember(response.data, onSuccess)),
@@ -108,7 +107,8 @@ function fetchUserList(payload) {
 	return from(
 		apiCall({
 			url: userListURL,
-			method: 'GET'
+			method: 'GET',
+			withCredentials: true
 		})
 	).pipe(
 		map(response => toUserList(response.data)),
@@ -218,16 +218,12 @@ function fetchNotesEpic(action$) {
 
 function fetchNoteList(payload) {
 	const { onFailure } = payload;
-	const data = {
-		publicRoute: false,
-		headers: {}
-	};
 
 	return from(
-		customAxios({
+		apiCall({
 			url: payload.payload === '' ? notesURL : userNoteIdURL+payload.payload,
 			method: 'GET',
-			data
+			withCredentials: true
 		})
 	).pipe(
 		map(response => toNotes(response.data)),
@@ -254,15 +250,11 @@ function fetchDoctorListEpic(action$) {
 function fetchDoctorList(payload) {
 	const { onFailure } = payload;
 
-	const data = {
-		publicRoute: false,
-		headers: {}
-	};
 	return from(
-		customAxios({
-			url: doctorListURL + payload.payload,
+		apiCall({
+			url: `${doctorListURL}${payload.payload}`,
 			method: 'GET',
-			data
+			withCredentials: true
 		})
 	).pipe(
 		map(response => toDoctorList(response.data)),
@@ -292,9 +284,9 @@ function fetchNoteUpdate(payload) {
 		.map(pair => `${pair[0]}=${pair[1]}`)
 		.join('&');
 
-	const formData1 = Object.entries({ ...payload.payload1 })
-		.map(pair => `${pair[0]}=${pair[1]}`)
-		.join('&');
+	// const formData1 = Object.entries({ ...payload.payload1 })
+	// 	.map(pair => `${pair[0]}=${pair[1]}`)
+	// 	.join('&');
 
 	const data = {
 		formData,
@@ -311,8 +303,8 @@ function fetchNoteUpdate(payload) {
 			data
 		})
 	).pipe(
-		response =>
-			fetchSendQuestion(response.data, formData1, onSuccess, onFailure, userNoteId),
+		() =>
+			fetchSendQuestion(payload, onSuccess, onFailure, userNoteId),
 		catchError(error =>
 			of({
 				type: 'FETCH_USER_NOTE_FAILURE',
@@ -322,19 +314,19 @@ function fetchNoteUpdate(payload) {
 		);
 	}
 
-	function fetchSendQuestion(note, formData, onSuccess, onFailure, userNoteId) {
+	function fetchSendQuestion(payload, onSuccess, onFailure, userNoteId) {
 		const data = {
-			formData,
-			publicRoute: false,
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
-			}
+			...payload.payload1
 		};
 		return from(
-			customAxios({
+			apiCall({
 				url: notesURL + userNoteId + '/question-create/',
 				method: 'PUT',
-				data
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				data,
+				withCredentials: true
 			})
 		).pipe(
 			map(response => toUserNoteUpdate(response.data, onSuccess)),

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -16,7 +16,14 @@ import logout from '../../assets/logout.png';
 import { getLogOut, setLogOut } from '../../state/actions/user';
 
 function Settings(props) {
-	const { getLogOut, navigation, is_verified } = props;
+	const { getLogOut, navigation, is_verified, user_type } = props;
+	console.log(navigation);
+
+	useLayoutEffect(() => {
+		if(user_type === 'PRIMARY-PATIENT') {
+			navigation.setOptions({ headerShown: false });
+		}
+	}, [ navigation ]);
 
 	const logoutHandler = () => {
 		getLogOut(onGetLogOutSuccess, onGetLogOutFailure);
@@ -44,26 +51,29 @@ function Settings(props) {
 	return (
 		<View style={ styles.container }>
 			<ScrollView>
-				<LinearGradient
-					locations={ [ 0.1, 0.5, 0.8 ] }
-					colors={ [ '#0A8A7B', '#33D197', '#00C57D' ] }
-					style={ styles.upgradeContainer }>
-					<Text style={ styles.header }>Settings</Text>
-					<Text style={ styles.planText }>you are using the basic plan !</Text>
-					<Text style={ styles.paymentText1 }>
-						Upgrade Your App with Just $10
-					</Text>
-					<Text style={ styles.paymentText2 }>
-						and store all the data permanently in the app
-					</Text>
-					<View style={ styles.buttonWrap }>
-						<TouchableOpacity
-							style={ globalStyles.tertiaryButton }
-							onPress={ () => navigation.navigate('SignUp') }>
-							<Text style={ globalStyles.tertiaryButtonText }>upgrade app</Text>
-						</TouchableOpacity>
-					</View>
-				</LinearGradient>
+				{
+					user_type === 'PRIMARY-PATIENT' &&
+					<LinearGradient
+						locations={ [ 0.1, 0.5, 0.8 ] }
+						colors={ [ '#0A8A7B', '#33D197', '#00C57D' ] }
+						style={ styles.upgradeContainer }>
+						<Text style={ styles.header }>Settings</Text>
+						<Text style={ styles.planText }>you are using the basic plan !</Text>
+						<Text style={ styles.paymentText1 }>
+							Upgrade Your App with Just $10
+						</Text>
+						<Text style={ styles.paymentText2 }>
+							and store all the data permanently in the app
+						</Text>
+						<View style={ styles.buttonWrap }>
+							<TouchableOpacity
+								style={ globalStyles.tertiaryButton }
+								onPress={ () => navigation.navigate('SignUp') }>
+								<Text style={ globalStyles.tertiaryButtonText }>upgrade app</Text>
+							</TouchableOpacity>
+						</View>
+					</LinearGradient>
+				}
 				<TouchableOpacity
 					style={ styles.linkContainer }
 					onPress={ () => navigation.navigate('Profile') }>
@@ -84,16 +94,19 @@ function Settings(props) {
 						<Text style={ styles.buttonText }>Manage Family Members</Text>
 					</View>
 				</TouchableOpacity>
-				<TouchableOpacity
-					style={ styles.linkContainer }
-					onPress={ () => navigation.navigate('Payment') }>
-					<View style={ styles.imageContainer }>
-						<Image source={ payment } style={ styles.icons } />
-					</View>
-					<View style={ styles.buttonTextContainer }>
-						<Text style={ styles.buttonText }>Payment</Text>
-					</View>
-				</TouchableOpacity>
+				{
+					user_type === 'PRIMARY-PATIENT' &&
+					<TouchableOpacity
+						style={ styles.linkContainer }
+						onPress={ () => navigation.navigate('Payment') }>
+						<View style={ styles.imageContainer }>
+							<Image source={ payment } style={ styles.icons } />
+						</View>
+						<View style={ styles.buttonTextContainer }>
+							<Text style={ styles.buttonText }>Payment</Text>
+						</View>
+					</TouchableOpacity>
+				}
 				<TouchableOpacity
 					style={ styles.linkContainer }
 					onPress={ () => navigation.navigate('History') }>
@@ -139,7 +152,8 @@ function Settings(props) {
 
 function mapStateToProps(state) {
 	return {
-		is_verified: state.user.is_verified
+		is_verified: state.user.is_verified,
+		user_type: state.user.user_type
 	};
 }
 

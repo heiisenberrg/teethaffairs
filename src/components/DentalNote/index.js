@@ -156,9 +156,11 @@ function DentalNote(props) {
 			</ScrollView>
 		</TouchableOpacity>
 	);
+
 	const handleCreateNotes = () => {
 		navigation.navigate('Home');
 	};
+
 	return (
 			<View>
 				<View style={ styles.divider } />

@@ -72,7 +72,7 @@ function UserRemoteConsultation(props) {
 	const handleSubmit = (data) => {
 		var question_data = {
 			patient_zipcode: userZipCode,
-			doctor_zipcode: doctorZipcode,
+			doctor_zipcode: userZipCode,
 			doctor: doctorId
 		};
 		data.allergies = arrayHolder;
@@ -80,7 +80,7 @@ function UserRemoteConsultation(props) {
 			getQuestion(
 				data,
 				userNoteId,
-				JSON.stringify(question_data),
+				question_data,
 				onSuccess,
 				onFailure
 			);

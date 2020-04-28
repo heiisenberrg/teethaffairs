@@ -18,7 +18,22 @@ function SettingStack() {
 			<Stack.Screen
 				name="Settings"
 				component={ Settings }
-				options={ { headerShown: false } }
+				options={ {
+					headerTitle: 'Settings',
+					headerTitleAlign: 'center',
+					headerTitleContainerStyle: {
+						alignItems: 'center',
+						justifyContent: 'center'
+					},
+					headerStyle: {
+						backgroundColor: '#108E79',
+						height: 100
+					},
+					headerTitleStyle: {
+						color: 'white',
+						fontSize: 20
+					}
+				}  }
 			/>
 			<Stack.Screen name="Payment" component={ Payment } />
 			<Stack.Screen

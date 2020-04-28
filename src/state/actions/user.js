@@ -107,10 +107,9 @@ function getLogOut(onSuccess, onFailure) {
 	};
 }
 
-function setLogOut(logoutResponse) {
+function setLogOut() {
 	return {
-		type: SET_LOGOUT,
-		payload: logoutResponse
+		type: SET_LOGOUT
 	};
 }
 

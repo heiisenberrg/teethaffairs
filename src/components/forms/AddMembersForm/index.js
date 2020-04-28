@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import ImagePicker from 'react-native-image-picker';
-
+import moment from 'moment';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import LinearGradient from 'react-native-linear-gradient';
@@ -47,7 +47,7 @@ const addMemberSchema = yup.object({
 			return this.parent.password === value;
 		}),
 	id: yup.string(),
-	dob: yup.string(),
+	date_of_birth: yup.string(),
 	gender: yup.string().required(),
 
 	relation: yup.string().required()
@@ -63,7 +63,7 @@ const updateMemberSchema = yup.object({
 		.test('passwords-match', 'Passwords does not match', function(value) {
 			return this.parent.password === value;
 		}),
-	dob: yup.string(),
+	date_of_birth: yup.string(),
 	gender: yup.string(),
 	id: yup.string(),
 	relation: yup.string()
@@ -85,25 +85,25 @@ const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
 
 let relation_options = [
 	{
-		value: 'Son'
+		value: 'SON'
 	},
 
 	{
-		value: 'Daughter'
+		value: 'DAUGHTER'
 	},
 
 	{
-		value: 'Father'
+		value: 'FATHER'
 	},
 
 	{
-		value: 'Mother'
+		value: 'MOTHER'
 	},
 	{
-		value: 'Wife'
+		value: 'WIFE'
 	},
 	{
-		value: 'Husband'
+		value: 'HUSBAND'
 	}
 ];
 
@@ -120,16 +120,16 @@ const options = [
 var addedMember;
 
 function AddMembersForm(props) {
-	const { navigation, getAddMember } = props;
+	const { navigation, getAddMember, route: { params: { userdata } } } = props;
 	const [ isModalVisible, setIsModalVisible ] = useState(false);
 	const [ addMember, setAddMember ] = useState(false);
 	const [ imageSource, setImageSource ] = useState(null);
 	const [ updateMember, setUpdateMember ] = useState(false);
 	const [ userId, setUserId ] = useState('');
-	const [ date, setDate ] = useState(new Date(1598051730000));
+	const [ date, setDate ] = useState(new Date());
 	const [ mode, setMode ] = useState('date');
 	const [ show, setShow ] = useState(false);
-	const [ birthDate, setBirthDate ] = useState('');
+	const [ birthDate, setBirthDate ] = useState(userdata.date_of_birth);
 	const [ showEye, setShowEye ] = useState(true);
 	const [ showConfirmEye, setShowConfirmEye ] = useState(true);
 
@@ -142,7 +142,7 @@ function AddMembersForm(props) {
 		if (updateMember) {
 			memberDetails.id = userId;
 		}
-		memberDetails.dob = birthDate;
+		memberDetails.date_of_birth = birthDate;
 		getAddMember(memberDetails, onGetAddMemberFailure, onGetAddMemberSuccess);
 		setBirthDate('');
 	};
@@ -174,14 +174,9 @@ function AddMembersForm(props) {
 
 		var currentDate = '';
 		if (selectedDate !== undefined && selectedDate !== '') {
-			var date = new Date(selectedDate);
-			setBirthDate(
-				date.getDate() +
-					'/' +
-					Number(date.getMonth() + 1) +
-					'/' +
-					date.getFullYear()
-			);
+			var date = new Date(selectedDate).toISOString();
+			console.log('========++++++++++=====++++++=', date);
+			setBirthDate(date);
 			currentDate = selectedDate;
 		} else {
 			setBirthDate('');
@@ -266,49 +261,50 @@ function AddMembersForm(props) {
 				<Formik
 					initialValues={ {
 						email:
-							props.route.params.userdata !== undefined
-								? props.route.params.userdata.email
+							userdata !== undefined
+								? userdata.email
 								: '',
 						first_name:
-							props.route.params.userdata !== undefined
-								? props.route.params.userdata.first_name
+							userdata !== undefined
+								? userdata.first_name
 								: '',
 						last_name:
-							props.route.params.userdata !== undefined
-								? props.route.params.userdata.last_name
+							userdata !== undefined
+								? userdata.last_name
 								: '',
 						password: '',
 						confirm_password: '',
-						dob: '',
+						date_of_birth: '',
 						zipcode:
-							props.route.params.userdata !== undefined &&
-							props.route.params.userdata !== ''
-								? props.route.params.userdata.zipcode.toString()
+							userdata !== undefined &&
+							userdata !== ''
+								? userdata.zipcode.toString()
 								: '',
 						gender:
-							props.route.params.userdata !== undefined
-								? props.route.params.userdata.gender
+							userdata !== undefined
+								? userdata.gender
 								: '',
 						username:
-							props.route.params.userdata !== undefined
-								? props.route.params.userdata.username
+							userdata !== undefined
+								? userdata.username
 								: '',
 						user_type: 'MEMBER_PATIENT',
 						profile: {
 							relationship:
-								props.route.params.userdata !== undefined
-									? props.route.params.userdata.relation
+								userdata && userdata.user_profile.length > 0
+									? userdata.user_profile[0].relationship
 									: ''
 						},
 						id: '',
 						relation:
-							props.route.params.userdata !== undefined
-								? props.route.params.userdata.relation
+						userdata && userdata.user_profile.length > 0
+								? userdata.user_profile[0].relationship	
 								: ''
 					} }
 					validationSchema={
 						addMember === true ? addMemberSchema : updateMemberSchema
 					}
+					enableReinitialize
 					onSubmit={ (values, actions) => {
 						actions.resetForm();
 						handleSubmit(values);
@@ -420,7 +416,7 @@ function AddMembersForm(props) {
 										style={ styles.dataPicker }
 										onPress={ showDatepicker }>
 										{birthDate !== '' ? (
-											<Text style={ styles.calenderText }>{birthDate}</Text>
+											<Text style={ styles.calenderText }>{moment(birthDate).format('MMM/DD/YYYY')}</Text>
 										) : (
 											<Text style={ styles.calenderText }>
 												Month / Date / Year
@@ -430,7 +426,7 @@ function AddMembersForm(props) {
 									</TouchableOpacity>
 								</View>
 								<Text style={ styles.errorText }>
-									{props.touched.dob && props.errors.dob}
+									{props.touched.date_of_birth && props.errors.date_of_birth}
 								</Text>
 								{show && (
 									<DateTimePicker
@@ -448,6 +444,7 @@ function AddMembersForm(props) {
 										<Text style={ styles.label }>Relation</Text>
 									</View>
 									<Dropdown
+										value={ props.values.relation }
 										data={ relation_options }
 										baseColor="white"
 										labelFontSize={ 12 }
@@ -506,7 +503,7 @@ function AddMembersForm(props) {
 								<TouchableOpacity
 									style={ globalStyles.secondaryButton }
 									onPress={ props.handleSubmit }>
-									<Text style={ globalStyles.buttonText }>Add</Text>
+									<Text style={ globalStyles.buttonText }>{addMember === true ? 'Add' : 'Update'}</Text>
 								</TouchableOpacity>
 							</KeyboardAvoidingView>
 						</View>
@@ -514,37 +511,37 @@ function AddMembersForm(props) {
 				</Formik>
 			</ScrollView>
 			<Modal transparent={ true } visible={ isModalVisible }>
-						<View style={ styles.modalWrap }>
-							<LinearGradient
-								start={ { x: 0.4, y: 0.1 } }
-								end={ { x: 0.8, y: 1.1 } }
-								colors={ [ '#0F8E79', '#66CC80' ] }
-								style={ styles.successModalTextWrap }>
-								<View style={ styles.successTextWrap }>
-									<TouchableOpacity onPress={ () => setIsModalVisible(false) }>
-										<AntDesignIcon
-										name="close"
-										size={ 20 }
-										color="#ffffff"
-										style={ styles.closeIcon }/>
-									</TouchableOpacity>
-									<Image
-										source={ require('../../../assets/success.png') }
-										style={ styles.successIcon }
-									/>
-									<Text style={ styles.successModalText1 }>success</Text>
-									<Text style={ styles.successModalText2 }>
-										"{addedMember}" added to your members list
-									</Text>
-								</View>
-								<TouchableOpacity
-									style={ styles.continueButton }
-									onPress={ () => navigation.navigate('AddMembers') }>
-									<Text style={ styles.continueButtonText }>Continue</Text>
-								</TouchableOpacity>
-							</LinearGradient>
+				<View style={ styles.modalWrap }>
+					<LinearGradient
+						start={ { x: 0.4, y: 0.1 } }
+						end={ { x: 0.8, y: 1.1 } }
+						colors={ [ '#0F8E79', '#66CC80' ] }
+						style={ styles.successModalTextWrap }>
+						<View style={ styles.successTextWrap }>
+							<TouchableOpacity onPress={ () => setIsModalVisible(false) }>
+								<AntDesignIcon
+								name="close"
+								size={ 20 }
+								color="#ffffff"
+								style={ styles.closeIcon }/>
+							</TouchableOpacity>
+							<Image
+								source={ require('../../../assets/success.png') }
+								style={ styles.successIcon }
+							/>
+							<Text style={ styles.successModalText1 }>success</Text>
+							<Text style={ styles.successModalText2 }>
+								"{addedMember}" added to your members list
+							</Text>
 						</View>
-					</Modal>
+						<TouchableOpacity
+							style={ styles.continueButton }
+							onPress={ () => navigation.navigate('AddMembers') }>
+							<Text style={ styles.continueButtonText }>Continue</Text>
+						</TouchableOpacity>
+					</LinearGradient>
+				</View>
+			</Modal>
 		</SafeAreaView>
 	);
 }

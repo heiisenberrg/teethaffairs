@@ -9,7 +9,7 @@ import {
 import Icon from '../global/Icon';
 import View from '../global/View';
 import { connect } from 'react-redux';
-
+import moment from 'moment';
 import {
 	getUserList,
 	setUserList,
@@ -21,7 +21,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import styles from './styles';
 
 function FamilyMembers(props) {
-	const { navigation, getUserList, usersList, getDeactivateUserId } = props;
+	const { navigation, getUserList, usersList, getDeactivateUserId, user } = props;
 	const [ refresh, setRefresh ] = useState(true);
 	const [ showModal, setShowModal ] = useState(false);
 	const [ expandedCards, setExpandedCards ] = useState([]);
@@ -100,8 +100,8 @@ function FamilyMembers(props) {
 							{
 								expandedCards && expandedCards.indexOf(index) !== -1 &&
 								<>
-									<Text style={ styles.expandedSubTitle }>Relation: {item.username}</Text>
-									<Text style={ styles.expandedSubTitle }>DOB: {item.username}</Text>
+									<Text style={ styles.expandedSubTitle }>Relation: {item.user_profile[0].relationship}</Text>
+									<Text style={ styles.expandedSubTitle }>DOB: {item.date_of_birth && moment(item.date_of_birth).format('MMM-DD-YYYY')}</Text>
 								</>
 							}
 						</View>
@@ -150,12 +150,17 @@ function FamilyMembers(props) {
 	return (
 		<View style={ styles.container }>
 			<View style={ styles.listContainer }>
-				<FlatList
-					data={ usersList }
-					renderItem={ _renderMemberCards }
-					keyExtractor={ (item, index) => `${index}` }
-					showsVerticalScrollIndicator={ false }
-				/>
+				{
+					usersList && usersList.length > 0 ?
+					<FlatList
+						data={ usersList }
+						renderItem={ _renderMemberCards }
+						keyExtractor={ (item, index) => `${index}` }
+						showsVerticalScrollIndicator={ false }
+					/>
+					:
+					<Text style={ styles.noMemberText }>No Members Found.</Text>
+				}
 			</View>
 
 			<Modal transparent={ true } visible={ showModal }>
@@ -196,20 +201,24 @@ function FamilyMembers(props) {
 					</LinearGradient>
 				</View>
 			</Modal>
-			<TouchableOpacity
-				style={ styles.fabButton }
-				activeOpacity={ 0.8 }
-				onPress={ () => navigation.navigate('UpdateMembers', { userdata: '' }) }
-			>
-				<Icon type={ 'MaterialCommunityIcons' } name="plus" size={ 30 } color="#ffffff" />
-			</TouchableOpacity>
+			{
+				user.user_type === 'PRIMARY-PATIENT' &&
+				<TouchableOpacity
+					style={ styles.fabButton }
+					activeOpacity={ 0.8 }
+					onPress={ () => navigation.navigate('UpdateMembers', { userdata: '' }) }
+				>
+					<Icon type={ 'MaterialCommunityIcons' } name="plus" size={ 30 } color="#ffffff" />
+				</TouchableOpacity>
+			}
 		</View>
 	);
 }
 
 function mapStateToProps(state) {
 	return {
-		usersList: state.journal.usersList
+		usersList: state.journal.usersList,
+		user: state.user
 	};
 }
 

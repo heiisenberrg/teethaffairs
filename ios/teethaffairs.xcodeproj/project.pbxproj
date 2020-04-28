@@ -684,6 +684,7 @@
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = N827V5CBBG;
 				INFOPLIST_FILE = teethaffairs/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -692,7 +693,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.teethaffairs;
 				PRODUCT_NAME = teethaffairs;
-				PROVISIONING_PROFILE_SPECIFIER = "teethaffairs-dev-profile";
+				PROVISIONING_PROFILE_SPECIFIER = "TA-dev-profile";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -707,6 +708,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = N827V5CBBG;
 				INFOPLIST_FILE = teethaffairs/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -715,7 +717,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.teethaffairs;
 				PRODUCT_NAME = teethaffairs;
-				PROVISIONING_PROFILE_SPECIFIER = "teethaffairs-dev-profile";
+				PROVISIONING_PROFILE_SPECIFIER = "TA-dev-profile";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};

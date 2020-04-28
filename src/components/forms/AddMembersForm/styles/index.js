@@ -369,7 +369,6 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		alignContent: 'center',
-		textAlign: 'right',
 		// marginLeft: 250,
 		// margin
 		// position: 'relative',

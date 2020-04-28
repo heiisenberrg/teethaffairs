@@ -68,7 +68,7 @@ function userReducer(state = initialState, action) {
 			return apply_setPassword(state, action);
 			break;
 		case SET_LOGOUT:
-			return apply_setLogOut(state, action);
+			return apply_setLogOut();
 			break;
 		case GET_LOGOUT:
 			return apply_getLogOut(state, action);
@@ -153,10 +153,8 @@ function apply_getLogOut(state) {
 	return newState;
 }
 
-function apply_setLogOut(state) {
-	let newState = { ...state };
-
-	newState.is_verified = false;
+function apply_setLogOut() {
+	let newState = { ...initialState };
 	return newState;
 }
 

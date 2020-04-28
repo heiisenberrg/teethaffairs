@@ -78,7 +78,7 @@ function LoginForm(props) {
 				<ScrollView>
 					<Text style={ loginStyles.header }>Login</Text>
 					<Formik
-						initialValues={ { username: 'doctordanny1', password: '123456' } }
+						initialValues={ { username: '', password: '' } }
 						validationSchema={ loginSchema }
 						onSubmit={ (values, actions) => {
 							actions.resetForm();

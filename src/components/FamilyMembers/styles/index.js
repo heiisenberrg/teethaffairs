@@ -16,6 +16,15 @@ const styles = StyleSheet.create({
 		}),
 		width
 	},
+	listContainer: {
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'center',
+		flex: 1
+	},
+	noMemberText: {
+		alignSelf: 'center'
+	},
 	fabButton: {
 		position: 'absolute',
 		backgroundColor: '#00C57D',
@@ -131,7 +140,6 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		alignContent: 'center',
-		textAlign: 'right',
 		marginLeft: 260,
 		marginTop: 10
 	},
