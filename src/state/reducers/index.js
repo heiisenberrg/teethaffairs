@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
 
-import userReducer from './user';
-import journalReducer from './journal';
-import reminderReducer from './reminder';
-import doctorReducer from './doctor';
+import userReducer from './user.reducer';
+import journalReducer from './journal.reducer';
+import reminderReducer from './reminder.reducer';
+import doctorReducer from './doctor.reducer';
 
 const rootReducer = combineReducers({
 	user: userReducer,

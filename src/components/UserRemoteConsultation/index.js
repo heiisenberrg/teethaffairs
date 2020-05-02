@@ -20,16 +20,12 @@ import TextBoxRadioButton from '../textInputs/TextBoxRadioButton';
 
 import {
 	getDoctorsList,
-	setDoctorsList,
-	getQuestion,
-	setQuestion
+	getQuestion
 } from '../../state/actions/journal';
 
 import styles from './styles';
 import globalStyles from '../../globalStyles';
-
-import AsyncStorage from '@react-native-community/async-storage';
-import store from '../../state/store';
+import FlashMessage from '../global/FlashMessage';
 
 /* eslint-disable no-mixed-spaces-and-tabs */
 
@@ -47,11 +43,12 @@ const userNoteSchema = yup.object({
 
 function UserRemoteConsultation(props) {
 	const {
+		route,
 		getDoctorsList,
 		doctors_list,
 		getQuestion,
-		doctorZipcode,
-		doctorId
+		doctor,
+		user
 	} = props;
 
 	const [ showHistoryForm, setShowHistoryForm ] = useState(false);
@@ -70,22 +67,24 @@ function UserRemoteConsultation(props) {
 	const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
 	const handleSubmit = (data) => {
-		var question_data = {
+		const question_data = {
 			patient_zipcode: userZipCode,
 			doctor_zipcode: userZipCode,
-			doctor: doctorId
+			doctor: doctor.id
 		};
 		data.allergies = arrayHolder;
-		if (doctorZipcode !== '' && doctorZipcode !== undefined) {
+		if (doctor && doctor.id && userZipCode) {
 			getQuestion(
-				data,
-				userNoteId,
-				question_data,
+				{ 
+					data,
+					question_data,
+					userNoteId 
+				},
 				onSuccess,
 				onFailure
 			);
 		} else {
-			alert('Please select a dentist');
+			FlashMessage.message('Alert', 'Please select a dentist', '#33b5e5');
 		}
 	};
 
@@ -114,16 +113,15 @@ function UserRemoteConsultation(props) {
 	};
 
 	useEffect(function () {
-		let user_zipcode = JSON.parse(store.getState().user.zipcodes);
-		setUserZipCode(user_zipcode);
-		getDoctorsList(user_zipcode, onFailure);
+		if(user && user.zipcodes && user.zipcodes.length > 0) {
+			setUserZipCode(user.zipcodes[0]);
+			getDoctorsList({ pincode: user.zipcodes[0] }, onFailure);
+		}
 		getUserNoteId();
 	}, []);
 
-	const getUserNoteId = async () => {
-		let noteId = await AsyncStorage.getItem('noteId');
-		setUserNoteId(noteId);
-		AsyncStorage.removeItem('noteId');
+	const getUserNoteId = () => {
+		setUserNoteId(route.params.id);
 	};
 
 	const joinData = () => {
@@ -841,14 +839,12 @@ function UserRemoteConsultation(props) {
 
 function mapStateToProps(state) {
 	return {
-		doctors_list: state.journal.usersList,
-		doctorId: state.journal.doctor,
-		doctorZipcode: state.journal.doctor_zipcode
+		doctors_list: state.journal.doctors_list,
+		doctor: state.journal.doctor,
+		user: state.user.user
 	};
 }
 export default connect(mapStateToProps, {
 	getDoctorsList,
-	setDoctorsList,
-	getQuestion,
-	setQuestion
+	getQuestion
 })(UserRemoteConsultation);

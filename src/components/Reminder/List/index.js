@@ -14,9 +14,10 @@ import View from '../../global/View';
 import { fetchReminders, updateReminder, deleteReminder, fetchReminderBasedOnFilter } from '../../../state/actions/reminder';
 import { getUsers } from '../../../state/actions/user';
 import moment from 'moment';
+import Loader from '../../global/Loader';
 
 function ListReminder(props) {
-	const { navigation, fetchReminders, reminderList, updateReminder, deleteReminder, getUsers, userList, fetchReminderBasedOnFilter, userDetails } = props;
+	const { navigation, fetchReminders, reminderList, updateReminder, deleteReminder, getUsers, userList, fetchReminderBasedOnFilter, userDetails, loading } = props;
 	const [ isVisible, setVisible ] = useState(false);
 	const [ expandedCards, setExpandedCards ] = useState([]);
 	const [ showModal, setShowModal ] = useState(false);
@@ -35,26 +36,18 @@ function ListReminder(props) {
 		}
 	];
 
-	const onGetNotesSuccess = data => {
-		console.log('api success', data);
-	};
-
-	useEffect(function storeNoteListResponse() {
+	useEffect(() => {
 		fetchReminders();
 		if (userDetails.user_type === 'PRIMARY-PATIENT') {
 			getUsers();
 		}
 	}, []);
 
-	const onGetNotesListFailure = () => {
-		// alert('Network error');
-	};
-
 	useEffect(() => {
 		if (selectedContent !== '') {
 			let list = JSON.parse(JSON.stringify(reminderList));
 			list[selectedReminder].completed = !list[selectedReminder].completed;
-			updateReminder(list[selectedReminder], onGetNotesSuccess, onGetNotesListFailure);
+			updateReminder(list[selectedReminder]);
 		}
 	}, [ selectedContent ]);
 	
@@ -78,6 +71,7 @@ function ListReminder(props) {
 	const removeReminder = index => {
 		const data = [ ...reminderList ];
 		data.splice(index, 1);
+		changeExpandedCards(index);
 		deleteReminder({ id: reminderList[index].id, data });
 	};
 
@@ -301,6 +295,7 @@ function ListReminder(props) {
 
 	return (
 		<>
+			<Loader loading={ loading } />
 			<View style={ styles.divider } />
 			<View center style={ styles.filterContainer }>
 				<TouchableOpacity style={ styles.filter } activeOpacity={ 0.9 }>
@@ -373,7 +368,8 @@ function ListReminder(props) {
 					<FlatList
 						data={ reminderList }
 						renderItem={ _renderNoteCards }
-						keyExtractor={ (item, index) => `${index}` }
+						keyExtractor={ item => item.id }
+						extraData={ reminderList }
 						ListEmptyComponent={ () => (<View center><Text>No reminders</Text></View>) }
 						showsVerticalScrollIndicator={ false }
 					/>
@@ -393,21 +389,22 @@ function ListReminder(props) {
 	);
 }
 
-const mapStateToProps = state => {
-	return {
-		reminderList: state.reminder.reminderList,
-		userList: state.user.users,
-		userDetails: state.user
-	};
-};
+const mapStateToProps = state => ({
+	reminderList: state.reminder.reminderList,
+	userList: state.user.users,
+	userDetails: state.user.user,
+	loading: state.reminder.loading
+});
+
+const mapDispatchToProps = dispatch => ({
+	fetchReminders: () => dispatch(fetchReminders()),
+	updateReminder: data => dispatch(updateReminder(data)),
+	deleteReminder: data => dispatch(deleteReminder(data)),
+	getUsers: () => dispatch(getUsers()),
+	fetchReminderBasedOnFilter: data => dispatch(fetchReminderBasedOnFilter(data))
+});
 
 export default connect(
 	mapStateToProps,
-	{
-		fetchReminders,
-		updateReminder,
-		deleteReminder,
-		getUsers,
-		fetchReminderBasedOnFilter
-	}
+	mapDispatchToProps
 )(ListReminder);

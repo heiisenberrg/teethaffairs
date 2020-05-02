@@ -42,6 +42,7 @@ function DentalVisit(props) {
 	}, [ navigation ]);
 	
 	const [ list, setlist ] = useState([]);
+	const [ userLists, setUserLists ] = useState(userList);
 	const [ isVisible, setVisible ] = useState(false);
 	const [ showModal, setShowModal ] = useState(false);
 	const [ refresh, setRefresh ] = useState(true);
@@ -72,7 +73,10 @@ function DentalVisit(props) {
 	}, []);
 
 	useEffect(() => {
-		getDentalVisits(user.id, getDentalVisitsSuccess, getDentalVisitsFailure);
+		const data = {
+			user_id: user.id
+		};
+		getDentalVisits(data, getDentalVisitsSuccess, getDentalVisitsFailure);
 	}, [ user, refresh ]);
 
 	const getDentalVisitsFailure = () => {
@@ -80,8 +84,17 @@ function DentalVisit(props) {
 	};
 
 	useEffect(() => {
+		if(userList && userList.length > 0 && (userList.findIndex(user => user.id === 'all-users') > -1)) {
+			userList.push({
+				id: 'all-users', 
+				name: 'All Users',
+				avatar: null
+			});
+			console.log('ENTEREddddddddd', userList);
+			setUserLists(userList);
+		}
 		setlist(visits);
-	}, [ visits ]);
+	}, [ visits, userList ]);
 
 	const enableDentalVisitView = (item) => {
 		setCurrentVisit(item);
@@ -295,7 +308,7 @@ function DentalVisit(props) {
 				<View center
 					style={ styles.filterContainer }>
 					<TouchableOpacity 
-						onPress={ () => (userList && userList.length > 0 ? setVisible(!isVisible) : null) }
+						onPress={ () => (userLists && userLists.length > 0 ? setVisible(!isVisible) : null) }
 						style={ styles.filter } activeOpacity={ 0.95 }
 					>
 						<View row
@@ -325,7 +338,7 @@ function DentalVisit(props) {
 								<ScrollView
 									contentContainerStyle={ styles.scrollView }
 									showsVerticalScrollIndicator={ false }>
-									{userList && userList.map((data, index) =>
+									{userLists && userLists.map((data, index) =>
 										<TouchableOpacity								    
 											onPress={ () => [ setUser({
 												...data,
@@ -389,7 +402,7 @@ const mapStateToProps = (state) => {
 	return {
 		visits: state.journal.visits,
 		userList: state.user.users,
-		userDetails: state.user
+		userDetails: state.user.user
 	};
 };
 

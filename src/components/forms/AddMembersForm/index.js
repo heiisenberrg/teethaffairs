@@ -29,7 +29,7 @@ import { Dropdown } from 'react-native-material-dropdown';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 
 import dropdownIcon from '../../../assets/drop-right.png';
-import store from '../../../state/store';
+import FlashMessage from '../../global/FlashMessage';
 
 const addMemberSchema = yup.object({
 	first_name: yup.string().required(),
@@ -49,7 +49,6 @@ const addMemberSchema = yup.object({
 	id: yup.string(),
 	date_of_birth: yup.string(),
 	gender: yup.string().required(),
-
 	relation: yup.string().required()
 });
 
@@ -120,7 +119,7 @@ const options = [
 var addedMember;
 
 function AddMembersForm(props) {
-	const { navigation, getAddMember, route: { params: { userdata } } } = props;
+	const { navigation, getAddMember, route: { params: { userdata } }, user } = props;
 	const [ isModalVisible, setIsModalVisible ] = useState(false);
 	const [ addMember, setAddMember ] = useState(false);
 	const [ imageSource, setImageSource ] = useState(null);
@@ -134,7 +133,7 @@ function AddMembersForm(props) {
 	const [ showConfirmEye, setShowConfirmEye ] = useState(true);
 
 	const handleSubmit = memberDetails => {
-		memberDetails.zipcode = store.getState().user.zipcodes;
+		memberDetails.zipcode = user.zipcodes;
 		memberDetails.email = memberDetails.username + '@teethaffais.com';
 		
 		memberDetails.profile.relationship = memberDetails.relation;
@@ -143,13 +142,14 @@ function AddMembersForm(props) {
 			memberDetails.id = userId;
 		}
 		memberDetails.date_of_birth = birthDate;
-		getAddMember(memberDetails, onGetAddMemberFailure, onGetAddMemberSuccess);
+		getAddMember({ data: memberDetails, onSuccess: onGetAddMemberSuccess, onFailure: onGetAddMemberFailure });
 		setBirthDate('');
 	};
 
 	const onGetAddMemberFailure = () => {
 		setAddMember(true);
-		alert('Something went wrong!');
+		// alert('Something went wrong!');
+		FlashMessage.message('Alert', 'Something went wrong', '#ff4444');
 	};
 
 	const onGetAddMemberSuccess = data => {
@@ -546,11 +546,10 @@ function AddMembersForm(props) {
 	);
 }
 
-function mapStateToProps(state) {
-	return {
-		resp: state.journal
-	};
-}
+const mapStateToProps = (state) => ({
+	resp: state.journal,
+	user: state.user.user
+});
 
 export default connect(
 	mapStateToProps,

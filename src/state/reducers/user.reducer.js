@@ -1,0 +1,169 @@
+import constants from '../constants/user.constant';
+
+const initialState = {
+	access: '',
+	email: '',
+	first_name: '',
+	last_name: '',
+	id: '',
+	is_verified: false,
+	user_type: '',
+	gender: '',
+	profile_pic: null,
+	zipcode: '',
+	errorMessage: '',
+	users: [],
+	user: {},
+	loading: false
+};
+
+function userReducer(state = initialState, action) {
+	switch (action.type) {
+		case constants.GET_LOGIN:
+			return {
+				...state,
+				loading: true
+			};
+		case constants.GET_LOGIN_SUCCESS:
+			return {
+				...state,
+				loading: false,
+				user: action.response
+			};
+		case constants.GET_LOGIN_FAILURE:
+			return {
+				...state,
+				loading: false
+			};
+		case constants.GET_SIGNUP:
+			return {
+				...state,
+				loading: true
+			};
+		case constants.GET_SIGNUP_SUCCESS:
+			return {
+				...state,
+				loading: false
+			};
+		case constants.GET_SIGNUP_FAILURE:
+			return {
+				...state,
+				loading: false
+			};
+		case constants.GET_FORGET_EMAIL:
+			return {
+				...state,
+				loading: true
+			};
+		case constants.GET_FORGET_EMAIL_SUCCESS:
+			return {
+				...state,
+				loading: false
+			};
+		case constants.GET_FORGET_EMAIL_FAILURE:
+			return {
+				...state,
+				loading: false
+			};
+		case constants.GET_ONE_TIME_PASSWORD:
+			return {
+				...state,
+				loading: true
+			};
+		case constants.GET_ONE_TIME_PASSWORD_SUCCESS:
+			return {
+				...state,
+				loading: false
+			};
+		case constants.GET_ONE_TIME_PASSWORD_FAILURE:
+			return {
+				...state,
+				loading: false
+			};
+		case constants.GET_PASSWORD:
+			return {
+				...state,
+				loading: true
+			};
+		case constants.GET_PASSWORD_SUCCESS:
+			return {
+				...state,
+				loading: false
+			};
+		case constants.GET_PASSWORD_FAILURE:
+			return {
+				...state,
+				loading: false
+			};
+		case constants.GET_LOGOUT:
+			return {
+				...state,
+				loading: true
+			};
+		case constants.GET_LOGOUT_SUCCESS:
+			return {
+				...state,
+				loading: false,
+				user: null
+			};
+		case constants.GET_LOGOUT_FAILURE:
+			return {
+				...state,
+				loading: false
+			};
+		case constants.GET_USER:
+			return {
+				...state,
+				loading: true
+			};
+		case constants.GET_USER_SUCCESS:
+			return {
+				...state,
+				loading: false
+			};
+		case constants.GET_USER_FAILURE:
+			return {
+				...state,
+				loading: false
+			};
+		case constants.GET_USERS:
+			return {
+				...state,
+				loading: true
+			};
+		case constants.GET_USERS_SUCCESS:
+			return {
+				...state,
+				loading: false,
+				users: action.response
+			};
+		case constants.GET_USERS_FAILURE:
+			return {
+				...state,
+				loading: false
+			};
+		case constants.GET_MY_PROFILE:
+			return {
+				...state,
+				loading: true
+			};
+		case constants.GET_MY_PROFILE_SUCCESS:
+			return {
+				...state,
+				loading: false,
+				user: {
+					...state.user,
+					...action.response.data
+				}
+			};
+		case constants.GET_MY_PROFILE_FAILURE:
+			return {
+				...state,
+				loading: false
+			};
+		default:
+			return state;
+	}
+}
+
+export default userReducer;

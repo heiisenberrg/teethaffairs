@@ -16,8 +16,6 @@ import globalStyles from '../../globalStyles/index';
 import TextInputField from '../textInputs/TextInputField';
 import calender from '../../assets/calender.png';
 
-import { getMyProfile } from '../../state/actions/user';
-
 const profileSchema = yup.object({
     zipcode: yup.string(),
     email: yup.string(), //office email,
@@ -295,5 +293,5 @@ const mapStateToProps = (state) => {
 
 export default connect(
 	mapStateToProps,
-	{ getMyProfile }
+	null
 )(UpdateProfile);

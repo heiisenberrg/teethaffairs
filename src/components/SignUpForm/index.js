@@ -81,21 +81,21 @@ function SignUpForm(props) {
 	const [ showEye, setShowEye ] = useState(true);
 	const [ showConfirmEye, setShowConfirmEye ] = useState(true);
 
-	const onGetSignupSuccess = () => {
-		navigation.navigate('AccountSuccess');
-	};
+	// const onGetSignupSuccess = () => {
+	// 	navigation.navigate('AccountSuccess');
+	// };
 
-	const onGetSignupFailure = (response) => {
-		alert(JSON.stringify(response, null, 4));
-		navigation.navigate('AccountSuccess');
-	};
+	// const onGetSignupFailure = (response) => {
+	// 	alert(JSON.stringify(response, null, 4));
+	// 	navigation.navigate('AccountSuccess');
+	// };
 
 	const handleSubmit = data => {
 		data.zipcode = data.zipcode.split();
 		data.gender = 'FEMALE';
 		data.dob = birthDate;
 		if (birthDate !== '') {
-			getSignUp(data, onGetSignupSuccess, onGetSignupFailure);
+			getSignUp({ data, navigation });
 			setBirthDate('');
 		} else {
 			alert('Date of birth fiels is required');

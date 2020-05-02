@@ -36,7 +36,6 @@ const monthNames = [
 function DentalNote(props) {
 
 	const { fetchNotes, notes, navigation, getUsers, userList, userDetails } = props;
-	
 	useLayoutEffect(() => {
 		navigation.setOptions({
 			headerLeft: () => (
@@ -158,127 +157,131 @@ function DentalNote(props) {
 	);
 
 	const handleCreateNotes = () => {
-		navigation.navigate('Home');
+		const userNotes = {
+			description: '',
+			title: ''
+		};
+		navigation.navigate('AddQuestion', { data: userNotes });
 	};
 
 	return (
-			<View>
-				<View style={ styles.divider } />
-				<View center
-					style={ styles.filterContainer }>
-					<TouchableOpacity 
-						onPress={ () => (userList && userList.length > 0 ? setVisible(!isVisible) : null) }
-						style={ styles.filter } activeOpacity={ 0.95 }
-					>
-						<View row
-							style={ styles.filterWrapper }>
-							<View jC={ 'flex-start' }>
-								<Image
-									style={ styles.filterImage }
-									source={ user && user.profile_pic ? { uri:  user.profile_pic } : require('../../assets/profile.png') }
+		<View>
+			<View style={ styles.divider } />
+			<View center
+				style={ styles.filterContainer }>
+				<TouchableOpacity 
+					onPress={ () => (userList && userList.length > 0 ? setVisible(!isVisible) : null) }
+					style={ styles.filter } activeOpacity={ 0.95 }
+				>
+					<View row
+						style={ styles.filterWrapper }>
+						<View jC={ 'flex-start' }>
+							<Image
+								style={ styles.filterImage }
+								source={ user && user.profile_pic ? { uri:  user.profile_pic } : require('../../assets/profile.png') }
+							/>
+						</View>
+						<View row center jC={ 'space-between' }
+							style={ styles.filterContent }>
+							<Text style={ styles.filterText }>{user.name}</Text>
+							<View
+								style={ styles.filterArrow }
+								>
+								<Icon type={ 'Ionicons' }
+									name={ !isVisible ? 'md-arrow-dropright' : 'md-arrow-dropdown' }
+									size={ 22 }
+									color={ 'grey' }
 								/>
-							</View>
-							<View row center jC={ 'space-between' }
-								style={ styles.filterContent }>
-								<Text style={ styles.filterText }>{user.name}</Text>
-								<View
-									style={ styles.filterArrow }
-									>
-									<Icon type={ 'Ionicons' }
-										name={ !isVisible ? 'md-arrow-dropright' : 'md-arrow-dropdown' }
-										size={ 22 }
-										color={ 'grey' }
-									/>
-								</View>
 							</View>
 						</View>
-						{isVisible && (
-							<View style={ styles.scrollViewContainer }>
-								<ScrollView
-									contentContainerStyle={ styles.scrollView }
-									showsVerticalScrollIndicator={ false }>
+					</View>
+					{isVisible && (
+						<View style={ styles.scrollViewContainer }>
+							<ScrollView
+								contentContainerStyle={ styles.scrollView }
+								showsVerticalScrollIndicator={ false }>
 
-									{userList && userList.map((data, index) =>
-										<TouchableOpacity								    
-											onPress={ () => [ setUser({
-												...data,
-												name: `${data.first_name} ${data.last_name}`,
-												avatar: data.profile_pic
-											}), setVisible(!isVisible) ] }
-											key={ `user${index}` }
-											style={ styles.userContainer }>
-											<View row style={ styles.profileWrapper }>
-												<View jC={ 'flex-start' }>
-													<Image
-														style={ styles.filterImage }
-														source={ user && user.profile_pic ? { uri:  user.profile_pic } : require('../../assets/profile.png') }
-													/>
-												</View>
-												<View
-													style={ styles.userContent }>
-													<Text style={ styles.userContentText }>
-														{data.first_name} {data.last_name}
-													</Text>
-												</View>
+								{userList && userList.map((data, index) =>
+									<TouchableOpacity								    
+										onPress={ () => [ setUser({
+											...data,
+											name: `${data.first_name} ${data.last_name}`,
+											avatar: data.profile_pic
+										}), setVisible(!isVisible) ] }
+										key={ `user${index}` }
+										style={ styles.userContainer }>
+										<View row style={ styles.profileWrapper }>
+											<View jC={ 'flex-start' }>
+												<Image
+													style={ styles.filterImage }
+													source={ user && user.profile_pic ? { uri:  user.profile_pic } : require('../../assets/profile.png') }
+												/>
 											</View>
-											<View style={ styles.separator } />
-										</TouchableOpacity>
-									)}
-										<TouchableOpacity								    
-											onPress={ () => [ setUser({
-												id:'',
-												name: 'All Users',
-												avatar: ''
-											}), setVisible(!isVisible) ] }
-											style={ styles.userContainer }>
-											<View row style={ styles.profileWrapper }>
-												<View jC={ 'flex-start' }>
-													<Image
-														style={ styles.filterImage }
-														source={ user && user.profile_pic ? { uri:  user.profile_pic } : require('../../assets/profile.png') }
-													/>
-												</View>
-												<View
-													style={ styles.userContent }>
-													<Text style={ styles.userContentText }>
-														{/* {data.first_name} {data.last_name} */}
-														All User
-													</Text>
-												</View>
+											<View
+												style={ styles.userContent }>
+												<Text style={ styles.userContentText }>
+													{data.first_name} {data.last_name}
+												</Text>
 											</View>
-											<View style={ styles.separator } />
-										</TouchableOpacity>
-								</ScrollView>
-							</View>
-						)}
-					</TouchableOpacity>
-				</View>
-				<View style={ styles.container }>
-					<SafeAreaView
-						style={ styles.cardContainer }
-					>
-						{
-							list && list.length !== 0 ?
-								<FlatList
-									data={ list }
-									renderItem={ ({ item }) => _renderDentalNotes(item) }
-									keyExtractor={ item => item.id }
-								/>
-								:
-								<View style={ styles.emptyResult }>
-									<Text>No Dental Notes Found</Text>
-								</View>
-						}
-						<TouchableOpacity
-							style={ styles.fabButton }
-							activeOpacity={ 0.8 }
-							onPress={ handleCreateNotes }
-						>
-							<AntDesignIcon name="plus" size={ 30 } color="#ffffff" />
-						</TouchableOpacity>
-					</SafeAreaView>
-				</View>
+										</View>
+										<View style={ styles.separator } />
+									</TouchableOpacity>
+								)}
+									<TouchableOpacity								    
+										onPress={ () => [ setUser({
+											id:'',
+											name: 'All Users',
+											avatar: ''
+										}), setVisible(!isVisible) ] }
+										style={ styles.userContainer }>
+										<View row style={ styles.profileWrapper }>
+											<View jC={ 'flex-start' }>
+												<Image
+													style={ styles.filterImage }
+													source={ user && user.profile_pic ? { uri:  user.profile_pic } : require('../../assets/profile.png') }
+												/>
+											</View>
+											<View
+												style={ styles.userContent }>
+												<Text style={ styles.userContentText }>
+													{/* {data.first_name} {data.last_name} */}
+													All User
+												</Text>
+											</View>
+										</View>
+										<View style={ styles.separator } />
+									</TouchableOpacity>
+							</ScrollView>
+						</View>
+					)}
+				</TouchableOpacity>
 			</View>
+			<View style={ styles.container }>
+				<SafeAreaView
+					style={ styles.cardContainer }
+				>
+					{
+						list && list.length !== 0 ?
+							<FlatList
+								data={ list }
+								renderItem={ ({ item }) => _renderDentalNotes(item) }
+								keyExtractor={ item => item.id }
+							/>
+							:
+							<View style={ styles.emptyResult }>
+								<Text>No Dental Notes Found</Text>
+							</View>
+					}
+					<TouchableOpacity
+						style={ styles.fabButton }
+						activeOpacity={ 0.8 }
+						onPress={ handleCreateNotes }
+					>
+						<AntDesignIcon name="plus" size={ 30 } color="#ffffff" />
+					</TouchableOpacity>
+				</SafeAreaView>
+			</View>
+		</View>
 	);
 }
 
@@ -286,7 +289,7 @@ const mapStateToProps = (state) => {
 	return {
 		notes: state.journal.notes,
 		userList: state.user.users,
-		userDetails: state.user
+		userDetails: state.user.user
 	};
 };
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
-
+import { connect } from 'react-redux';
 import AppIntroSlider from 'react-native-app-intro-slider';
 
 import globalStyles from '../../globalStyles';
@@ -9,6 +9,8 @@ import styles from './styles';
 import slider1 from '../../assets/slider-home.png';
 import slider2 from '../../assets/slider-home2.png';
 import slider3 from '../../assets/slider-home3.png';
+// import localStorage from '../../state/localstorage';
+import { getLoginSuccess } from '../../state/actions/user';
 
 const slides = [
 	{
@@ -33,7 +35,8 @@ const slides = [
 ];
 
 function AppIntro(props) {
-	const { navigation } = props;
+	const { navigation, isAuth } = props;
+    console.warn('inside app intro', isAuth);
 	const renderItem = ({ item }) => {
 		return (
 			<View style={ styles.container } >
@@ -68,12 +71,23 @@ function AppIntro(props) {
 		);
 	};
 
+	const handleSkipIntro = () => {
+		// let userDetails = await localStorage.getItem('user');
+		// console.log('======inside app intro', userDetails);
+		// if(userDetails && Object.keys(userDetails).length > 0) {
+		// 	loginSuccess(userDetails);
+		// 	navigation.navigate('AppTabs');
+		// } else {
+			navigation.navigate('Login');
+		// }
+	};
+
 	const renderNextButton = () => {
 		return (
 			<View style={ styles.buttonWrapper }>
 				<TouchableOpacity
 					style={ globalStyles.skipButton }
-					onPress={ () => navigation.navigate('Login') }>
+					onPress={ handleSkipIntro }>
 					<Text style={ globalStyles.tertiaryButtonText }>Skip Intro</Text>
 				</TouchableOpacity>
 			</View>
@@ -93,4 +107,15 @@ function AppIntro(props) {
 	);
 }
 
-export default AppIntro;
+const mapStateToProps = state => ({
+	user: state.user.user
+});
+
+const mapDispatchToProps = dispatch => ({
+	loginSuccess: data => dispatch(getLoginSuccess(data))
+});
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(AppIntro);

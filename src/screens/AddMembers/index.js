@@ -1,9 +1,22 @@
 import React from 'react';
-
+import { connect } from 'react-redux';
+import Loader from '../../components/global/Loader';
 import FamilyMembers from '../../components/FamilyMembers';
 
 function AddMembers(props) {
-	return <FamilyMembers { ...props } />;
+	const { loading } = props;
+	return (
+		<>
+			<FamilyMembers { ...props } />
+			<Loader loading={ loading } />
+		</>
+	);
 }
 
-export default AddMembers;
+function mapStateToProps(state) {
+	return {
+		loading: state.journal.loading || state.user.loading
+	};
+}
+
+export default connect(mapStateToProps, null)(AddMembers);

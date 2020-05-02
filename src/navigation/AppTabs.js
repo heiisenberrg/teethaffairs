@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { connect } from 'react-redux';
@@ -19,17 +19,23 @@ import styles from './styles';
 const Tab = createBottomTabNavigator();
 
 function AppTabs(props) {
-	const { user_type } = props;
-	console.warn('inside navigator', user_type);
-	// if (user_type === 'DOCTOR') {
+	const { user } = props;
+	// if (navigation && user && user.user_type === 'DOCTOR') {
 	// 	navigation.jumpTo('Teledental');
 	// }
+
+	const [ doesLoggedInUserDoctor, setDoesLoggedInUserDoctor ] = useState(false);
+
+	useEffect(() => {
+		setDoesLoggedInUserDoctor(user && user.user_type === 'DOCTOR');
+	}, [ user ]);
+
 	return (
 		<Tab.Navigator
 			tabBarOptions={ {
 				activeTintColor: '#00C57D'
 			} }
-			initialRouteName={ user_type === 'DOCTOR' ? 'Teledental' : 'Home' }>
+			initialRouteName={ doesLoggedInUserDoctor ? 'Teledental' : 'Home' }>
 			<Tab.Screen
 				name="History"
 				component={ History }
@@ -41,10 +47,10 @@ function AppTabs(props) {
 				} }
 			/>
 			<Tab.Screen
-				name= { user_type === 'DOCTOR' ? 'Teledental' : 'Journal' }
-				component={ user_type === 'DOCTOR' ? Dashboard : Journal }
+				name= { doesLoggedInUserDoctor ? 'Teledental' : 'Journal' }
+				component={ doesLoggedInUserDoctor ? Dashboard : Journal }
 				options={ {
-					tabBarLabel: user_type === 'DOCTOR' ? 'Teledental' : 'Journal',
+					tabBarLabel: doesLoggedInUserDoctor ? 'Teledental' : 'Journal',
 					tabBarIcon: ({ color }) => {
 						return <Image source={ JournalIcon } color={ color } />;
 					}
@@ -88,7 +94,9 @@ function AppTabs(props) {
 }
 
 const mapStateToProps = state => ({
-	user_type: state.user.user_type
+	user: state.user.user
 });
 
-export default connect(mapStateToProps, null)(AppTabs);
+
+
+export default connect(mapStateToProps,  null)(AppTabs);

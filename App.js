@@ -1,9 +1,12 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, { useState, useEffect } from 'react';
 import { Provider } from 'react-redux';
 
 import MainNavigation from './src/navigation';
 import store from './src/state/store';
 import Splash from './src/screens/Splash';
+import FlashMessage from 'react-native-flash-message';
+import localStorage from './src/state/localstorage';
 
 // For Getting Network Requests in React Native Debugger.
 global.XMLHttpRequest = global.originalXMLHttpRequest
@@ -31,8 +34,21 @@ if (window.__FETCH_SUPPORT__) {
 
 function App() {
 	const [ isLoading, setIsLoading ] = useState(true);
+	const [ isAuth, setIsAuth ] = useState(false);
+	const [ user, setUser ] = useState({});
 
 	useEffect(() => {
+		const checkAuth = async () => {
+			const accessToken = await localStorage.getStringItem('accessToken');
+			const user = await localStorage.getItem('user');
+			if (accessToken) {
+				setIsAuth(true);
+			}
+			if (user && Object.keys(user).length > 0) {
+				setUser(user);
+			}
+		};
+		checkAuth();
 		setTimeout(() => {
 			setIsLoading(false);
 		}, 1000);
@@ -43,7 +59,8 @@ function App() {
 	}
 	return (
 		<Provider store={ store }>
-			<MainNavigation />
+			<MainNavigation isAuth={ isAuth } user={ user }/>
+			<FlashMessage position="top" style={ { borderBottomLeftRadius: 20, borderBottomRightRadius: 20, zIndex: 1001 } } />
 		</Provider>
 	);
 }

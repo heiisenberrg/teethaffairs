@@ -1,10 +1,25 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import Loader from '../../components/global/Loader';
 import RemoteConsultationRequest from '../../components/RemoteConsultationRequest';
 
 function RemoteConsultation(props) {
+    const { loading } = props;
     return (
-        <RemoteConsultationRequest { ...props } /> 
+        <>
+            <Loader loading={ loading } />
+            <RemoteConsultationRequest { ...props } />
+        </>
     );
 }
 
-export default RemoteConsultation;
+const mapStateToProps = (state) => {
+	return {
+		loading: state.doctor.loading
+	};
+};
+
+export default connect(
+	mapStateToProps,
+	null
+)(RemoteConsultation);

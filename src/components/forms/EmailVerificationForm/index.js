@@ -57,10 +57,8 @@ function EmailVerificationForm(props) {
 	);
 
 	const storeResponseData = () => {
-		if (is_verified !== undefined) {
-			if (is_verified) {
-				navigation.navigate('Login');
-			}
+		if (is_verified) {
+			navigation.navigate('Login');
 		}
 	};
 

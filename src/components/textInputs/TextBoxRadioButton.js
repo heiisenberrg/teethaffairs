@@ -2,61 +2,54 @@ import React, { useState } from 'react';
 import { Text, View, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { connect } from 'react-redux';
 
-import { getDoctorDetail, setDoctorDetail }  from '../../state/actions/journal';
+import { setDoctorDetail }  from '../../state/actions/journal';
 
  function TextBoxRadioButton(props){
 	const [ value, setValue ] = useState(null);
-	const { options, getDoctorDetail } = props;
+	const { options, setDoctorDetail } = props;
 
 	const onPressHandler = (item) => {
 		setValue(item.id);
-		getDoctorDetail(item);
+		setDoctorDetail(item);
 	};
 
-		return (
-			<View>
-				{options.map((item, index) => {
-						return<View style={ styles.doctorContainer } key={ index }>
-						<View style={ styles.doctorDetailsWrapper }>
-							<View style={ styles.profileWrap }>
-							<Image
-								style={ styles.doctorImage }
-								source={ require('../../assets/profile.png') }
-							/>
-							</View>
-
-							<View style={ styles.doctorDetails }>
-								<Text style={ styles.doctorNameText }>Dr. {item.first_name} {item.last_name}</Text>
-								<Text style={ styles.doctorAddressText }>
-									Dental Care Clinic , New York
-								</Text>
-							</View>
-							<View style={ styles.radioButton }>
-								<TouchableOpacity
-									style={ styles.circle }
-									onPress={ () => onPressHandler(item)	} 
-									>
-									{value === item.id && (
-										<View style={ styles.checkedCircle } />
-									)}
-								</TouchableOpacity>
-							</View>
+	return (
+		<View>
+			{options.map((item, index) => {
+					return<View style={ styles.doctorContainer } key={ index }>
+					<View style={ styles.doctorDetailsWrapper }>
+						<View style={ styles.profileWrap }>
+						<Image
+							style={ styles.doctorImage }
+							source={ require('../../assets/profile.png') }
+						/>
 						</View>
-					</View>;
-				})}
-			</View>
-		);
+
+						<View style={ styles.doctorDetails }>
+							<Text style={ styles.doctorNameText }>Dr. {item.first_name} {item.last_name}</Text>
+							<Text style={ styles.doctorAddressText }>
+								Dental Care Clinic , New York
+							</Text>
+						</View>
+						<View style={ styles.radioButton }>
+							<TouchableOpacity
+								style={ styles.circle }
+								onPress={ () => onPressHandler(item)	} 
+								>
+								{value === item.id && (
+									<View style={ styles.checkedCircle } />
+								)}
+							</TouchableOpacity>
+						</View>
+					</View>
+				</View>;
+			})}
+		</View>
+	);
 }
 
-
-function mapStateToProps() {
-	return {
-	};
-}
-export default connect(mapStateToProps, {
-	getDoctorDetail,
+export default connect(null, {
 	setDoctorDetail
-
 })(TextBoxRadioButton);
 
 

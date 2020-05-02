@@ -35,14 +35,12 @@ import ImagePicker from 'react-native-image-picker';
 import LinearGradient from 'react-native-linear-gradient';
 
 import {
-	customNoteRequest,
-	customNoteUpdateRequest
-} from '../../../utilities/api-request';
-import {
 	getDeleteNote,
 	setDeleteNote,
 	getUserNote,
-	setUserNote
+	setUserNote,
+	createUserNote,
+	updateUserNote
 } from '../../../state/actions/journal';
 
 /* eslint-disable no-undef */
@@ -87,7 +85,7 @@ var tempMedia = [];
 
 /* eslint-disable no-mixed-spaces-and-tabs */
 function AddQuestion(props) {
-	const { navigation, getDeleteNote } = props;
+	const { navigation, getDeleteNote, createUserNote, updateUserNote } = props;
 	const [ showStep1, setShowStep1 ] = useState(true);
 	const [ showStep2, setShowStep2 ] = useState(false);
 	const [ showStep3, setShowStep3 ] = useState(false);
@@ -105,52 +103,118 @@ function AddQuestion(props) {
 	const handleSubmit = userNotes => {
 		setReferenceName(userNotes.reference_name);
 		setIsModalVisible(false);
-		var noteRequestData = new FormData();
-		noteRequestData.append('description', userNotes.description);
-		noteRequestData.append('title', userNotes.title);
-		noteRequestData.append('place_of_issue', userNotes.place_of_issue);
-		noteRequestData.append('side_of_issue', userNotes.side_of_issue);
-		noteRequestData.append('pain_level', userNotes.pain_level);
-		noteRequestData.append(
-			'sensivity_temperature',
-			userNotes.sensivity_temperature
-		);
-		noteRequestData.append('tender', userNotes.tender);
-		noteRequestData.append(
-			'tooth_issue_identified',
-			userNotes.tooth_issue_identified
-		);
-		noteRequestData.append('onset', userNotes.onset);
-		noteRequestData.append('issue_start_date', userNotes.issue_start_date);
-		noteRequestData.append('swelling_size', userNotes.swelling_size);
-		noteRequestData.append('bleeding', userNotes.bleeding);
-		noteRequestData.append('pus_presence', userNotes.pus_presence);
-		noteRequestData.append('tooth_loss', userNotes.tooth_loss);
-		noteRequestData.append('prior_history', userNotes.prior_history);
-		noteRequestData.append('pain_type', userNotes.pain_type);
-		noteRequestData.append('reference_name', userNotes.reference_name);
+		const data = [
+			{
+				name: 'description',
+				data: userNotes.description
+			},
+			{
+				name: 'title',
+				data: userNotes.title
+			},
+			{
+				name: 'place_of_issue',
+				data: userNotes.place_of_issue
+			},
+			{
+				name: 'side_of_issue',
+				data: userNotes.side_of_issue
+			},
+			{
+				name: 'pain_level',
+				data: userNotes.pain_level
+			},
+			{
+				name: 'sensivity_temperature',
+				data: userNotes.sensivity_temperature
+			},
+			{
+				name: 'tender',
+				data: userNotes.tender
+			},
+			{
+				name: 'tooth_issue_identified',
+				data: userNotes.tooth_issue_identified
+			},
+			{
+				name: 'onset',
+				data: userNotes.onset
+			},
+			{
+				name: 'issue_start_date',
+				data: userNotes.issue_start_date
+			},
+			{
+				name: 'swelling_size',
+				data: userNotes.swelling_size
+			},
+			{
+				name: 'bleeding',
+				data: userNotes.bleeding
+			},
+			{
+				name: 'pus_presence',
+				data: userNotes.pus_presence
+			},
+			{
+				name: 'tooth_loss',
+				data: userNotes.tooth_loss
+			},
+			{
+				name: 'prior_history',
+				data: userNotes.prior_history
+			},
+			{
+				name: 'pain_type',
+				data: userNotes.pain_type
+			},
+			{
+				name: 'reference_name',
+				data: userNotes.reference_name
+			}
+		];
+		tempMedia.map(item => {
+			let uri = item.uri;
+			data.push({
+				name: 'media',
+				filename: `note${Date.now()}`,
+				data: RNFetchBlob.wrap(uri),
+				type: item.type
+			});
+		});
+        let noteRequestData = {};
+		noteRequestData.description = userNotes.description;
+		noteRequestData.title = userNotes.title;
+		noteRequestData.place_of_issue = userNotes.place_of_issue;
+		noteRequestData.side_of_issue = userNotes.side_of_issue;
+		noteRequestData.pain_level = userNotes.pain_level;
+		noteRequestData.sensivity_temperature = userNotes.sensivity_temperature;
+		noteRequestData.tender = userNotes.tender;
+		noteRequestData.tooth_issue_identified = userNotes.tooth_issue_identified;
+		noteRequestData.onset = userNotes.onset;
+		noteRequestData.issue_start_date = userNotes.issue_start_date;
+		noteRequestData.swelling_size = userNotes.swelling_size;
+		noteRequestData.bleeding = userNotes.bleeding;
+		noteRequestData.pus_presence = userNotes.pus_presence;
+		noteRequestData.tooth_loss = userNotes.tooth_loss;
+		noteRequestData.prior_history = userNotes.prior_history;
+		noteRequestData.pain_type = userNotes.pain_type;
+		noteRequestData.reference_name = userNotes.reference_name;
 
 		let mediaLength = tempMedia.length;
 
 		for (var i = 0; i < mediaLength; i++) {
-			noteRequestData.append(
-				'media',
-				new Blob([ JSON.stringify(tempMedia[i]) ], { type: 'application/json' })
-			);
+			noteRequestData.media = 
+				new Blob([ JSON.stringify(tempMedia[i]) ], { type: 'application/json' });
 		}
 		if (updateNote === false) {
-			customNoteRequest(
-				noteRequestData,
+			createUserNote(
+				data,
 				onGetUserNoteSuccess,
 				onGetUserNoteFailure
 			);
 		} else {
-			customNoteUpdateRequest(
-				props.route.params.data.id,
-				noteRequestData,
-				onGetUserNoteSuccess,
-				onGetUserNoteFailure
-			);
+			updateUserNote({ data: noteRequestData, id: props.route.params.data.id, onSuccess: (response) => onGetUserNoteSuccess(response), onFailure: onGetUserNoteFailure });
 		}
 	};
 
@@ -208,7 +272,7 @@ function AddQuestion(props) {
 						quality: 1
 					},
 					customResponse => {
-						let source = { uri: customResponse.uri };
+						let source = { ...customResponse };
 						let media;
 						if (response.customButton === 'image') {
 							media = {
@@ -241,7 +305,7 @@ function AddQuestion(props) {
 					}
 				);
 			} else {
-				let source = { uri: response.uri };
+				let source = { ...response };
 				let media = {
 					uri: response.uri,
 					name: response.fileName,
@@ -1222,5 +1286,5 @@ function mapStateToProps(state) {
 
 export default connect(
 	mapStateToProps,
-	{ getUserNote, setUserNote, getDeleteNote, setDeleteNote }
+	{ getUserNote, setUserNote, getDeleteNote, setDeleteNote, createUserNote, updateUserNote }
 )(AddQuestion);

@@ -55,10 +55,11 @@ const DoctorProfile = (props) => {
     const [ initialValues, setInitialValues ] = useState({});
 
     useEffect(() => {
-        getMyProfile(() => {}, () => {});
+        getMyProfile();
     }, []);
 
     useEffect(() => {
+        console.log('====+useruseruseruser++++++', user);
         if(doesUserProfileExists()) {
             const values = {
                 office_name:  user.user_profile[0].office_name,
@@ -431,7 +432,6 @@ const DoctorProfile = (props) => {
 
 const mapStateToProps = (state) => {
 	return {
-        userRole: state.user.user_type,
         user: state.user.user
 	};
 };

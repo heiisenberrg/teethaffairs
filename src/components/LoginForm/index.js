@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 	View,
 	Text,
@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
-import { getLogin, setLogin } from '../../state/actions/user';
+import { getLogin } from '../../state/actions/user';
 
 import loginStyles from './styles';
 import styles from '../SignUpForm/styles';
@@ -33,25 +33,18 @@ const loginSchema = yup.object({
 });
 
 function LoginForm(props) {
-	const { getLogin, navigation, setLogin } = props;
+	const { getLogin, navigation, user } = props;
 	const [ showEye, setShowEye ] = useState(true);
-	const [ errorMessage, setErrorMessage ] = useState('');
+	const [ errorMessage ] = useState('');
 
-	const onGetLoginSuccess = userDetails => {
-		navigation.navigate('AppTabs');
-		setLogin(userDetails);
-	};
-
-	const onGetLoginFailure = error => {
-		if (error.data.detail !== undefined) {
-			setErrorMessage(error.data.detail);
-		} else {
-			setErrorMessage('Please check your password or username');
+	useEffect(() => {
+		if (user && Object.keys(user).length > 0) {
+			navigation.navigate('AppTabs');
 		}
-	};
+	}, [ user ]);
 
 	const handleSubmit = data => {
-		getLogin(data, onGetLoginSuccess, onGetLoginFailure);
+		getLogin(data);
 	};
 
 	const handleForgetPwd = () => {
@@ -181,18 +174,16 @@ function LoginForm(props) {
 	);
 }
 
-function mapStateToProps(state) {
-	return {
-		is_verified: state.user.is_verified,
-		user_type: state.user.user_type,
-		access: state.user.access
-	};
-}
+const mapStateToProps = state => ({
+	user: state.user.user,
+	loading: state.user.loading
+});
+
+const mapDispatchToProps = dispatch => ({
+	getLogin: data => dispatch(getLogin(data))
+});
 
 export default connect(
 	mapStateToProps,
-	{
-		getLogin,
-		setLogin
-	}
+	mapDispatchToProps
 )(LoginForm);

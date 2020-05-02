@@ -12,7 +12,6 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import {
 	getUserList,
-	setUserList,
 	getDeactivateUserId
 } from '../../state/actions/journal';
 
@@ -218,7 +217,7 @@ function FamilyMembers(props) {
 function mapStateToProps(state) {
 	return {
 		usersList: state.journal.usersList,
-		user: state.user
+		user: state.user.user
 	};
 }
 
@@ -226,7 +225,6 @@ export default connect(
 	mapStateToProps,
 	{
 		getUserList,
-		setUserList,
 		getDeactivateUserId
 	}
 )(FamilyMembers);

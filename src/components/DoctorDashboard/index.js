@@ -12,7 +12,7 @@ import styles from './styles';
 import { getQuestions } from '../../state/actions/doctor';
 
 const DoctorDashboard = props => {
-    const { firstName, lastName, questions, navigation, getQuestions } = props;
+    const { user: { first_name, last_name }, questions, navigation, getQuestions } = props;
 
     const [ list, setList ] = useState([]);
 
@@ -87,7 +87,7 @@ const DoctorDashboard = props => {
                 <Text style={ styles.profileNameContainer }>
                     <Text style={ styles.profileName }>hi! </Text>
                     <Text style={ styles.userName }>
-                        {firstName} {lastName}
+                        {first_name} {last_name}
                     </Text>
                 </Text>
                 <Text style={ styles.welcomeText }>welcome to teethAffairs</Text>
@@ -120,8 +120,7 @@ const DoctorDashboard = props => {
 
 const mapStateToProps = (state) => ({
 	questions: state.doctor.questions,
-	firstName: state.user.first_name,
-	lastName: state.user.last_name
+	user: state.user.user
 });
 
 export default connect(

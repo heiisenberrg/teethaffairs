@@ -8,9 +8,10 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import { createReminder, updateReminder } from '../../../state/actions/reminder';
 import { getUsers } from '../../../state/actions/user';
+import Loader from '../../global/Loader';
 
 function CreateReminder(props) {
-	const { route, getUsers, createReminder, userList, navigation, updateReminder, reminderList } = props;
+	const { route, getUsers, createReminder, userList, navigation, updateReminder, loading } = props;
 	const days = [ 'S', 'M', 'T', 'W', 'T', 'F', 'S' ];
 	const [ selectedDays, setSelectedDays ] = useState([]);
 	const [ isDatePickerVisible, setDatePickerVisibility ] = useState(false);
@@ -91,10 +92,6 @@ function CreateReminder(props) {
 		hideDatePicker();
 	};
 
-	const onCreateSuccess = () => {
-		navigation.goBack();
-	};
-
 	const submit = () => {
 		let reminders = [];
 		selectedUser.map((user) => {
@@ -107,9 +104,9 @@ function CreateReminder(props) {
 			});
 		});
 		if (isCreate) {
-			createReminder({ data: reminders }, onCreateSuccess);
+			createReminder({ data: reminders, navigation });
 		} else {
-            updateReminder({ data: reminders[0], id, reminderList, index: route.params.index }, onCreateSuccess, () => console.log('error'));
+            updateReminder({ data: reminders[0], id, index: route.params.index, navigation });
 		}
 	};
 
@@ -152,6 +149,7 @@ function CreateReminder(props) {
 
 	return (
 		<ScrollView style={ styles.container } showsVerticalScrollIndicator={ false }>
+			<Loader loading = { loading } />
 			<View style={ styles.timeContainer }>
 				<Text style={ styles.timeText }>Set Time</Text>
 				<View row jC={ 'flex-start' }>
@@ -248,7 +246,8 @@ function CreateReminder(props) {
 const mapStateToProps = state => {
 	return {
 		userList: state.user.users,
-		reminderList: state.reminder.reminderList
+		reminderList: state.reminder.reminderList,
+		loading: state.reminder.loading
 	};
 };
 

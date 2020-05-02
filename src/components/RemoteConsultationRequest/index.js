@@ -169,19 +169,13 @@ function RemoteConsultationRequest(props) {
 	};
 
 	const submitPin = () => {
-		console.log('submit===>>>>', pinValue);
 		if (pinValue !== '') {
 			console.log('if', { secret_pin: pinValue, question_id: data.id });
-			verifyPin( { secret_pin: pinValue, question_id: data.id }, () => [ setShowModal(!showModal), setModalContent('reject') ], () => setShowError(!showError) );
+			verifyPin( { 
+				secret_pin: pinValue, 
+				question_id: data.id 
+			}, () => [ setShowModal(!showModal), setModalContent('reject') ], () => setShowError(!showError) );
 		}
-	};
-
-	const onSuccess = () => {
-		navigation.goBack();
-	};
-
-	const onFailure = (error) => {
-		console.log('Api failed', error);
 	};
 
 	const submit = type => {
@@ -197,7 +191,7 @@ function RemoteConsultationRequest(props) {
 					response_text: rejectReasons[rejectReason]
 				};
 				console.log('reject readon', rejectData);
-				rejectQuestion({ data: rejectData, id: data.id }, () => onSuccess(), (error) => onFailure(error));
+				rejectQuestion({ data: rejectData, id: data.id, navigation });
 			}
 		} else {
 			if (type === 'answer') {
@@ -209,7 +203,7 @@ function RemoteConsultationRequest(props) {
 					recommended_followup: followUp[selectedFollowup],
 					recommended_medications: selectedDrugs.join(' ')
 				};
-				answerQuestion({ data: answerData, id: data.id }, onSuccess, onFailure);
+				answerQuestion({ data: answerData, id: data.id, navigation });
 			}
 		}
 	};
@@ -386,6 +380,7 @@ function RemoteConsultationRequest(props) {
 							{showDropDown && (
 								<View style={ styles.dropdownContainer }>
 									<ScrollView
+										automaticallyAdjustContentInsets={ false }
 										contentContainerStyle={ styles.flexGrow }
 										showsVerticalScrollIndicator={ false }>
 										{filteredDrugs &&
@@ -436,7 +431,7 @@ function RemoteConsultationRequest(props) {
 					lh={ 16 }
 					w={ 'bold' }
 					c={ '#108F79' }
-					style={ [ styles.mv10, styles.upperCase ] }>
+					style={ { ...styles.mv10, ...styles.upperCase } }>
 					Patient details
 				</Text>
 				<View row center style={ styles.flexColumnContainer }>
@@ -625,6 +620,7 @@ function RemoteConsultationRequest(props) {
 									<TextInput
 										style={ [ styles.p10, styles.flex ] }
 										value={ pinValue }
+										keyboardType={ 'number-pad' }
 										onChangeText={ value => setPinValue(value) }
 									/>
 								</View>

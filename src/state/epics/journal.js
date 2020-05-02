@@ -16,9 +16,9 @@ import {
 	GET_DOCTOR_DETAIL,
 	GET_DENTAL_VISITS,
 	CREATE_DENTAL_VISIT,
-	GET_DELETE_NOTE,
-	SAVE_EDITED_DENTAL_VISIT,
-	DELETE_DENTAL_VISIT
+	GET_DELETE_NOTE
+	// SAVE_EDITED_DENTAL_VISIT
+	// DELETE_DENTAL_VISIT
 } from '../constants/journal';
 import {
 	setAddMember,
@@ -469,7 +469,7 @@ function toEditDentalVisit(response, onSuccess) {
 }
 
 function editSavedDentalVisitEpic(action$) {
-	return action$.pipe(ofType(SAVE_EDITED_DENTAL_VISIT), mergeMap(editDentalVisit));
+	return action$.pipe(ofType(), mergeMap(editDentalVisit));
 }
 
 function editDentalVisit(payload) {
@@ -501,7 +501,7 @@ function toDeleteDentalVisit(response) {
 }
 
 function deleteDentalVisitEpic(action$) {
-	return action$.pipe(ofType(DELETE_DENTAL_VISIT), mergeMap(deleteDentalVisit));
+	return action$.pipe(ofType(), mergeMap(deleteDentalVisit));
 }
 
 function deleteDentalVisit(payload) {

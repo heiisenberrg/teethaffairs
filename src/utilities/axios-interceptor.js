@@ -3,9 +3,16 @@ import store from '../state/store';
 // import { refreshTheToken } from '../state/actions/user';
 import RNFetchBlob from 'rn-fetch-blob';
 import Config from 'react-native-config';
+import localStorage from '../state/localstorage';
 
 const baseHeaders = {
 	'Content-Type': 'application/json'
+};
+
+const checkAuth = async () => {
+	const access = await localStorage.getStringItem('accessToken');
+	console.warn('inside checkAuth==>>>', access);
+	return access;
 };
 
 // const protocol = 'http://';
@@ -17,12 +24,14 @@ export const client = axios.create({
 	baseURL: `${Config.PROTOCOL}${Config.HOST_NAME}`
 });
 
-export const apiCall = (params = {}) => {
-  const data = formData(params);
+export const apiCall = async (params = {}) => {
+	console.warn('inside api call', params);
+    const data = await formData(params);
 	switch (params.method) {
 		case 'GET':
            return client.get(data.url, data.headers);
 		case 'POST':
+			console.warn('inside api call case', data);
            return client.post(data.url, data.data, data.headers);
 		case 'PUT':
            return client.put(data.url, data.data, data.headers);
@@ -35,7 +44,7 @@ export const apiCall = (params = {}) => {
 	}
 };
 
-const formData = (data = {}) => {
+const formData = async (data = {}) => {
 	if (
 		data.headers &&
 		Object.keys(data.headers).length > 0 &&
@@ -81,10 +90,11 @@ const formData = (data = {}) => {
 	} else {
 		data.headers = baseHeaders;
 	}
+	const accessToken = await checkAuth();
 	const token =
 		process.env.NODE_ENV === 'test'
 			? '123456'
-			: 'Bearer ' + store.getState().user.access;
+			: 'Bearer ' + accessToken;
 	if (data.withCredentials) {
 		client.defaults.headers.common['Authorization'] = token;
 	}
@@ -122,7 +132,7 @@ client.interceptors.response.use(
 const refreshTokenAndReattemptRequest = error => {
 	try {
 		const { response: errorResponse } = error;
-		let currentRefreshToken = store.getState().user.refresh;
+		let currentRefreshToken = store.getState().user.user.refresh;
 		if (process.env.NODE_ENV === 'test') {
 			currentRefreshToken = '123456';
 		}
@@ -135,7 +145,7 @@ const refreshTokenAndReattemptRequest = error => {
 		}
 		const retryOriginalRequest = errorResponse.config;
 		errorResponse.config.headers.AUTHORIZATION = `Bearer ${
-			store.getState().user.access
+			store.getState().user.user.access
 		}`;
 		if (process.env.NODE_ENV === 'test') {
 			errorResponse.config.headers.afterRefresh = 'true';
@@ -147,12 +157,12 @@ const refreshTokenAndReattemptRequest = error => {
 };
 
 export const uploadFile = (params) => {
-	const { method, url, headerConfig, data } = params;
+	const { method, url, data, withCredentials = false } = params;
+	let { headers } = params;
 	const requestUrl = `${client.defaults.baseURL}/${url}`;
-	const headers =  {
-		Authorization: `Bearer ${store.getState().user.access}`,
-		...headerConfig
-	};
+	if (withCredentials) {
+		headers.Authorization = `Bearer ${store.getState().user.user.access}`;
+	}
 	return RNFetchBlob.fetch(method, requestUrl, headers, data)
 	.then(response => response.json())
 	.then(response => response)

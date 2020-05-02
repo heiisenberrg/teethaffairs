@@ -5,17 +5,17 @@ import Profile from '../../components/Profile';
 import DoctorHistory from '../../components/DoctorHistory';
 
 function History(props) {
-	const { userRole } = props;
+	const { user } = props;
 
 	return (
-		userRole === 'DOCTOR' 
+		user && user.user_type === 'DOCTOR' 
 		? <DoctorHistory { ...props } />
 		: <Profile { ...props } />	);
 }
 
 const mapStateToProps = (state) => {
 	return {
-		userRole: state.user.user_type
+		user: state.user.user
 	};
 };
 

@@ -1,72 +1,75 @@
-import {
-	GET_REMINDER_LIST,
-	SET_REMINDER_LIST,
-	UPDATE_REMINDER,
-	DELETE_REMINDER,
-	CREATE_REMINDER,
-	SET_REMINDER,
-	GET_REMINDER_LIST_BASED_ON_FILTER
-} from '../constants/reminder';
+import constants from '../constants/reminder.constant';
 
-function fetchReminders() {
-	return {
-		type: GET_REMINDER_LIST
-	};
-}
+export const fetchReminders = () => ({
+	type: constants.GET_REMINDER_LIST
+});
 
-function setReminders(reminderList) {
-	return {
-		type : SET_REMINDER_LIST,
-		payload : reminderList
-	};
-}
+export const fetchRemindersSuccess = response => ({
+	type: constants.GET_REMINDER_LIST_SUCCESS,
+	response
+});
 
-function updateReminder(data, onSuccess, onFailure) {
-	return {
-		type: UPDATE_REMINDER,
-		data,
-		onSuccess,
-		onFailure
-	};
-}
+export const fetchRemindersFailure = error => ({
+	type: constants.GET_REMINDER_LIST_FAILURE,
+	error
+});
 
-function deleteReminder(data, onSuccess, onFailure) {
-	return {
-		type: DELETE_REMINDER,
-		data,
-		onSuccess,
-		onFailure
-	};
-}
+export const createReminder = data => ({
+	type: constants.CREATE_REMINDER,
+	data
+});
 
-function createReminder(data, onSuccess) {
-	return {
-		type: CREATE_REMINDER,
-		data, 
-		onSuccess
-	};
-}
+export const createReminderSuccess = response => ({
+	type: constants.CREATE_REMINDER_SUCCESS,
+	response
+});
 
-function setReminderResponse(response) {
-	return {
-		type : SET_REMINDER,
-		payload : response
-	};
-}
+export const createReminderFailure = error => ({
+	type: constants.CREATE_REMINDER_FAILURE,
+	error
+});
 
-function fetchReminderBasedOnFilter(data) {
-	return {
-		type: GET_REMINDER_LIST_BASED_ON_FILTER,
-		data
-	};
-}
+export const updateReminder = data => ({
+	type: constants.UPDATE_REMINDER,
+	data
+});
 
-export {
-	fetchReminders,
-	setReminders,
-	updateReminder,
-	deleteReminder,
-	createReminder,
-	setReminderResponse,
-	fetchReminderBasedOnFilter
-};
+export const updateReminderSuccess = response => ({
+	type: constants.UPDATE_REMINDER_SUCCESS,
+	response
+});
+
+export const updateReminderFailure = error => ({
+	type: constants.UPDATE_REMINDER_FAILURE,
+	error
+});
+
+export const deleteReminder = data => ({
+	type: constants.DELETE_REMINDER,
+	data
+});
+
+export const deleteReminderSuccess = response => ({
+	type: constants.DELETE_REMINDER_SUCCESS,
+	response
+});
+
+export const deleteReminderFailure = error => ({
+	type: constants.DELETE_REMINDER_FAILURE,
+	error
+});
+
+export const fetchReminderBasedOnFilter = data => ({
+	type: constants.GET_REMINDER_LIST_BASED_ON_FILTER,
+	data
+});
+
+export const fetchReminderBasedOnFilterSuccess = response => ({
+	type: constants.GET_REMINDER_LIST_BASED_ON_FILTER_SUCCESS,
+	response
+});
+
+export const fetchReminderBasedOnFilterFailure = error => ({
+	type: constants.GET_REMINDER_LIST_BASED_ON_FILTER_FAILURE,
+	error
+});

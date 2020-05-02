@@ -1,0 +1,90 @@
+import { takeLatest } from 'redux-saga/effects';
+
+import { constants } from '../constants';
+import {
+	fetchReminderList,
+	createReminder,
+	updateReminder,
+	deleteReminder,
+	fetchReminderListBasedOnFilter
+} from './reminder.saga';
+import {
+	getDentalQuestions,
+	answerQuestions,
+	rejectQuestions,
+	verifySecretPin,
+	updateDoctorProfile
+} from './doctor.saga';
+import {
+	fetchAddMember,
+	fetchUserList,
+	fetchNote,
+	fetchUserDeactivateId,
+	fetchNoteList,
+	fetchDoctorList,
+	getDentalVisits,
+	createDentalVisit,
+	fetchDeleteNotes,
+	createUserNote,
+	editDentalVisit,
+	deleteDentalVisit,
+	updateUserNote,
+	fetchSendQuestion
+} from './journal.saga';
+
+import {
+	fetchLogin,
+	fetchSignup,
+	fetchVerifyEmail,
+	fetchForgetPassword,
+	fetchResetPin,
+	fetchLogOut,
+	fetchUser,
+	updateUser,
+	getUsers,
+	getMyProfile
+} from './user.saga';
+
+export default function* saga() {
+	// reminder
+	yield takeLatest(constants.GET_REMINDER_LIST, fetchReminderList);
+	yield takeLatest(constants.CREATE_REMINDER, createReminder);
+	yield takeLatest(constants.UPDATE_REMINDER, updateReminder);
+	yield takeLatest(constants.DELETE_REMINDER, deleteReminder);
+	yield takeLatest(constants.GET_REMINDER_LIST_BASED_ON_FILTER, fetchReminderListBasedOnFilter);
+
+	//doctor
+	yield takeLatest(constants.GET_QUESTIONS, getDentalQuestions);
+	yield takeLatest(constants.ANSWER_QUESTION, answerQuestions);
+	yield takeLatest(constants.REJECT_QUESTION, rejectQuestions);
+	yield takeLatest(constants.VERIFY_PIN, verifySecretPin);
+	yield takeLatest(constants.UPDATE_DOCTOR_PROFILE, updateDoctorProfile);
+
+	//journal
+	yield takeLatest(constants.GET_ADD_MEMBER, fetchAddMember);
+	yield takeLatest(constants.GET_USER_LIST, fetchUserList);
+	yield takeLatest(constants.GET_USER_NOTE, fetchNote);
+	yield takeLatest(constants.GET_DEACTIVATE_USER_ID, fetchUserDeactivateId);
+	yield takeLatest(constants.GET_NOTE_LIST, fetchNoteList);
+	yield takeLatest(constants.GET_DOCTORS_LIST, fetchDoctorList);
+	yield takeLatest(constants.GET_QUESTION, fetchSendQuestion);
+	yield takeLatest(constants.GET_DENTAL_VISITS, getDentalVisits);
+	yield takeLatest(constants.CREATE_DENTAL_VISIT, createDentalVisit);
+	yield takeLatest(constants.GET_DELETE_NOTE, fetchDeleteNotes);
+	yield takeLatest(constants.SAVE_EDITED_DENTAL_VISIT, editDentalVisit);
+	yield takeLatest(constants.DELETE_DENTAL_VISIT, deleteDentalVisit);
+	yield takeLatest(constants.CREATE_USER_NOTE, createUserNote);
+	yield takeLatest(constants.UPDATE_USER_NOTE, updateUserNote);
+
+	//user
+	yield takeLatest(constants.GET_LOGIN, fetchLogin);
+	yield takeLatest(constants.GET_SIGNUP, fetchSignup);
+	yield takeLatest(constants.GET_ONE_TIME_PASSWORD, fetchVerifyEmail);
+	yield takeLatest(constants.GET_FORGET_EMAIL, fetchForgetPassword);
+	yield takeLatest(constants.GET_PASSWORD, fetchResetPin);
+	yield takeLatest(constants.GET_LOGOUT, fetchLogOut);
+	yield takeLatest(constants.GET_USER, fetchUser);
+	yield takeLatest(constants.UPDATE_USER, updateUser);
+	yield takeLatest(constants.GET_USERS, getUsers);
+	yield takeLatest(constants.GET_MY_PROFILE, getMyProfile);
+}

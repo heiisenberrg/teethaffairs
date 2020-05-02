@@ -1,264 +1,228 @@
-import {
-	GET_ADD_MEMBER,
-	SET_ADD_MEMBER,
-	GET_USER_LIST,
-	SET_USER_LIST,
-	SET_USER_NOTE,
-	GET_USER_NOTE,
-	GET_DEACTIVATE_USER_ID,
-	SET_DEACTIVATE_USER_ID,
-	GET_NOTE_LIST,
-	SET_NOTE_LIST,
-	GET_DOCTORS_LIST,
-	SET_DOCTORS_LIST,
-	GET_QUESTION,
-	SET_QUESTION,
-	GET_DOCTOR_DETAIL,
-	SET_DOCTOR_DETAIL,
-	GET_DELETE_NOTE,
-	SET_DELETE_NOTE,
-	GET_DENTAL_VISITS,
-	SET_DENTAL_VISITS,
-	CREATE_DENTAL_VISIT,
-	SET_CREATE_DENTAL_VISIT,
-	SAVE_EDITED_DENTAL_VISIT,
-	SET_SAVE_EDITED_DENTAL_VISIT,
-	DELETE_DENTAL_VISIT,
-	SET_DELETE_DENTAL_VISIT
-} from '../constants/journal';
+import constants from '../constants/journal.constant';
 
-function getAddMember(userInputData, onFailure, onSuccess) {
-	return {
-		type: GET_ADD_MEMBER,
-		payload: userInputData,
-		onFailure,
-		onSuccess
-	};
-}
+export const getAddMember = (data) => ({
+	type: constants.GET_ADD_MEMBER,
+	data
+});
 
-function setAddMember(AddMembersResponse) {
-	return {
-		type: SET_ADD_MEMBER,
-		payload: AddMembersResponse
-	};
-}
+export const getAddMemberSuccess = response => ({
+	type: constants.GET_ADD_MEMBER_SUCCESS,
+	response
+});
 
-function getUserList(onFailure) {
-	return {
-		type: GET_USER_LIST,
-		onFailure
-	};
-}
+export const getAddMemberFailure = error => ({
+	type: constants.GET_ADD_MEMBER_FAILURE,
+	error
+});
 
-function setUserList(userList) {
-	return {
-		type: SET_USER_LIST,
-		payload: userList
-	};
-}
+export const getUserList = () => ({
+	type: constants.GET_USER_LIST
+});
 
-function setUserNote(userNote) {
-	return {
-		type: SET_USER_NOTE,
-		payload: userNote
-	};
-}
+export const getUserListSuccess = response => ({
+	type: constants.GET_USER_LIST_SUCCESS,
+	response
+});
 
-function getUserNote(userQueries, onFailure) {
-	return {
-		type: GET_USER_NOTE,
-		payload: userQueries,
-		onFailure
-	};
-}
+export const getUserListFailure = error => ({
+	type: constants.GET_USER_LIST_FAILURE,
+	error
+});
 
-function getDeactivateUserId(data, onSuccess, onFailure) {
-	return {
-		type: GET_DEACTIVATE_USER_ID,
-		payload: { ...data },
-		onSuccess,
-		onFailure
-	};
-}
+export const getUserNote = (data) => ({
+	type: constants.GET_USER_NOTE,
+	data
+});
 
-function setDeactivateUserId(DeactivatedUser) {
-	return {
-		type: SET_DEACTIVATE_USER_ID,
-		payload: DeactivatedUser
-	};
-}
+export const getUserNoteSuccess = response => ({
+	type: constants.GET_USER_NOTE_SUCCESS,
+	response
+});
 
-function setNotes(notesList) {
-	return {
-		type: SET_NOTE_LIST,
-		payload: notesList
-	};
-}
+export const getUserNoteFailure = error => ({
+	type: constants.GET_USER_NOTE_FAILURE,
+	error
+});
 
-function fetchNotes(userID, onSuccess, onFailure) {
-	return {
-		type: GET_NOTE_LIST,
-		payload: userID,
-		onSuccess,
-		onFailure
-	};
-}
-function getDoctorsList(zipcode, onFailure) {
-	return {
-		type: GET_DOCTORS_LIST,
-		payload: zipcode,
-		onFailure
-	};
-}
+export const getDeactivateUserId = (data) => ({
+	type: constants.GET_DEACTIVATE_USER_ID,
+	data
+});
 
-function setDoctorsList(doctorsList) {
-	return {
-		type: SET_DOCTORS_LIST,
-		payload: doctorsList
-	};
-}
-function getQuestion(userQuestions, userNoteId, questions, onSuccess, onFailure) {
-	return {
-		type: GET_QUESTION,
-		payload: userQuestions,
-		userNoteId,
-		payload1: questions,
-		onSuccess,
-		onFailure
-	};
-}
+export const getDeactivateUserIdSuccess = response => ({
+	type: constants.GET_DEACTIVATE_USER_ID_SUCCESS,
+	response
+});
 
-function setQuestion(sendQuestionResponse) {
-	return {
-		type: SET_QUESTION,
-		payload: sendQuestionResponse
-	};
-}
+export const getDeactivateUserIdFailure = error => ({
+	type: constants.GET_DEACTIVATE_USER_ID_FAILURE,
+	error
+});
 
-function getDoctorDetail(dentist_data) {
-	return {
-		type: GET_DOCTOR_DETAIL,
-		payload: dentist_data
-	};
-}
-function setDoctorDetail(dentist_detail) {
-	return {
-		type: SET_DOCTOR_DETAIL,
-		payload: dentist_detail
-	};
-}
-function getDeleteNote(noteId, onSuccess, onFailure ) {
-	return {
-		type: GET_DELETE_NOTE,
-		payload: noteId,
-		onSuccess,
-		onFailure
-	};
-}
+export const fetchNotes = (data) => ({
+	type: constants.GET_NOTE_LIST,
+	data
+});
 
-function setDeleteNote(deleteNoteResponse) {
-	return {
-		type: SET_DELETE_NOTE,
-		payload: deleteNoteResponse
-	};
-}
+export const fetchNotesSuccess = response => ({
+	type: constants.GET_NOTE_LIST_SUCCESS,
+	response
+});
 
-function setDentalVisits(dentalVisits) {
-	return {
-		type : SET_DENTAL_VISITS,
-		payload : dentalVisits
-	};
-}
+export const fetchNotesFailure = error => ({
+	type: constants.GET_NOTE_LIST_FAILURE,
+	error
+});
 
-function getDentalVisits(userId, onSuccess, onFailure) {
-	return {
-		type: GET_DENTAL_VISITS,
-		payload: {
-			userId
-		},
-		onSuccess,
-		onFailure
-	};
-}
+export const getDoctorsList = (data) => ({
+	type: constants.GET_DOCTORS_LIST,
+	data
+});
 
-function createDentalVisits(data, onSuccess, onFailure) {
-	return {
-		type: CREATE_DENTAL_VISIT,
-		payload: {
-			data: data
-		},
-		onSuccess,
-		onFailure
-	};
-}
+export const getDoctorsListSuccess = response => ({
+	type: constants.GET_DOCTORS_LIST_SUCCESS,
+	response
+});
 
-function setCreateDentalVisits(dentalVisitResponse) {
-	return {
-		type: SET_CREATE_DENTAL_VISIT,
-		payload: dentalVisitResponse
-	};
-}
+export const getDoctorsListFailure = error => ({
+	type: constants.GET_DOCTORS_LIST_FAILURE,
+	error
+});
 
-function updateDentalVisit(id, data, onSuccess, onFailure) {
-	return {
-		type: SAVE_EDITED_DENTAL_VISIT,
-		payload: {
-			data,
-			id
-		},
-		onSuccess,
-		onFailure
-	};
-}
+export const getQuestion = (data, onSuccess, onFailure) => ({
+	type: constants.GET_QUESTION,
+	data,
+	onSuccess,
+	onFailure
+});
 
-function setUpdateDentalVisit(response) {
-	return {
-		type: SET_SAVE_EDITED_DENTAL_VISIT,
-		payload: response
-	};
-}
+export const getQuestionSuccess = response => ({
+	type: constants.GET_QUESTION_SUCCESS,
+	response
+});
 
-function deleteDentalVisit(id, onSuccess, onFailure) {
-	return {
-		type: DELETE_DENTAL_VISIT,
-		id,
-		onSuccess,
-		onFailure
-	};
-}
+export const getQuestionFailure = error => ({
+	type: constants.GET_QUESTION_FAILURE,
+	error
+});
 
-function setDeleteDentalVisit(response) {
-	return {
-		type: SET_DELETE_DENTAL_VISIT,
-		payload: response
-	};
-}
+export const createUserNote = (data, onSuccess, onFailure) => ({
+	type: constants.CREATE_USER_NOTE,
+	data,
+	onSuccess,
+	onFailure
+});
 
-export {
-	getAddMember,
-	setAddMember,
-	getUserList,
-	setUserList,
-	setUserNote,
-	getUserNote,
-	setDeactivateUserId,
-	getDeactivateUserId,
-	setNotes,
-	fetchNotes,
-	setDoctorsList,
-	getDoctorsList,
-	getQuestion,
-	setQuestion,
-	getDoctorDetail,
-	setDoctorDetail,
-	getDeleteNote,
-	setDeleteNote,
-	setDentalVisits,
-	getDentalVisits,
-	createDentalVisits,
-	setCreateDentalVisits,
-	updateDentalVisit,
-	setUpdateDentalVisit,
-	deleteDentalVisit,
-	setDeleteDentalVisit
-};
+export const createUserNoteSuccess = response => ({
+	type: constants.CREATE_USER_NOTE_SUCCESS,
+	response
+});
+
+export const createUserNoteFailure = error => ({
+	type: constants.CREATE_USER_NOTE_FAILURE,
+	error
+});
+
+export const getDeleteNote = (data, onSuccess, onFailure) => ({
+	type: constants.GET_DELETE_NOTE,
+	data,
+	onSuccess,
+	onFailure
+});
+
+export const getDeleteNoteSuccess = response => ({
+	type: constants.GET_DELETE_NOTE_SUCCESS,
+	response
+});
+
+export const getDeleteNoteFailure = error => ({
+	type: constants.GET_DELETE_NOTE_FAILURE,
+	error
+});
+
+export const getDentalVisits = (data, onSuccess, onFailure) => ({
+	type: constants.GET_DENTAL_VISITS,
+	data,
+	onSuccess,
+	onFailure
+});
+
+export const getDentalVisitsSuccess = response => ({
+	type: constants.GET_DENTAL_VISITS_SUCCESS,
+	response
+});
+
+export const getDentalVisitsFailure = error => ({
+	type: constants.GET_DENTAL_VISITS_FAILURE,
+	error
+});
+
+export const createDentalVisits = (data, onSuccess, onFailure) => ({
+	type: constants.CREATE_DENTAL_VISIT,
+	data,
+	onSuccess,
+	onFailure
+});
+
+export const createDentalVisitsSuccess = response => ({
+	type: constants.CREATE_DENTAL_VISIT_SUCCESS,
+	response
+});
+
+export const createDentalVisitsFailure = error => ({
+	type: constants.CREATE_DENTAL_VISIT_FAILURE,
+	error
+});
+
+export const updateDentalVisit = (id, data, onSuccess, onFailure) => ({
+	type: constants.SAVE_EDITED_DENTAL_VISIT,
+	id,
+	data,
+	onSuccess,
+	onFailure
+});
+
+export const updateDentalVisitSuccess = response => ({
+	type: constants.SAVE_EDITED_DENTAL_VISIT_SUCCESS,
+	response
+});
+
+export const updateDentalVisitFailure = error => ({
+	type: constants.SAVE_EDITED_DENTAL_VISIT_FAILURE,
+	error
+});
+
+export const deleteDentalVisit = (data) => ({
+	type: constants.DELETE_DENTAL_VISIT,
+	data
+});
+
+export const deleteDentalVisitSuccess = response => ({
+	type: constants.DELETE_DENTAL_VISIT_SUCCESS,
+	response
+});
+
+export const deleteDentalVisitFailure = error => ({
+	type: constants.DELETE_DENTAL_VISIT_FAILURE,
+	error
+});
+
+export const updateUserNote = (data) => ({
+	type: constants.UPDATE_USER_NOTE,
+	data
+});
+
+export const updateUserNoteSuccess = response => ({
+	type: constants.UPDATE_USER_NOTE_SUCCESS,
+	response
+});
+
+export const updateUserNoteFailure = error => ({
+	type: constants.UPDATE_USER_NOTE_FAILURE,
+	error
+});
+
+export const setDoctorDetail = data => ({
+	type: constants.SET_DOCTOR,
+	data
+});

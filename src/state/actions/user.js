@@ -1,178 +1,148 @@
-import {
-	GET_LOGIN,
-	SET_LOGIN,
-	GET_SIGNUP,
-	SET_SIGNUP,
-	GET_FORGET_EMAIL,
-	SET_FORGET_PASSWORD,
-	GET_ONE_TIME_PASSWORD,
-	SET_ONE_TIME_PASSWORD,
-	GET_PASSWORD,
-	SET_PASSWORD,
-	GET_LOGOUT,
-	SET_LOGOUT,
-	GET_USER,
-	SET_USER,
-	GET_USERS,
-	SET_USERS,
-	GET_MY_PROFILE,
-	SET_MY_PROFILE
-} from '../constants/user';
+import constants from '../constants/user.constant';
 
-function getLogin(userInputData, onSuccess, onFailure) {
-	return {
-		type: GET_LOGIN,
-		payload: userInputData,
-		onSuccess,
-		onFailure
-	};
-}
+export const getLogin = data => ({
+	type: constants.GET_LOGIN,
+	data
+});
 
-function setLogin(userResponse) {
-	return {
-		type: SET_LOGIN,
-		payload: userResponse
-	};
-}
+export const getLoginSuccess = response => ({
+	type: constants.GET_LOGIN_SUCCESS,
+	response
+});
 
-function getSignUp(userInputData, onSuccess, onFailure) {
-	return {
-		type: GET_SIGNUP,
-		payload: userInputData,
-		onSuccess,
-		onFailure
-	};
-}
+export const getLoginFailure = error => ({
+	type: constants.GET_LOGIN_FAILURE,
+	error
+});
 
-function setSignUp(userSignupResponse) {
-	return {
-		type: SET_SIGNUP,
-		payload: userSignupResponse
-	};
-}
+export const getSignUp = data => ({
+	type: constants.GET_SIGNUP,
+	data
+});
 
-function getForgetEmail(userInputData, onSuccess, onFailure) {
-	return {
-		type: GET_FORGET_EMAIL,
-		payload: userInputData,
-		onSuccess,
-		onFailure
-	};
-}
+export const getSignUpSuccess = response => ({
+	type: constants.GET_SIGNUP_SUCCESS,
+	response
+});
 
-function setForgetPassword(resetPasswordResponse) {
-	return {
-		type: SET_FORGET_PASSWORD,
-		payload: resetPasswordResponse
-	};
-}
+export const getSignUpFailure = error => ({
+	type: constants.GET_SIGNUP_FAILURE,
+	error
+});
 
-function getOneTimePassword(userData, onSuccess, onFailure) {
-	return {
-		type: GET_ONE_TIME_PASSWORD,
-		payload: userData,
-		onSuccess,
-		onFailure
-	};
-}
+export const getForgetEmail = data => ({
+	type: constants.GET_FORGET_EMAIL,
+	data
+});
 
-function setOneTimePassword(verifiedUserResponse) {
-	return {
-		type: SET_ONE_TIME_PASSWORD,
-		payload: verifiedUserResponse
-	};
-}
+export const getForgetEmailSuccess = response => ({
+	type: constants.GET_FORGET_EMAIL_SUCCESS,
+	response
+});
 
-function setPassword(resetPinResponse) {
-	return {
-		type: SET_PASSWORD,
-		payload: resetPinResponse
-	};
-}
+export const getForgetEmailFailure = error => ({
+	type: constants.GET_FORGET_EMAIL_FAILURE,
+	error
+});
 
-function getPassword(userInputData, onSuccess, onFailure) {
-	return {
-		type: GET_PASSWORD,
-		payload: userInputData,
-		onSuccess,
-		onFailure
-	};
-}
+export const getOneTimePassword = data => ({
+	type: constants.GET_ONE_TIME_PASSWORD,
+	data
+});
 
-function getLogOut(onSuccess, onFailure) {
-	return {
-		type: GET_LOGOUT,
-		onSuccess,
-		onFailure
-	};
-}
+export const getOneTimePasswordSuccess = response => ({
+	type: constants.GET_ONE_TIME_PASSWORD_SUCCESS,
+	response
+});
 
-function setLogOut() {
-	return {
-		type: SET_LOGOUT
-	};
-}
+export const getOneTimePasswordFailure = error => ({
+	type: constants.GET_ONE_TIME_PASSWORD_FAILURE,
+	error
+});
 
-function getUser(onSuccess, onFailure) {
-	return {
-		type: GET_USER,
-		onSuccess,
-		onFailure
-	};
-}
+export const getPassword = data => ({
+	type: constants.GET_PASSWORD,
+	data
+});
 
-function setUser(userResponse) {
-	return {
-		type: SET_USER,
-		payload: userResponse
-	};
-}
+export const getPasswordSuccess = response => ({
+	type: constants.GET_PASSWORD_SUCCESS,
+	response
+});
 
-function getUsers() {
-	return {
-		type: GET_USERS
-	};
-}
+export const getPasswordFailure = error => ({
+	type: constants.GET_PASSWORD_FAILURE,
+	error
+});
 
-function setUsers(userList) {
-	return {
-		type: SET_USERS,
-		payload: userList
-	};
-}
+export const getLogOut = (data) => ({
+	type: constants.GET_LOGOUT,
+	data
+});
 
-function getMyProfile(onSuccess, onFailure) {
-	return {
-		type: GET_MY_PROFILE,
-		onSuccess,
-		onFailure
-	};
-}
+export const getLogOutSuccess = response => ({
+	type: constants.GET_LOGOUT_SUCCESS,
+	response
+});
 
-function setMyProfile(response) {
-	return {
-		type: SET_MY_PROFILE,
-		payload: response
-	};
-}
+export const getLogOutFailure = error => ({
+	type: constants.GET_LOGOUT_FAILURE,
+	error
+});
 
-export {
-	getLogin,
-	setLogin,
-	getSignUp,
-	setSignUp,
-	getForgetEmail,
-	setForgetPassword,
-	getOneTimePassword,
-	setOneTimePassword,
-	getPassword,
-	setPassword,
-	setLogOut,
-	getLogOut,
-	getUser,
-	setUser,
-	getUsers,
-	setUsers,
-	getMyProfile,
-	setMyProfile
-};
+export const getUser = () => ({
+	type: constants.GET_USER
+});
+
+export const getUserSuccess = response => ({
+	type: constants.GET_USER_SUCCESS,
+	response
+});
+
+export const getUserFailure = error => ({
+	type: constants.GET_USER_FAILURE,
+	error
+});
+
+export const getUsers = () => ({
+	type: constants.GET_USERS
+});
+
+export const getUsersSuccess = response => ({
+	type: constants.GET_USERS_SUCCESS,
+	response
+});
+
+export const getUsersFailure = error => ({
+	type: constants.GET_USERS_FAILURE,
+	error
+});
+
+export const editUser = data => ({
+	type: constants.UPDATE_USER,
+	data
+});
+
+export const editUserSuccess = response => ({
+	type: constants.UPDATE_USER_SUCCESS,
+	response
+});
+
+export const editUserFailure = error => ({
+	type: constants.UPDATE_USER_FAILURE,
+	error
+});
+
+export const getMyProfile = () => ({
+	type: constants.GET_MY_PROFILE
+});
+
+export const getMyProfileSuccess = response => ({
+	type: constants.GET_MY_PROFILE_SUCCESS,
+	response
+});
+
+export const getMyProfileFailure = error => ({
+	type: constants.GET_MY_PROFILE_FAILURE,
+	error
+});

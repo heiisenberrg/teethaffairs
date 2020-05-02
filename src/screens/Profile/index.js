@@ -5,10 +5,10 @@ import UpdateProfile from '../../components/UpdateProfile';
 import DoctorProfile from '../../components/DoctorProfile';
 
 function Profile(props) {
-	const { userRole } = props;
+	const { user } = props;
 
 	return (
-		userRole === 'DOCTOR' 
+		user && user.user_type === 'DOCTOR' 
 		? <DoctorProfile { ...props } />
 		: <UpdateProfile { ...props } />
 	);
@@ -16,7 +16,7 @@ function Profile(props) {
 
 const mapStateToProps = (state) => {
 	return {
-		userRole: state.user.user_type
+		user: state.user.user
 	};
 };
 

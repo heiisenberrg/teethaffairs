@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useLayoutEffect } from 'react';
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -16,43 +16,23 @@ import logout from '../../assets/logout.png';
 import { getLogOut, setLogOut } from '../../state/actions/user';
 
 function Settings(props) {
-	const { getLogOut, navigation, is_verified, user_type } = props;
-	console.log(navigation);
+	const { getLogOut, navigation, user } = props;
 
 	useLayoutEffect(() => {
-		if(user_type === 'PRIMARY-PATIENT') {
+		if(user && user.user_type === 'PRIMARY-PATIENT') {
 			navigation.setOptions({ headerShown: false });
 		}
 	}, [ navigation ]);
 
 	const logoutHandler = () => {
-		getLogOut(onGetLogOutSuccess, onGetLogOutFailure);
+		getLogOut(navigation);
 	};
 
-	const onGetLogOutSuccess = data => {
-		console.log('api success', data);
-	};
-	const onGetLogOutFailure = error => {
-		console.log('fail', error.data.detail);
-	};
-
-	useEffect(
-		function storeLoginResponse() {
-			storeResponseData();
-		},
-		[ is_verified ]
-	);
-
-	const storeResponseData = () => {
-		if (is_verified === false) {
-			navigation.navigate('Login');
-		}
-	};
 	return (
 		<View style={ styles.container }>
 			<ScrollView>
 				{
-					user_type === 'PRIMARY-PATIENT' &&
+					user && user.user_type === 'PRIMARY-PATIENT' &&
 					<LinearGradient
 						locations={ [ 0.1, 0.5, 0.8 ] }
 						colors={ [ '#0A8A7B', '#33D197', '#00C57D' ] }
@@ -84,18 +64,21 @@ function Settings(props) {
 						<Text style={ styles.buttonText }>Profile</Text>
 					</View>
 				</TouchableOpacity>
-				<TouchableOpacity
-					style={ styles.linkContainer }
-					onPress={ () => navigation.navigate('AddMembers') }>
-					<View style={ styles.imageContainer }>
-						<Image source={ history } style={ styles.icons } />
-					</View>
-					<View style={ styles.buttonTextContainer }>
-						<Text style={ styles.buttonText }>Manage Family Members</Text>
-					</View>
-				</TouchableOpacity>
 				{
-					user_type === 'PRIMARY-PATIENT' &&
+					user && user.user_type !== 'DOCTOR' &&
+					<TouchableOpacity
+						style={ styles.linkContainer }
+						onPress={ () => navigation.navigate('AddMembers') }>
+						<View style={ styles.imageContainer }>
+							<Image source={ history } style={ styles.icons } />
+						</View>
+						<View style={ styles.buttonTextContainer }>
+							<Text style={ styles.buttonText }>Manage Family Members</Text>
+						</View>
+					</TouchableOpacity>
+				}
+				{
+					user && user.user_type === 'PRIMARY-PATIENT' &&
 					<TouchableOpacity
 						style={ styles.linkContainer }
 						onPress={ () => navigation.navigate('Payment') }>
@@ -152,8 +135,7 @@ function Settings(props) {
 
 function mapStateToProps(state) {
 	return {
-		is_verified: state.user.is_verified,
-		user_type: state.user.user_type
+		user: state.user.user
 	};
 }
 

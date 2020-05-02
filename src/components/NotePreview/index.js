@@ -19,7 +19,6 @@ import {
 } from '../../state/actions/journal';
 import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
-import AsyncStorage from '@react-native-community/async-storage';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 
 var date = new Date().getDate();
@@ -58,9 +57,8 @@ function NotePreview(props) {
 		alert('Something went wrong');
 	};
 
-	const handleRemote = async (id) => {
-		await AsyncStorage.setItem('noteId', id);
-		navigation.navigate('RemoteConsultation');
+	const handleRemote = (id) => {
+		navigation.navigate('RemoteConsultation', { id });
 	};
 
 	const handleEdit = () => {

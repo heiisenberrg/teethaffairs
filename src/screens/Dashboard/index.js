@@ -2,20 +2,28 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Profile from '../../components/Profile';
+import Loader from '../../components/global/Loader';
 import DoctorDashboard from '../../components/DoctorDashboard';
 
 function Dashboard(props) {
-	const { userRole } = props;
+	const { user, loading } = props;
 
 	return (
-		userRole === 'DOCTOR' 
-		? <DoctorDashboard { ...props } />
-		: <Profile { ...props } />	);
+		<>
+			{
+				user && user.user_type === 'DOCTOR' 
+				? <DoctorDashboard { ...props } />
+				: <Profile { ...props } />
+			}
+			<Loader loading = { loading } />
+		</>
+	);
 }
 
 const mapStateToProps = (state) => {
 	return {
-		userRole: state.user.user_type
+		user: state.user.user,
+		loading: state.doctor.loading
 	};
 };
 

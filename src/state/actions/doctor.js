@@ -1,84 +1,77 @@
-import {
-    GET_QUESTIONS,
-	SET_QUESTIONS,
-	ANSWER_QUESTION,
-	REJECT_QUESTION,
-	VERIFY_PIN,
-	API_FAILURE,
-	API_SUCCESS,
-	UPDATE_DOCTOR_PROFILE
-} from '../constants/doctor';
+import constants from '../constants/doctor.constant';
 
-const getQuestions = (onSuccess, onFailure) => {
-	return {
-		type: GET_QUESTIONS,
-		onSuccess,
-		onFailure
-	};
-};
+export const getQuestions = () => ({
+	type: constants.GET_QUESTIONS
+});
 
-const setQuestions = (response) => {
-	return {
-        type: SET_QUESTIONS,
-        payload: response
-	};
-};
+export const getQuestionsSuccess = response => ({
+	type: constants.GET_QUESTIONS_SUCCESS,
+	response
+});
 
-const answerQuestion = (data, onSuccess, onFailure) => {
-	return {
-		type: ANSWER_QUESTION,
-		data,
-		onSuccess,
-		onFailure
-	};
-};
+export const getQuestionsFailure = error => ({
+	type: constants.GET_QUESTIONS_FAILURE,
+	error
+});
 
-const rejectQuestion = (data, onSuccess, onFailure) => {
-	return {
-		type: REJECT_QUESTION,
-		data,
-		onSuccess,
-		onFailure
-	};
-};
+export const answerQuestion = data => ({
+	type: constants.ANSWER_QUESTION,
+	data
+});
 
-const verifyPin = (data, onSuccess, onFailure) => {
-	return {
-		type: VERIFY_PIN,
-		data,
-		onSuccess,
-		onFailure
-	};
-};
+export const answerQuestionSuccess = response => ({
+	type: constants.ANSWER_QUESTION_SUCCESS,
+	response
+});
 
-const apiFailure = () => {
-	return {
-		type: API_FAILURE
-	};
-};
+export const answerQuestionFailure = error => ({
+	type: constants.ANSWER_QUESTION_FAILURE,
+	error
+});
 
-const apiSuccess = () => {
-	return {
-		type: API_SUCCESS
-	};
-};
+export const rejectQuestion = data => ({
+	type: constants.REJECT_QUESTION,
+	data
+});
 
-const updateDoctorProfile = (data, onSuccess, onFailure) => {
-	return {
-		type: UPDATE_DOCTOR_PROFILE,
-		payload: data,
-		onSuccess,
-		onFailure 
-	};
-};
+export const rejectQuestionSuccess = response => ({
+	type: constants.REJECT_QUESTION_SUCCESS,
+	response
+});
 
-module.exports = {
-    getQuestions,
-	setQuestions,
-	answerQuestion,
-	rejectQuestion,
-	verifyPin,
-	apiFailure,
-	apiSuccess,
-	updateDoctorProfile
-};
+export const rejectQuestionFailure = error => ({
+	type: constants.REJECT_QUESTION_FAILURE,
+	error
+});
+
+export const verifyPin = (data, onSuccess, onFailure) => ({
+	type: constants.VERIFY_PIN,
+	data,
+	onSuccess,
+	onFailure
+});
+
+export const verifyPinSuccess = response => ({
+	type: constants.VERIFY_PIN_SUCCESS,
+	response
+});
+
+export const verifyPinFailure = error => ({
+	type: constants.VERIFY_PIN_FAILURE,
+	error
+});
+
+export const updateDoctorProfile = data => ({
+	type: constants.UPDATE_DOCTOR_PROFILE,
+	data
+});
+
+export const updateDoctorProfileSuccess = response => ({
+	type: constants.UPDATE_DOCTOR_PROFILE_SUCCESS,
+	response
+});
+
+export const updateDoctorProfileFailure = error => ({
+	type: constants.UPDATE_DOCTOR_PROFILE_FAILURE,
+	error
+});
