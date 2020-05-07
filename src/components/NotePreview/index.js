@@ -51,7 +51,7 @@ function NotePreview(props) {
 
 	const onGetDeleteNoteSuccess = () => {
 		setIsDeleteModalVisible(false);
-		navigation.navigate('AddDentalNote');
+		navigation.navigate('AddDentalNote', { reload: true });
 	};
 	const onGetDeleteNoteFailure = () => {
 		alert('Something went wrong');
@@ -188,7 +188,7 @@ function NotePreview(props) {
 								<Text style={ styles.queryText }>Pain level</Text>
 								{previewNote.pain_level !== 0 ? (
 									<Text style={ styles.patientDetails }>
-										{previewNote.pain_level}/ 10
+										{previewNote.pain_level} / 10
 									</Text>
 								) : (
 									<Text style={ styles.patientDetails }>NA</Text>

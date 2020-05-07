@@ -20,6 +20,7 @@ function TextInputBoxField(props) {
 				onBlur={ props.onBlur }
 				secureTextEntry={ props.secureTextEntry }
 				multiline={ props.multiline }
+				autoCapitalize="none"
 			/>
 			<Text style={ styles.errorText }>{props.error}</Text>
 		</View>

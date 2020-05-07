@@ -170,7 +170,6 @@ function RemoteConsultationRequest(props) {
 
 	const submitPin = () => {
 		if (pinValue !== '') {
-			console.log('if', { secret_pin: pinValue, question_id: data.id });
 			verifyPin( { 
 				secret_pin: pinValue, 
 				question_id: data.id 
@@ -190,7 +189,6 @@ function RemoteConsultationRequest(props) {
 					resp_status: false,
 					response_text: rejectReasons[rejectReason]
 				};
-				console.log('reject readon', rejectData);
 				rejectQuestion({ data: rejectData, id: data.id, navigation });
 			}
 		} else {
@@ -506,14 +504,14 @@ function RemoteConsultationRequest(props) {
 				</Text>
 				<FlatList
 					numColumns={ 6 }
-					data={ [ 1, 2, 3, 4, 5, 6, 7, 8 ] }
+					data={ data.media }
 					renderItem={ ({ item, index }) => {
 						return (
 							<Image
 								key={ `${item}-${index}` }
 								style={ styles.attachmentImage }
 								source={ {
-									uri: 'https://reactnative.dev/img/tiny_logo.png'
+									uri: item.media
 								} }
 							/>
 						);

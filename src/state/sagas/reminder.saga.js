@@ -41,7 +41,7 @@ export function* createReminder(action) {
 		yield put(fetchRemindersSuccess([ ...response.data, ...reminderList ]));
 		data.navigation.goBack();
 	} catch (e) {
-		FlashMessage.message('Alert', 'Unable to create the reminder at the moment. Please try again later', '#ff4444');
+		FlashMessage.message('Alert', 'Unable to create the reminder at the moment. Please try again later', 'red');
 		yield put(createReminderFailure(e));
 	}
 }
@@ -56,7 +56,7 @@ export function* updateReminder(action) {
 		yield put(fetchRemindersSuccess(reminderList));
 		data.navigation.goBack();
 	} catch (e) {
-		FlashMessage.message('Alert', 'Unable to update the reminder at the moment, something went wrong.Please try again later', '#ff4444');
+		FlashMessage.message('Alert', 'Unable to update the reminder at the moment, something went wrong.Please try again later', 'red');
 		yield put(updateReminderFailure(e));
 	}
 }

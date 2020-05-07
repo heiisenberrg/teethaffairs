@@ -55,9 +55,9 @@ const styles = StyleSheet.create({
 		position: 'relative'
 	},
 	label: {
-		color: '#6A6A6A',
+		color: '#363636',
 		backgroundColor: 'white',
-		fontSize: 12
+		fontSize: 13
 	},
 	header: {
 		textAlign: 'center',
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
 		borderColor: '#ACACAC',
 		alignItems: 'center',
 		justifyContent: 'center',
-		marginRight: 15
+		marginRight: 5
 	},
 	checkedCircle: {
 		width: 14,
@@ -207,9 +207,13 @@ const styles = StyleSheet.create({
 		borderRadius: 7,
 		backgroundColor: '#33D197'
 	},
+	radioWrapper: {
+		flexDirection: 'row',
+		paddingVertical: 10
+	},
 	radioWrap: {
 		flexDirection: 'row',
-		marginLeft: 1
+		padding: 5
 	},
 	questionContainer: {
 		flexDirection: 'row',
@@ -224,7 +228,6 @@ const styles = StyleSheet.create({
 		marginLeft: 10,
 		margin: -10
 	},
-
 	genderContainer: {
 		marginBottom: 0,
 		marginLeft: 10
@@ -241,9 +244,8 @@ const styles = StyleSheet.create({
 		fontSize: 12
 	},
 	genderWrapper: {
-		flexDirection: 'row',
-		marginTop: 0,
-		marginLeft: 10
+		flexDirection: 'column',
+		marginHorizontal: 20
 	},
 	calenderStyle: {
 		position: 'absolute',
@@ -273,8 +275,56 @@ const styles = StyleSheet.create({
 	},
 	eyeIcon: {
 		position: 'absolute',
-		right: 20,
-		top: 15
+		right: 60,
+		top: 12
+	},
+	passwordWrapper: {
+		flexDirection: 'row'
+	},
+	icon: {
+		width: 30,
+		height: 30,
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: '#FFF',
+		alignSelf: 'center',
+		borderRadius: 50,
+		borderWidth: 1,
+		borderColor: '#ACACAC',
+		marginHorizontal: 10
+	},
+	activeTickIcon: {
+		backgroundColor: '#14DF94'
+	},
+	infoIcon: {
+		backgroundColor: '#f48100',
+		borderColor: '#FFF'
+	},
+	tooltipContainer: {
+		display: 'flex',
+		justifyContent: 'flex-start'
+	},
+	popoverContainerText: {
+		display: 'flex'
+	},
+	popoverTitle: {
+		fontSize: 14,
+		fontWeight: 'bold'
+	},
+	popoverText: {
+		fontSize: 12,
+		marginVertical: 5
+	},
+	popoverLineItem: {
+		flexDirection: 'row',
+		alignItems: 'center'
+	},
+	bullet: {
+		width: 8,
+		height: 8,
+		borderRadius: 50,
+		backgroundColor: '#14DF94',
+		marginHorizontal: 10
 	}
 });
 

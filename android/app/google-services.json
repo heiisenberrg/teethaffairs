@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "424919116755",
+    "firebase_url": "https://mimetic-slate-252012.firebaseio.com",
+    "project_id": "mimetic-slate-252012",
+    "storage_bucket": "mimetic-slate-252012.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:424919116755:android:6d3583015c1137f32f9d26",
+        "android_client_info": {
+          "package_name": "com.teethaffairs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "424919116755-ptn02ctfs38383vsp8q7rm8mkijmkg9e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChMTQSe5Nn5GEIZEBYkQsFwny8SOdEIwY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "424919116755-ptn02ctfs38383vsp8q7rm8mkijmkg9e.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "424919116755-411ka4buio6krlq0ih4e0n0tk496i6hl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.teethaffairs"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

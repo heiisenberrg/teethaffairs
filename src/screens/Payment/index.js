@@ -1,14 +1,14 @@
 import React from 'react';
 import { View } from 'react-native';
 
-import UserPayment from '../../components/UserPayment';
+import PaymentList from '../../components/UserPayment/List';
 
 import styles from './styles';
 
 function Payment(props) {
 	return (
 		<View style={ styles.container }>
-			<UserPayment { ...props } />
+			<PaymentList { ...props } />
 		</View>
 	);
 }

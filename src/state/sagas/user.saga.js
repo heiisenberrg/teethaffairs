@@ -19,8 +19,18 @@ import {
 	getMyProfileSuccess,
 	getMyProfileFailure,
 	editUserSuccess,
-	editUserFailure
+	editUserFailure,
+	clearUser,
+	submitContactUsSuccess,
+	submitContactUsFailure,
+	uploadProfilePictureSuccess,
+	uploadProfilePictureFailure
 } from '../actions/user';
+
+import { clearDoctor } from '../actions/doctor';
+import { clearHistory } from '../actions/history';
+import { clearJournal } from '../actions/journal';
+import { clearReminder } from '../actions/reminder';
 
 import {
 	login,
@@ -32,31 +42,40 @@ import {
 	getUser,
 	editUser,
 	getUserList,
-	getProfile
+	getProfile,
+	updateDeviceToken,
+	submitQuery,
+	uploadMyProfilePicture
 } from '../services/user.service';
 import FlashMessage from '../../components/global/FlashMessage';
 import localStorage from '../localstorage';
+import { CommonActions } from '@react-navigation/native';
 
 export function* fetchLogin(action) {
-	const { data } = action;
+	const { data, token } = action;
 	try {
 		const response = yield call(login, data);
 		localStorage.setItem('accessToken', response.data.access);
 		localStorage.storeJsonValues('user', response.data);
 		yield put(getLoginSuccess(response.data));
+		if(token !== response.data.device_id) {
+			yield call(updateDeviceToken, { device_id: token });
+		}
 	} catch (e) {
-		FlashMessage.message('Alert', 'Please check your password or username', '#ff4444');
+		FlashMessage.message('Failure', 'Please check your password or username', '#ff4444');
 		yield put(getLoginFailure(e));
 	}
 }
 
 export function* fetchSignup(action) {
-	const { data } = action;
+	const { data,onSuccess, onFailure } = action;
 	try {
-		const response = yield call(signup, data.data);
+		const response = yield call(signup, data);
+		onSuccess();
 		yield put(getSignUpSuccess(response.data));
 	} catch (e) {
-		FlashMessage.message('Alert', 'Something went wrong.Please try again later', '#ff4444');
+		FlashMessage.message('Failure', 'Something went wrong.Please try again later', '#ff4444');
+		onFailure();
 		yield put(getSignUpFailure(e));
 	}
 }
@@ -79,7 +98,7 @@ export function* fetchForgetPassword(action) {
 		data.onSuccess();
 		yield put(getForgetEmailSuccess(response));
 	} catch (e) {
-		FlashMessage.message('Alert', 'Something went wrong.Please try again later', '#ff4444');
+		FlashMessage.message('Failure', 'Something went wrong.Please try again later', '#ff4444');
 		yield put(getForgetEmailFailure(e));
 	}
 }
@@ -96,17 +115,43 @@ export function* fetchResetPin(action) {
 }
 
 export function* fetchLogOut(action) {
-	const { data: navigation } = action;
+	const { data: { navigation, onSuccess } } = action;
 	try {
 		const response = yield call(logout);
+		navigation.dispatch(
+			CommonActions.reset({
+				index: 0,
+				routes: [
+					{ name: 'OnBoarding', key: 'Login' }
+				]
+			})
+		);
 		yield localStorage.clearAll();
-		navigation.navigate('Login');
 		yield put(getLogOutSuccess(response));
 		FlashMessage.message('', 'Logged out successfully!', '#00C851');
+		onSuccess();
+		clearUser();
+		clearDoctor();
+		clearHistory();
+		clearJournal();
+		clearReminder();
 	} catch (e) {
 		yield put(getLogOutFailure(e));
-		navigation.navigate('Login');
+		navigation.dispatch(
+			CommonActions.reset({
+				index: 0,
+				routes: [
+					{ name: 'OnBoarding', key: 'Login' }
+				]
+			})
+		);
 		FlashMessage.message('', 'Logged out successfully!', '#00C851');
+		onSuccess();
+		clearUser();
+		clearDoctor();
+		clearHistory();
+		clearJournal();
+		clearReminder();
 	}
 }
 
@@ -125,8 +170,10 @@ export function* updateUser(action) {
 	const { data } = action;
 	try {
 		const response = yield call(editUser, data);
+		FlashMessage.message('Success', 'Profile saved successfully.', '#00C851');
 		yield put(editUserSuccess(response));
 	} catch (e) {
+		FlashMessage.message('Failure', 'Profile updated failed.', '#ff4444');
 		yield put(editUserFailure(e));
 	}
 }
@@ -146,5 +193,29 @@ export function* getMyProfile() {
 		yield put(getMyProfileSuccess(response));
 	} catch (e) {
 		yield put(getMyProfileFailure(e));
+	}
+}
+
+export function* submitContactUsQuery(action) {
+	const { data } = action;
+	try {
+		const response = yield call(submitQuery, data);
+		FlashMessage.message('Success', 'Query sent successfully', '#00C851');
+		yield put(submitContactUsSuccess(response.data));
+	} catch (e) {
+		FlashMessage.message('Failure', 'Something went wrong.Please try again later', '#ff4444');
+		yield put(submitContactUsFailure(e));
+	}
+}
+
+export function* uploadProfilePicture(action) {
+	const { data } = action;
+	try {
+		const response = yield call(uploadMyProfilePicture, data);
+		FlashMessage.message('Success', 'Profile picture updated successfully.', '#00C851');
+		yield put(uploadProfilePictureSuccess(response.data));
+	} catch (e) {
+		FlashMessage.message('Failure', 'Upload failed. Please try after sometime.', '#ff4444');
+		yield put(uploadProfilePictureFailure(e));
 	}
 }

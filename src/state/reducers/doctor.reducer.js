@@ -83,6 +83,11 @@ function doctorReducer(state = initialState, action) {
 				...state,
 				loading: false
 			};
+		case constants.CLEAR_DOCTOR:
+			return {
+				...state,
+				...initialState
+			};
 		default:
 			return state;
 	}

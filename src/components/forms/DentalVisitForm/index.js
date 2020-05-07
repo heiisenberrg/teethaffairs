@@ -13,10 +13,10 @@ import { connect } from 'react-redux';
 import ImagePicker from 'react-native-image-picker';
 import RadioButton from '../../../components/textInputs/RadioButton';
 import Toast from '../../../components/Toast';
-import RNFetchBlob from 'rn-fetch-blob';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
+import RNFetchBlob from 'rn-fetch-blob';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { createDentalVisits, updateDentalVisit } from '../../../state/actions/journal';
@@ -25,11 +25,11 @@ import styles from './styles';
 import globalStyles from '../../../globalStyles';
 
 const dentalVisitSchema = yup.object({
-	visit_reason: yup.string().required(),
-	visit_description: yup.string().required(),
-	visit_experience: yup.string().required(),
-	fees_paid: yup.string().required(),
-	insurance_used: yup.string().required(),
+	visit_reason: yup.string().required('Required'),
+	visit_description: yup.string().required('Required'),
+	visit_experience: yup.string().required('Required'),
+	fees_paid: yup.string().required('Required'),
+	insurance_used: yup.string().required('Required'),
 	media: yup.array()
 });
 
@@ -121,14 +121,10 @@ function DentalVisitForm(props) {
 				}
 			];
 			tempImage.map(item => {
-				let uri = item.uri;
-				if (Platform.OS === 'ios') {
-					uri = uri.replace('file://', '');
-				}
 				data.push({
 					name: 'media',
 					filename: `patient${Date.now()}`,
-					data: RNFetchBlob.wrap(uri),
+					data: Platform.OS === 'android' ? RNFetchBlob.wrap(item.uri) :  RNFetchBlob.wrap(item.uri.replace('file://', '')),
 					type: item.type
 				});
 			});
@@ -140,13 +136,9 @@ function DentalVisitForm(props) {
 
 	const takeImageHandler = () => {
 		ImagePicker.showImagePicker(imageOptions, response => {
-			console.log('========image picker=======', response);
 			if (response.didCancel) {
-				console.log('User cancelled image picker');
 			} else if (response.error) {
-				console.log('ImagePicker Error: ', response.error);
 			} else if (response.customButton) {
-				console.log('User tapped custom button: ', response.customButton);
 				ImagePicker.launchCamera(
 					{
 						mediaType: response.customButton,
@@ -190,7 +182,6 @@ function DentalVisitForm(props) {
 					}
 				);
 			} else {
-				console.log('=====response Camers', response);
 				let source = { 
 					...response,
 					media: response.uri
@@ -243,6 +234,7 @@ function DentalVisitForm(props) {
 					initialValues={ {
 						...initialValues
 					} }
+					enableReinitialize
 					validationSchema={ dentalVisitSchema }
 					onSubmit={ (values, actions) => {
 						handleSubmit(values, actions);
@@ -325,6 +317,7 @@ function DentalVisitForm(props) {
 									value={ props.values.fees_paid }
 									underlineColorAndroid="transparent"
 									placeholderTextColor="grey"
+									keyboardType="numeric"
 								/>
 							</View>
 

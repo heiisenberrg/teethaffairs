@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
 
 import styles from './styles';
+import Icon from '../../components/global/Icon';
 import globalStyles from '../../globalStyles';
 
 import history from '../../assets/history.png';
@@ -19,20 +20,24 @@ function Settings(props) {
 	const { getLogOut, navigation, user } = props;
 
 	useLayoutEffect(() => {
-		if(user && user.user_type === 'PRIMARY-PATIENT') {
+		if(user && (user.user_type === 'PRIMARY_PATIENT' || user.user_type === 'PRIMARY-PATIENT')) {
 			navigation.setOptions({ headerShown: false });
 		}
 	}, [ navigation ]);
 
+	const onSuccess = () => {
+		navigation.navigate('OnBoarding', { screen: 'Login' });
+	};
+
 	const logoutHandler = () => {
-		getLogOut(navigation);
+		getLogOut({ navigation, onSuccess });
 	};
 
 	return (
 		<View style={ styles.container }>
 			<ScrollView>
 				{
-					user && user.user_type === 'PRIMARY-PATIENT' &&
+					user && (user.user_type === 'PRIMARY_PATIENT' || user.user_type === 'PRIMARY-PATIENT') &&
 					<LinearGradient
 						locations={ [ 0.1, 0.5, 0.8 ] }
 						colors={ [ '#0A8A7B', '#33D197', '#00C57D' ] }
@@ -48,7 +53,7 @@ function Settings(props) {
 						<View style={ styles.buttonWrap }>
 							<TouchableOpacity
 								style={ globalStyles.tertiaryButton }
-								onPress={ () => navigation.navigate('SignUp') }>
+								onPress={ () => navigation.navigate('ChangeCard') }>
 								<Text style={ globalStyles.tertiaryButtonText }>upgrade app</Text>
 							</TouchableOpacity>
 						</View>
@@ -58,7 +63,12 @@ function Settings(props) {
 					style={ styles.linkContainer }
 					onPress={ () => navigation.navigate('Profile') }>
 					<View style={ styles.imageContainer }>
-						<Image source={ history } style={ styles.icons } />
+						<Icon type={ 'FontAwesome' }
+							name={ 'user' }
+							size={ 22 }
+							color={ '#b8b8b8' }
+							style={ styles.profileIcon }
+						/>
 					</View>
 					<View style={ styles.buttonTextContainer }>
 						<Text style={ styles.buttonText }>Profile</Text>
@@ -78,7 +88,7 @@ function Settings(props) {
 					</TouchableOpacity>
 				}
 				{
-					user && user.user_type === 'PRIMARY-PATIENT' &&
+					user && (user.user_type === 'PRIMARY_PATIENT' || user.user_type === 'PRIMARY-PATIENT') &&
 					<TouchableOpacity
 						style={ styles.linkContainer }
 						onPress={ () => navigation.navigate('Payment') }>

@@ -10,6 +10,7 @@ import CreateDentalVisit from '../screens/CreateDentalVisit';
 import DentalHistory from '../screens/DentalHistory';
 import NotePreview from '../screens/Preview';
 import AddQuestion from '../screens/AddQuestion';
+import DentistResponse from '../screens/DentistResponse';
 
 import styles from './styles';
 
@@ -21,7 +22,9 @@ function JournalStack() {
 			screenOptions={ () => ({
 				gestureEnabled: false,
 				headerTintColor: 'white'
-			}) }>
+			}) }
+			initialRouteName="Journal"
+			>
 			<Stack.Screen
 				name="Journal"
 				component={ Journal }
@@ -117,7 +120,56 @@ function JournalStack() {
 					headerBackTitleVisible: false
 				} }
 			/>
-			<Stack.Screen name="DentalHistory" component={ DentalHistory } />
+			<Stack.Screen
+				name="DentistResponse"
+				component={ DentistResponse }
+				options={ {
+					headerTitle: 'Dentist Response',
+					headerTitleAlign: 'center',
+					headerTitleContainerStyle: {
+						alignItems: 'center'
+					},
+					headerStyle: {
+						backgroundColor: '#108E79',
+						height: 80,
+						shadowOpacity: 0,
+						shadowOffset: { height: 0, width: 0 },
+						shadowRadius: 0,
+						elevation: 0
+					},
+					headerTitleStyle: {
+						color: 'white',
+						fontWeight: 'bold',
+						fontSize: 16
+					},
+					headerBackTitleVisible: false
+				} }
+			/>
+			<Stack.Screen 
+				name="DentalHistory" 
+				component={ DentalHistory } 
+				options={ {
+					headerTitle: 'Remote Consultation',
+					headerTitleAlign: 'center',
+					headerTitleContainerStyle: {
+						alignItems: 'center'
+					},
+					headerStyle: {
+						backgroundColor: '#108E79',
+						height: 80,
+						shadowOpacity: 0,
+						shadowOffset: { height: 0, width: 0 },
+						shadowRadius: 0,
+						elevation: 0
+					},
+					headerTitleStyle: {
+						color: 'white',
+						fontWeight: 'bold',
+						fontSize: 16
+					},
+					headerBackTitleVisible: false
+				} }
+			/>
 			<Stack.Screen
 				name="Note Preview"
 				component={ NotePreview }

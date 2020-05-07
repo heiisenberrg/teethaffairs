@@ -12,6 +12,7 @@ function HistoryStack() {
 				gestureEnabled: false,
 				headerTintColor: 'white'
 			}) }
+			initialRouteName="DoctorHistory"
 		>
 			<Stack.Screen
 				name="DoctorHistory"

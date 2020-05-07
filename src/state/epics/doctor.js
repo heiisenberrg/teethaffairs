@@ -52,7 +52,6 @@ function getDentalQuestions(payload) {
 }
 
 function toResponseQuestions(response, onSuccess) {
-	console.warn('inside epic success');
 	onSuccess();
 	return apiSuccess();
 }

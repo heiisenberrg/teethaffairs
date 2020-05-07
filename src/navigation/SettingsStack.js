@@ -6,6 +6,7 @@ import Payment from '../screens/Payment';
 import ContactUs from '../screens/ContactUs';
 import AboutUs from '../screens/AboutUs';
 import Profile from '../screens/Profile';
+import ChangeCard from '../components/UserPayment/ChangeCard';
 
 const Stack = createStackNavigator();
 
@@ -14,7 +15,9 @@ function SettingStack() {
 		<Stack.Navigator
 			screenOptions={ {
 				headerTintColor: 'white'
-			} }>
+			} }
+			initialRouteName="Settings"
+			>
 			<Stack.Screen
 				name="Settings"
 				component={ Settings }
@@ -35,7 +38,37 @@ function SettingStack() {
 					}
 				}  }
 			/>
-			<Stack.Screen name="Payment" component={ Payment } />
+			<Stack.Screen name="Payment" component={ Payment } options={ {
+					headerTitle: 'My Cards',
+					headerTitleAlign: 'center',
+					headerTitleContainerStyle: {
+						alignItems: 'center'
+					},
+					headerStyle: {
+						backgroundColor: '#129079',
+						height: 80
+					},
+					headerTitleStyle: {
+						color: 'white',
+						fontSize: 20
+					}
+				} }/>
+				<Stack.Screen name="ChangeCard" component={ ChangeCard } options={ {
+					headerTitle: 'Payment',
+					headerTitleAlign: 'center',
+					headerTitleContainerStyle: {
+						alignItems: 'center'
+					},
+					headerStyle: {
+						backgroundColor: '#129079',
+						height: 80
+					},
+					headerTitleStyle: {
+						color: 'white',
+						fontSize: 20
+					}
+				} }/>
+
 			<Stack.Screen
 				name="Profile"
 				component={ Profile }

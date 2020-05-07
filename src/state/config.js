@@ -11,7 +11,8 @@ module.exports = {
 	GET_USER: '/users/user/me/',
 	UPDATE_USER: '/users/update-me/',
 	GET_USERS: '/users/user/',
-
+	SUBMIT_QUERY: '/contact-us/contact-us/',
+	UPLOAD_PROFILE_PIC: '/users/upload-pic/',
 	// doctor
 	DOCTOR_QUESTIONS_BASE_URL: '/doctor/questions/',
 	VERIFY_PIN: '/doctor/get-questions/',
@@ -25,10 +26,20 @@ module.exports = {
 	ADD_MEMBER: '/users/user-registration/',
 	USER_LIST: '/users/user/',
 	USER_NOTES: '/notes/patient-notes/',
+	HEALTH_HISTORY_UPDATE: '/notes/notes/',
 	USER_DEACTIVATE: '/users/deactivate-user/',
 	NOTES: '/notes/notes/',
 	DOCTOR_LIST: '/users/doctor-by-pin/',
 	DENTAL_VISIT: '/visit/doctor-visits/',
+	GET_REMOTE_CONSULTATION_FOR_PATIENTS: '/notes/questions',
 	DENTAL_VISIT_BASE_URL: '/visit/visits/',
-	USER_NOTE_ID: '/notes/user-notes?user-id='
+	USER_NOTE_ID: '/notes/user-notes?user_id=',
+
+	//payment
+	GET_CARDS: '/payments/customer-cards/',
+	CREATE_CARD: '/payments/card-source-create/',
+	UPGRADE_APP: '/payments/upgrade-app/',
+
+	//history
+	GET_HISTORY: '/users/user-history/'
 };

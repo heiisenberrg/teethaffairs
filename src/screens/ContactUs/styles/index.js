@@ -4,7 +4,8 @@ const styles = StyleSheet.create({
 	container: {
 		backgroundColor: 'white',
 		flexGrow: 1,
-		alignItems: 'center'
+		alignItems: 'center',
+		justifyContent: 'space-between'
 	},
 	queriesContainer: {
 		marginTop: 80,
@@ -13,19 +14,11 @@ const styles = StyleSheet.create({
 	},
 	header: {
 		fontWeight: 'bold',
-		fontSize: 16
-	},
-
-	decription: {
-		marginTop: 20,
-		justifyContent: 'center',
-		alignContent: 'center',
-		textAlign: 'center'
+		fontSize: 16,
+		marginVertical: 20
 	},
 	formContainer: {
-		marginTop: 30,
-		alignSelf: 'stretch',
-		marginLeft: 5
+		marginTop: 30
 	},
 	buttonWrap: {
 		alignItems: 'center',

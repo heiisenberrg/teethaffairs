@@ -27,7 +27,9 @@ import {
 	createUserNoteSuccess,
 	createUserNoteFailure,
 	updateUserNoteSuccess,
-	updateUserNoteFailure
+	updateUserNoteFailure,
+	getRemoteConsultationsForPatientsSuccess,
+	getRemoteConsultationsForPatientsFailure
 } from '../actions/journal';
 
 import {
@@ -37,9 +39,10 @@ import {
 	deactivateUser,
 	getNoteList,
 	getDoctors,
-	updateNotes,
+	updateHealthHistory,
 	sendQuestions,
 	dentalVisit,
+	getRemoteConsultationsForPatient,
 	dentalVisitCreate,
 	deleteNotes,
 	updateDentalVisit,
@@ -52,8 +55,8 @@ export function* fetchAddMember(action) {
 	const { data } = action;
 	try {
 		const response = yield call(getMember, data.data);
-		data.onSuccess();
 		yield put(getAddMemberSuccess(response));
+		data.onSuccess(response.data);
 	} catch (e) {
 		data.onFailure();
 		yield put(getAddMemberFailure(e));
@@ -110,11 +113,12 @@ export function* fetchDoctorList(action) {
 }
 
 export function* fetchSendQuestion(action) {
-	const { data } = action;
+	const { data, onSuccess } = action;
 	try {
-		let response = yield call(updateNotes, data);
+		let response = yield call(updateHealthHistory, data);
 		yield put(getQuestionSuccess(response));
 		response = yield call(sendQuestions, data);
+		onSuccess();
 		yield put(getQuestionSuccess(response));
 	} catch (e) {
 		yield put(getQuestionFailure(e));
@@ -138,6 +142,16 @@ export function* getDentalVisits(action) {
 		yield put(getDentalVisitsSuccess(response));
 	} catch (e) {
 		yield put(getDentalVisitsFailure(e));
+	}
+}
+
+export function* getRemoteConsultationsForPatients(action) {
+	const { data } = action;
+	try {
+		const response = yield call(getRemoteConsultationsForPatient, data);
+		yield put(getRemoteConsultationsForPatientsSuccess(response));
+	} catch (e) {
+		yield put(getRemoteConsultationsForPatientsFailure(e));
 	}
 }
 
@@ -200,13 +214,13 @@ export function* deleteDentalVisit(action) {
 }
 
 export function* updateUserNote(action) {
-	const { data } = action;
+	const { data, id, onSuccess, onFailure } = action;
 	try {
-		const response = yield call(updateNote, data);
-		data.onSuccess(response.data);
+		const response = yield call(updateNote, data, id);
+		onSuccess(response.data);
 		yield put(updateUserNoteSuccess(response));
 	} catch (e) {
-		data.onFailure();
+		onFailure();
 		yield put(updateUserNoteFailure(e));
 	}
 }

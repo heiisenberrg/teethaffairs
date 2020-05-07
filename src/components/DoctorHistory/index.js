@@ -28,7 +28,6 @@ const DoctorHistory = props => {
 	
 	const filterList = type => {
 		let data = [];
-		console.warn('list---->>>>', list);
 		questions.map((item) => {
 			if (type === 'answered' && item.responded) {
                data.push(item);
@@ -39,7 +38,6 @@ const DoctorHistory = props => {
 		let arrayLength = { ...length };
 		arrayLength[type] = data.length;
 		setLength(arrayLength);
-		console.warn('inside data===>>>>', data);
 		setList(data);
 	};
 

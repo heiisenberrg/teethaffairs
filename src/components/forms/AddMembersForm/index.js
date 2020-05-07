@@ -49,7 +49,8 @@ const addMemberSchema = yup.object({
 	id: yup.string(),
 	date_of_birth: yup.string(),
 	gender: yup.string().required(),
-	relation: yup.string().required()
+	relation: yup.string().required(),
+	zipcode: yup.string().required('Required')
 });
 
 const updateMemberSchema = yup.object({
@@ -65,7 +66,8 @@ const updateMemberSchema = yup.object({
 	date_of_birth: yup.string(),
 	gender: yup.string(),
 	id: yup.string(),
-	relation: yup.string()
+	relation: yup.string(),
+	zipcode: yup.string().required('Required')
 });
 
 const imageOptions = {
@@ -133,7 +135,7 @@ function AddMembersForm(props) {
 	const [ showConfirmEye, setShowConfirmEye ] = useState(true);
 
 	const handleSubmit = memberDetails => {
-		memberDetails.zipcode = user.zipcodes;
+		memberDetails.zipcode = memberDetails.zipcode && memberDetails.zipcode.length > 0 ? [ memberDetails.zipcode ]: user.zipcodes;
 		memberDetails.email = memberDetails.username + '@teethaffais.com';
 		
 		memberDetails.profile.relationship = memberDetails.relation;
@@ -142,18 +144,17 @@ function AddMembersForm(props) {
 			memberDetails.id = userId;
 		}
 		memberDetails.date_of_birth = birthDate;
-		getAddMember({ data: memberDetails, onSuccess: onGetAddMemberSuccess, onFailure: onGetAddMemberFailure });
-		setBirthDate('');
+		getAddMember({ data: memberDetails, onSuccess: (response) => onGetAddMemberSuccess(response), onFailure: onGetAddMemberFailure });
+		// setBirthDate('');
 	};
 
 	const onGetAddMemberFailure = () => {
 		setAddMember(true);
-		// alert('Something went wrong!');
 		FlashMessage.message('Alert', 'Something went wrong', '#ff4444');
 	};
 
 	const onGetAddMemberSuccess = data => {
-		addedMember = data.username;
+		addedMember =  data.username ? data.username : data[0].username ? data[0].username : '';
 		setIsModalVisible(true);
 	};
 
@@ -175,7 +176,6 @@ function AddMembersForm(props) {
 		var currentDate = '';
 		if (selectedDate !== undefined && selectedDate !== '') {
 			var date = new Date(selectedDate).toISOString();
-			console.log('========++++++++++=====++++++=', date);
 			setBirthDate(date);
 			currentDate = selectedDate;
 		} else {
@@ -209,15 +209,10 @@ function AddMembersForm(props) {
 			path: 'images'
 		};
 		ImagePicker.launchCamera(options, response => {
-			console.log('Response = ', response);
 			if (response.didCancel) {
-				console.log('User cancelled image picker');
 			} else if (response.error) {
-				console.log('ImagePicker Error: ', response.error);
 			} else if (response.customButton) {
-				console.log('User tapped custom button: ', response.customButton);
 			} else {
-				console.log('response', JSON.stringify(response));
 				let source = {
 					...response
 				};
@@ -229,13 +224,9 @@ function AddMembersForm(props) {
 
 	const takeImageHandler = () => {
 		ImagePicker.showImagePicker(imageOptions, response => {
-			console.log('========image picker=======', response);
 			if (response.didCancel) {
-				console.log('User cancelled image picker');
 			} else if (response.error) {
-				console.log('ImagePicker Error: ', response.error);
 			} else if (response.customButton) {
-				console.log('User tapped custom button: ', response.customButton);
 				launchCamera();
 			} else {
 				let source = {
@@ -276,7 +267,7 @@ function AddMembersForm(props) {
 						confirm_password: '',
 						date_of_birth: '',
 						zipcode:
-							userdata !== undefined &&
+							userdata && userdata.zipcode &&
 							userdata !== ''
 								? userdata.zipcode.toString()
 								: '',
@@ -460,6 +451,15 @@ function AddMembersForm(props) {
 								) : (
 									<Text />
 								)}
+								<TextInputField
+									lable="Zipcode"
+									placeholder="Enter Zipcode"
+									onChangeText={ props.handleChange('zipcode') }
+									value={ props.values.zipcode }
+									onBlur={ props.handleBlur('zipcode') }
+									error={ props.touched.zipcode && props.errors.zipcode }
+									secureTextEntry={ false }
+								/>
 								{addMember === true ? (
 									<View style={ styles.genderWrapper }>
 										<View>
@@ -536,7 +536,7 @@ function AddMembersForm(props) {
 						</View>
 						<TouchableOpacity
 							style={ styles.continueButton }
-							onPress={ () => navigation.navigate('AddMembers') }>
+							onPress={ () => navigation.navigate('AddMembers', { reload: true }) }>
 							<Text style={ styles.continueButtonText }>Continue</Text>
 						</TouchableOpacity>
 					</LinearGradient>

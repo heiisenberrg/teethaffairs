@@ -1,4 +1,4 @@
-import { apiCall } from '../../utilities/axios-interceptor.js';
+import { apiCall, uploadFile } from '../../utilities/axios-interceptor.js';
 import {
 	USER_LOGIN,
 	SIGNUP,
@@ -9,7 +9,10 @@ import {
 	GET_USER,
 	UPDATE_USER,
 	GET_USERS,
-	GET_MY_PROFILE
+	GET_MY_PROFILE,
+	UPDATE_DEVICE_TOKEN,
+	SUBMIT_QUERY,
+	UPLOAD_PROFILE_PIC
 } from '../config';
 
 export const login = data =>
@@ -91,3 +94,38 @@ export const getProfile = () =>
 		method: 'GET',
 		withCredentials: true
 	});
+
+export const updateDeviceToken = data =>
+	apiCall({
+		url: UPDATE_DEVICE_TOKEN,
+		method: 'POST',
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json'
+		},
+		data,
+		withCredentials: true
+	});
+
+export const submitQuery = data =>
+	apiCall({
+		url: SUBMIT_QUERY,
+		method: 'POST',
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json'
+		},
+		data,
+		withCredentials: true
+	});
+
+export const uploadMyProfilePicture = data => uploadFile({
+	url: `${UPLOAD_PROFILE_PIC}`,
+	method: 'POST',
+	data,
+	headers: {
+		Accept: 'application/json',
+		'Content-Type': 'multipart/form-data'
+	},
+	withCredentials: true
+});

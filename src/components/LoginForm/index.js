@@ -27,14 +27,21 @@ const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
 const loginSchema = yup.object({
 	username: yup
 		.string()
-		.required()
-		.min(4),
-	password: yup.string().required()
+		.required('Required')
+		.min(4)
+		.test('Email', 'Provide a valid email ID', function(value) {
+			const emailPattern = /[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$/;
+			if (!this.parent.isPatient) return emailPattern.test(value);
+			return true;
+		}),
+	password: yup.string().required(),
+	isPatient: yup.boolean()
 });
 
 function LoginForm(props) {
-	const { getLogin, navigation, user } = props;
+	const { getLogin, navigation, user, deviceToken } = props;
 	const [ showEye, setShowEye ] = useState(true);
+	const [ isPatient, handleIspatient ] = useState(true);
 	const [ errorMessage ] = useState('');
 
 	useEffect(() => {
@@ -44,7 +51,11 @@ function LoginForm(props) {
 	}, [ user ]);
 
 	const handleSubmit = data => {
-		getLogin(data);
+		const userData = {
+			username: data.username.toLowerCase(),
+			password: data.password
+		};
+		getLogin(userData, deviceToken);
 	};
 
 	const handleForgetPwd = () => {
@@ -62,16 +73,25 @@ function LoginForm(props) {
 					<View style={ styles.filterWrapper }>
 						<Image
 							style={ styles.avatar }
-							source={ require('../../assets/logo-color.png') }
+							source={ require('../../assets/logo/logo.png') }
 						/>
 					</View>
 				</TouchableOpacity>
 			</View>
 			<SafeAreaView style={ styles.container }>
 				<ScrollView>
+					<View style={ loginStyles.groupButtonContainer }>
+						<TouchableOpacity activeOpacity={ 0.8 } onPress={ () => handleIspatient(true) }>
+							<Text style={ { ...loginStyles.buttonLeftCorner, ...(isPatient && loginStyles.activeGroupButton) } }>Patient</Text>
+						</TouchableOpacity>
+						<TouchableOpacity activeOpacity={ 0.8 } onPress={ () => handleIspatient(false) }>
+							<Text style={ { ...loginStyles.buttonRightCorner, ...(!isPatient && loginStyles.activeGroupButton) } }>Doctor</Text>
+						</TouchableOpacity>
+					</View>
 					<Text style={ loginStyles.header }>Login</Text>
 					<Formik
-						initialValues={ { username: '', password: '' } }
+						initialValues={ { username: isPatient ? '' : '', password: '', isPatient } }
+						enableReinitialize
 						validationSchema={ loginSchema }
 						onSubmit={ (values, actions) => {
 							actions.resetForm();
@@ -84,14 +104,15 @@ function LoginForm(props) {
 									keyboardVerticalOffset={ keyboardVerticalOffset }>
 									<View style={ loginStyles.textInputContainer }>
 										<View style={ loginStyles.labelContainer }>
-											<Text style={ loginStyles.label }>User ID / Email ID</Text>
+											<Text style={ loginStyles.label }>{isPatient ? 'User ID' : 'Email ID' }</Text>
 										</View>
 										<TextInput
 											style={ loginStyles.textInput }
-											placeholder="Enter Your User ID / Email ID"
+											placeholder={ `Enter Your User ${isPatient ? 'User' : 'Email'} ID` }
 											onChangeText={ props.handleChange('username') }
 											value={ props.values.username }
 											onBlur={ props.handleBlur('username') }
+											autoCapitalize="none"
 											error={ props.touched.username && props.errors.username }
 											secureTextEntry={ false }
 										/>
@@ -103,9 +124,6 @@ function LoginForm(props) {
 											<Text style={ loginStyles.errorText } />
 										)}
 									</View>
-									<Text style={ loginStyles.note }>
-										If you are a doctor please enter your email ID
-									</Text>
 									<View style={ loginStyles.textInputContainer }>
 										<View style={ loginStyles.labelContainer }>
 											<Text style={ loginStyles.label }>Password</Text>
@@ -152,11 +170,12 @@ function LoginForm(props) {
 										onPress={ props.handleSubmit }>
 										<Text style={ globalStyles.buttonText }>login</Text>
 									</TouchableOpacity>
+									{isPatient && 
 									<TouchableOpacity
 										style={ globalStyles.secondaryButton }
 										onPress={ () => navigation.navigate('SignUp') }>
 										<Text style={ globalStyles.buttonText }>sign up</Text>
-									</TouchableOpacity>
+									</TouchableOpacity>}
 									<View style={ styles.loginTermsWrapper }>
 										<Text
 											style={ loginStyles.forgetPassword }
@@ -176,11 +195,12 @@ function LoginForm(props) {
 
 const mapStateToProps = state => ({
 	user: state.user.user,
-	loading: state.user.loading
+	loading: state.user.loading,
+	deviceToken: state.user.deviceToken
 });
 
 const mapDispatchToProps = dispatch => ({
-	getLogin: data => dispatch(getLogin(data))
+	getLogin: (data, token) => dispatch(getLogin(data, token))
 });
 
 export default connect(

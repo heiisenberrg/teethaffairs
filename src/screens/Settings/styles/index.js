@@ -51,7 +51,8 @@ const styles = StyleSheet.create({
 		marginRight: 30
 	},
 	imageContainer: {
-		width: 28
+		width: 28,
+		alignItems: 'center'
 	},
 
 	buttonTextContainer: {

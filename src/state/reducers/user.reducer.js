@@ -14,11 +14,17 @@ const initialState = {
 	errorMessage: '',
 	users: [],
 	user: {},
-	loading: false
+	loading: false,
+	deviceToken: ''
 };
 
 function userReducer(state = initialState, action) {
 	switch (action.type) {
+		case constants.SET_DEVICE_TOKEN:
+			return {
+				...state,
+				deviceToken: action.token
+			};
 		case constants.GET_LOGIN:
 			return {
 				...state,
@@ -157,6 +163,41 @@ function userReducer(state = initialState, action) {
 				}
 			};
 		case constants.GET_MY_PROFILE_FAILURE:
+			return {
+				...state,
+				loading: false
+			};
+		case constants.CLEAR_USER:
+			return {
+				...state,
+				...initialState
+			};
+		case constants.SUBMIT_CONTACT_US:
+			return {
+				...state,
+				loading: true
+			};
+		case constants.SUBMIT_CONTACT_US_SUCCESS:
+			return {
+				...state,
+				loading: false
+			};
+		case constants.SUBMIT_CONTACT_US_FAILURE:
+			return {
+				...state,
+				loading: false
+			};
+		case constants.UPLOAD_PROFILE_PICTURE:
+			return {
+				...state,
+				loading: true
+			};
+		case constants.UPLOAD_PROFILE_PICTURE_SUCCESS:
+			return {
+				...state,
+				loading: false
+			};
+		case constants.UPLOAD_PROFILE_PICTURE_FAILURE:
 			return {
 				...state,
 				loading: false

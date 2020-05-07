@@ -7,7 +7,6 @@ const styles = StyleSheet.create({
 		backgroundColor: 'white',
 		flexGrow: 1,
 		width: width
-
 	},
 	healthHistoryText: {
 		color: '#363636',
@@ -189,7 +188,8 @@ const styles = StyleSheet.create({
 	switchWrapper: {
 		flexDirection: 'row',
 		marginTop: 15,
-		flex: 1
+		flex: 1,
+		alignItems: 'center'
 	},
 	switchContainer: {
 		padding: 10
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
 	},
 	switchButton: {
 		position:'relative',
-		marginLeft: 20,
+		marginLeft: 10,
 		marginBottom: 10
 	},
 	dentistText: {
@@ -342,6 +342,98 @@ const styles = StyleSheet.create({
 			width: 0
 		},
 		flex: 1
-	}
+	},
+	card: {
+		marginHorizontal: 10,
+		width: width - 20,
+		justifyContent: 'space-between',
+		height: 200
+	},
+	cardContainer: {
+		padding: 10,
+		marginVertical: 10,
+		borderRadius: 10,
+		shadowOpacity: 0.2,
+		shadowOffset: {
+			height: 1,
+			width: 1
+		},
+		shadowRadius: 3,
+		elevation: 2,
+		borderWidth: 0.5,
+		borderColor: '#D5D5D5',
+		marginHorizontal: 10
+	},
+	mv10: {
+		marginVertical: 10
+	},
+	m10: { margin: 10 },
+	m15: { margin: 15 },
+	upperCase: {
+		textTransform: 'uppercase'
+	},
+	details: {
+		margin: 10,
+		width: '70%'
+	},
+	selectedDrugContent: {
+		borderWidth: 0.5,
+		borderColor: '#CAC7C7',
+		elevation: 2,
+		flex: 1,
+		paddingVertical: 5,
+		paddingHorizontal: 5,
+		marginVertical: 5,
+		marginRight: 5
+	},
+	flex: {
+		flex: 1
+	},
+	medicalConditionContainer: {
+		elevation: 2,
+		borderWidth: 1,
+		borderBottomLeftRadius: 5,
+		borderBottomRightRadius: 5,
+		borderColor: '#A1A1A1',
+		maxHeight: 150
+	},
+	dropdownContainer: {
+		elevation: 2,
+		borderLeftWidth: 1,
+		borderRightWidth: 1,
+		borderBottomWidth: 1,
+		borderBottomLeftRadius: 5,
+		borderBottomRightRadius: 5,
+		borderColor: '#A1A1A1',
+		maxHeight: 150
+	},
+	m5: {
+		margin: 5
+	},
+	searchContent: {
+		borderWidth: 0.5,
+		borderColor: 'grey',
+		borderRadius: 5,
+		minHeight: 25
+	},
+	p10: {
+		padding: 10
+	},
+	medicationContainer: {
+		flex: 1.4
+	},
+	dropdownContent: {
+		padding: 10,
+		justifyContent: 'space-between',
+		alignItems: 'center'
+	},
+	searchContainer: {
+		borderRadius: 1,
+		borderWidth: 0.5,
+		width: 15,
+		height: 15,
+		marginRight: 10
+	},
+	carouselContainer: { height: 250, marginTop: 30 }
 });
 export default styles;

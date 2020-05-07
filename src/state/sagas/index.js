@@ -23,6 +23,7 @@ import {
 	fetchNoteList,
 	fetchDoctorList,
 	getDentalVisits,
+	getRemoteConsultationsForPatients,
 	createDentalVisit,
 	fetchDeleteNotes,
 	createUserNote,
@@ -42,8 +43,18 @@ import {
 	fetchUser,
 	updateUser,
 	getUsers,
-	getMyProfile
+	getMyProfile,
+	submitContactUsQuery,
+	uploadProfilePicture
 } from './user.saga';
+
+import {
+	getCards,
+	createCard,
+	upgradeApp
+} from './payment.saga';
+
+import { getPatientHistory } from './history.saga';
 
 export default function* saga() {
 	// reminder
@@ -69,6 +80,7 @@ export default function* saga() {
 	yield takeLatest(constants.GET_DOCTORS_LIST, fetchDoctorList);
 	yield takeLatest(constants.GET_QUESTION, fetchSendQuestion);
 	yield takeLatest(constants.GET_DENTAL_VISITS, getDentalVisits);
+	yield takeLatest(constants.GET_REMOTE_CONSULTATION_FOR_PATIENTS, getRemoteConsultationsForPatients);
 	yield takeLatest(constants.CREATE_DENTAL_VISIT, createDentalVisit);
 	yield takeLatest(constants.GET_DELETE_NOTE, fetchDeleteNotes);
 	yield takeLatest(constants.SAVE_EDITED_DENTAL_VISIT, editDentalVisit);
@@ -87,4 +99,14 @@ export default function* saga() {
 	yield takeLatest(constants.UPDATE_USER, updateUser);
 	yield takeLatest(constants.GET_USERS, getUsers);
 	yield takeLatest(constants.GET_MY_PROFILE, getMyProfile);
+	yield takeLatest(constants.SUBMIT_CONTACT_US, submitContactUsQuery);
+	yield takeLatest(constants.UPLOAD_PROFILE_PICTURE, uploadProfilePicture);
+
+	//payment
+	yield takeLatest(constants.GET_CARDS, getCards);
+	yield takeLatest(constants.CREATE_CARD, createCard);
+	yield takeLatest(constants.UPGRADE_APP, upgradeApp);
+	
+	//history
+	yield takeLatest(constants.GET_HISTORY, getPatientHistory);
 }

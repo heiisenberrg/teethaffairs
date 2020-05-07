@@ -9,7 +9,6 @@ import styles from './styles';
 import slider1 from '../../assets/slider-home.png';
 import slider2 from '../../assets/slider-home2.png';
 import slider3 from '../../assets/slider-home3.png';
-// import localStorage from '../../state/localstorage';
 import { getLoginSuccess } from '../../state/actions/user';
 
 const slides = [
@@ -28,15 +27,14 @@ const slides = [
 		key: 'three',
 		title: slider3,
 		text:
-			'Teethaffairs app can help you to keep track of your family\' dental and oral issuses for future reference.',
+			'Teethaffairs app can help you to keep track of your family\'s dental and oral issuses for future reference.',
 		subText:
 			'(A onetime upgrade fees $10.00 to store your data forever. Basic app stores data for a limited time.)'
 	}
 ];
 
 function AppIntro(props) {
-	const { navigation, isAuth } = props;
-    console.warn('inside app intro', isAuth);
+	const { navigation } = props;
 	const renderItem = ({ item }) => {
 		return (
 			<View style={ styles.container } >

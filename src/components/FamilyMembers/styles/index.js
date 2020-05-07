@@ -4,6 +4,7 @@ const { height, width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
 	container: {
+		display: 'flex',
 		padding: 10,
 		marginVertical: 5,
 		...Platform.select({
@@ -18,7 +19,6 @@ const styles = StyleSheet.create({
 	},
 	listContainer: {
 		display: 'flex',
-		alignItems: 'center',
 		justifyContent: 'center',
 		flex: 1
 	},

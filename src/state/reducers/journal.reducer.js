@@ -6,6 +6,7 @@ const initialState = {
 	doctor_zipcode: '',
 	doctor: {},
 	visits: [],
+	patientRemoteConsultation: [],
 	doctors_list: [],
 	loading: false
 };
@@ -182,6 +183,17 @@ function journalReducer(state = initialState, action) {
 				...state,
 				loading: false
 			};
+		case constants.GET_REMOTE_CONSULTATION_FOR_PATIENTS_SUCCESS:
+			return {
+				...state,
+				loading: false,
+				patientRemoteConsultation: action.response.data
+			};
+		case constants.GET_REMOTE_CONSULTATION_FOR_PATIENTS_FAILURE:
+			return {
+				...state,
+				loading: false
+			};
 		case constants.CREATE_DENTAL_VISIT:
 			return {
 				...state,
@@ -247,6 +259,11 @@ function journalReducer(state = initialState, action) {
 			return {
 				...state,
 				doctor: action.data
+			};
+		case constants.CLEAR_JOURNAL:
+			return {
+				...state,
+				...initialState
 			};
 		default:
 			return state;

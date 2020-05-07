@@ -8,7 +8,9 @@ import {
 	DOCTOR_LIST,
 	DENTAL_VISIT,
 	DENTAL_VISIT_BASE_URL,
-	USER_NOTE_ID
+	HEALTH_HISTORY_UPDATE,
+	GET_REMOTE_CONSULTATION_FOR_PATIENTS
+	// USER_NOTE_ID
 } from '../config';
 
 export const getMember = data =>
@@ -52,9 +54,13 @@ export const deactivateUser = data =>
 
 export const getNoteList = data =>
 	apiCall({
-		url: data === '' ? NOTES : USER_NOTE_ID + data,
+		url: `${NOTES}`,
 		method: 'GET',
 		data,
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json'
+		},
 		withCredentials: true
 	});
 
@@ -73,10 +79,22 @@ export const getDoctors = data =>
 export const updateNotes = data =>
 	apiCall({
 		url: `${USER_NOTES}${data.userNoteId}/`,
+		method: 'PATCH',
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'multipart/form-data'
+		},
+		data: data.data,
+		withCredentials: true
+	});
+
+export const updateHealthHistory = data =>
+	apiCall({
+		url: `${HEALTH_HISTORY_UPDATE}${data.userNoteId}/note-edit/`,
 		method: 'PUT',
 		headers: {
 			Accept: 'application/json',
-			'Content-Type': 'application/x-www-form-urlencoded'
+			'Content-Type': 'application/json'
 		},
 		data: data.data,
 		withCredentials: true
@@ -84,11 +102,11 @@ export const updateNotes = data =>
 
 export const sendQuestions = data =>
 	apiCall({
-		url: NOTES + data.userNoteId + '/question-create/',
+		url: `${NOTES}${data.userNoteId}/question-create/`,
 		method: 'PUT',
 		data: data.question_data,
 		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded'
+			'Content-Type': 'application/json'
 		},
 		withCredentials: true
 	});
@@ -104,7 +122,18 @@ export const dentalVisit = data => apiCall({
 		withCredentials: true
 	});
 
-export const dentalVisitCreate = data =>{
+export const getRemoteConsultationsForPatient = data => apiCall({
+		url: `${GET_REMOTE_CONSULTATION_FOR_PATIENTS}`,
+		method: 'GET',
+		data,
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json'
+		},
+		withCredentials: true
+	});
+
+export const dentalVisitCreate = data => {
 	return uploadFile({
 		url: `${DENTAL_VISIT_BASE_URL}`,
 		method: 'POST',
@@ -156,14 +185,14 @@ export const removeDentalVisit = data =>
 		withCredentials: true
 	});
 
-export const updateNote = data =>
+export const updateNote = (data, id) =>
     apiCall({
-		url: `${USER_NOTES}${data.id}/`,
+		url: `${USER_NOTES}${id}/`,
 		method: 'PUT',
 		headers: {
 			Accept: 'application/json',
 			'Content-Type': 'multipart/form-data'
 		},
-		data: data.data,
+		data: data,
 		withCredentials: true
 	});

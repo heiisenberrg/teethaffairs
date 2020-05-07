@@ -1,8 +1,14 @@
 import constants from '../constants/user.constant';
 
-export const getLogin = data => ({
+export const setDeviceToken = token => ({
+	type: constants.SET_DEVICE_TOKEN,
+	token
+});
+
+export const getLogin = (data, token) => ({
 	type: constants.GET_LOGIN,
-	data
+	data,
+	token
 });
 
 export const getLoginSuccess = response => ({
@@ -15,9 +21,11 @@ export const getLoginFailure = error => ({
 	error
 });
 
-export const getSignUp = data => ({
+export const getSignUp = (data, onSuccess, onFailure) => ({
 	type: constants.GET_SIGNUP,
-	data
+	data,
+	onSuccess,
+	onFailure
 });
 
 export const getSignUpSuccess = response => ({
@@ -144,5 +152,39 @@ export const getMyProfileSuccess = response => ({
 
 export const getMyProfileFailure = error => ({
 	type: constants.GET_MY_PROFILE_FAILURE,
+	error
+});
+
+export const clearUser = () => ({
+	type: constants.CLEAR_USER
+});
+
+export const submitContactUs = (data) => ({
+	type: constants.SUBMIT_CONTACT_US,
+	data
+});
+
+export const submitContactUsSuccess = response => ({
+	type: constants.SUBMIT_CONTACT_US_SUCCESS,
+	response
+});
+
+export const submitContactUsFailure = error => ({
+	type: constants.SUBMIT_CONTACT_US_FAILURE,
+	error
+});
+
+export const uploadProfilePicture = data => ({
+	type: constants.UPLOAD_PROFILE_PICTURE,
+	data
+});
+
+export const uploadProfilePictureSuccess = response => ({
+	type: constants.UPLOAD_PROFILE_PICTURE_SUCCESS,
+	response
+});
+
+export const uploadProfilePictureFailure = error => ({
+	type: constants.UPLOAD_PROFILE_PICTURE,
 	error
 });

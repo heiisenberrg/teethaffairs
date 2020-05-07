@@ -38,7 +38,7 @@ function ListReminder(props) {
 
 	useEffect(() => {
 		fetchReminders();
-		if (userDetails.user_type === 'PRIMARY-PATIENT') {
+		if (userDetails.user_type === 'PRIMARY-PATIENT' || userDetails.user_type === 'PRIMARY_PATIENT') {
 			getUsers();
 		}
 	}, []);
@@ -52,7 +52,6 @@ function ListReminder(props) {
 	}, [ selectedContent ]);
 	
 	useEffect(() => {
-		console.warn('inside change fetch reminder');
 		if (selectedDay !== '') {
 			fetchReminderBasedOnFilter( { user_id: selectedUser.id, day: `${selectedDay + 1}` } );
 		}

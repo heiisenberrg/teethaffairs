@@ -35,7 +35,7 @@ function DentalVisit(props) {
 						type={ 'Ionicons' }
 						name={ 'ios-arrow-back' }
 						size={ 28 }
-						/>
+					/>
 				</TouchableOpacity>
 			)
 		});
@@ -50,7 +50,7 @@ function DentalVisit(props) {
 	const [ showEditCard, setShowEditCard ] = useState(false);
 	const [ slideLeftValue ] = useState(new Animated.Value(0));
 
-	const [ user, setUser ] = useState(userDetails && userDetails.user_type !== 'PRIMARY-PATIENT' ? 
+	const [ user, setUser ] = useState(userDetails && (userDetails.user_type !== 'PRIMARY_PATIENT' || userDetails.user_type !== 'PRIMARY-PATIENT') ? 
 	{ 
 		id: userDetails.id, 
 		name: `${userDetails.first_name} ${userDetails.last_name}`,
@@ -62,12 +62,10 @@ function DentalVisit(props) {
 		avatar: null
 	});
 
-	const getDentalVisitsSuccess = (data) => {
-		console.log('api success', data);
-	};
+	const getDentalVisitsSuccess = () => {};
 
 	useEffect(() => {
-		if (userDetails.user_type === 'PRIMARY-PATIENT') {
+		if (userDetails && (userDetails.user_type === 'PRIMARY_PATIENT' || userDetails.user_type === 'PRIMARY-PATIENT')) {
 			getUsers();
 		}
 	}, []);
@@ -90,7 +88,6 @@ function DentalVisit(props) {
 				name: 'All Users',
 				avatar: null
 			});
-			console.log('ENTEREddddddddd', userList);
 			setUserLists(userList);
 		}
 		setlist(visits);

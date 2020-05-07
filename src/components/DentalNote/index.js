@@ -35,7 +35,7 @@ const monthNames = [
 ];
 function DentalNote(props) {
 
-	const { fetchNotes, notes, navigation, getUsers, userList, userDetails } = props;
+	const { fetchNotes, notes, navigation, getUsers, userList, userDetails, route } = props;
 	useLayoutEffect(() => {
 		navigation.setOptions({
 			headerLeft: () => (
@@ -57,27 +57,24 @@ function DentalNote(props) {
 	const [ list, setlist ] = useState([]);
 	const [ isVisible, setVisible ] = useState(false);
 	// const [ refresh, setRefresh ] = useState(true);
-	const [ user, setUser ] = useState(userDetails && userDetails.user_type !== 'PRIMARY-PATIENT' ? 
+	const [ user, setUser ] = useState(userDetails && (userDetails.user_type !== 'PRIMARY_PATIENT' || userDetails.user_type !== 'PRIMARY-PATIENT') ? 
 	{ 
 		id: userDetails.id, 
 		name: `${userDetails.first_name} ${userDetails.last_name}`,
 		avatar: userDetails.profile_pic
 	} :
 	{
-		id: '', 
+		id: 'all-users', 
 		name: 'All Users',
 		avatar: null
 	});
 
 	useEffect(() => {
-		if (userDetails.user_type === 'PRIMARY-PATIENT') {
+		if (userDetails && (userDetails.user_type === 'PRIMARY_PATIENT' || userDetails.user_type === 'PRIMARY-PATIENT')) {
 			getUsers();
 		}
-	}, []);
-
-	useEffect(() => {
-		fetchNotes(user.id, onGetNotesSuccess, onGetNotesListFailure);
-	}, [ user ]);
+		fetchNotes({ user_id: user.id }, onGetNotesSuccess, onGetNotesListFailure);
+	}, [ user, route.params ]);
 
 	const onGetNotesListFailure = () => {
 		// alert('Network error');

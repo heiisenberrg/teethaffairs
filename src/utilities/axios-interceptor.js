@@ -11,7 +11,6 @@ const baseHeaders = {
 
 const checkAuth = async () => {
 	const access = await localStorage.getStringItem('accessToken');
-	console.warn('inside checkAuth==>>>', access);
 	return access;
 };
 
@@ -25,13 +24,11 @@ export const client = axios.create({
 });
 
 export const apiCall = async (params = {}) => {
-	console.warn('inside api call', params);
     const data = await formData(params);
 	switch (params.method) {
 		case 'GET':
            return client.get(data.url, data.headers);
 		case 'POST':
-			console.warn('inside api call case', data);
            return client.post(data.url, data.data, data.headers);
 		case 'PUT':
            return client.put(data.url, data.data, data.headers);
@@ -102,7 +99,6 @@ const formData = async (data = {}) => {
 };
 
 client.interceptors.request.use((request) => {
-	console.log('inside axios ============>>>>>>>>>', request);
 	return request;
 });
 
@@ -111,7 +107,6 @@ client.interceptors.response.use(
 		return response;
 	},
 	error => {
-		console.log('inside axios error', error);
 		if (error.response.status && parseInt(error.response.status, 0) > 205) {
 			switch (error.response.status) {
 				case 500:
@@ -119,6 +114,7 @@ client.interceptors.response.use(
 						'Something went wrong.  Please check your information and try again.'
 					);
 				case 401:
+					// store.dispatch({ type: UserConstant.GET_LOGIN_SUCCESS });
 					return refreshTokenAndReattemptRequest(error);
 				default:
 					throw new Error(
@@ -156,10 +152,10 @@ const refreshTokenAndReattemptRequest = error => {
 	}
 };
 
-export const uploadFile = (params) => {
+export const uploadFile = params => {
 	const { method, url, data, withCredentials = false } = params;
 	let { headers } = params;
-	const requestUrl = `${client.defaults.baseURL}/${url}`;
+	const requestUrl = `${client.defaults.baseURL}${url}`;
 	if (withCredentials) {
 		headers.Authorization = `Bearer ${store.getState().user.user.access}`;
 	}

@@ -84,6 +84,11 @@ function reminderReducer(state = initialState, action) {
 				...state,
 				loading: false
 			};
+		case constants.CLEAR_REMINDER:
+			return {
+				...state,
+				...initialState
+			};
 		default:
 			return state;
 	}

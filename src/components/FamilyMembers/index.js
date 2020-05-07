@@ -20,7 +20,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import styles from './styles';
 
 function FamilyMembers(props) {
-	const { navigation, getUserList, usersList, getDeactivateUserId, user } = props;
+	const { route, navigation, getUserList, usersList, getDeactivateUserId, user } = props;
 	const [ refresh, setRefresh ] = useState(true);
 	const [ showModal, setShowModal ] = useState(false);
 	const [ expandedCards, setExpandedCards ] = useState([]);
@@ -32,6 +32,12 @@ function FamilyMembers(props) {
 		},
 		[ refresh ]
 	);
+
+	useEffect(() => {
+		if (route && route.params && route.params && Object.keys(route.params).length > 0 && route.params.reload) {
+			getUserList();
+		}
+	}, [ route.params ]);
 
 	const deactivateUserSuccess = () => {
 
@@ -201,7 +207,7 @@ function FamilyMembers(props) {
 				</View>
 			</Modal>
 			{
-				user.user_type === 'PRIMARY-PATIENT' &&
+				user && (user.user_type === 'PRIMARY_PATIENT' || user.user_type === 'PRIMARY-PATIENT') &&
 				<TouchableOpacity
 					style={ styles.fabButton }
 					activeOpacity={ 0.8 }

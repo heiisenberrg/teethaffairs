@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { createReminder, updateReminder } from '../../../state/actions/reminder';
 import { getUsers } from '../../../state/actions/user';
 import Loader from '../../global/Loader';
+import FlashMessage from '../../global/FlashMessage';
 
 function CreateReminder(props) {
 	const { route, getUsers, createReminder, userList, navigation, updateReminder, loading } = props;
@@ -93,6 +94,14 @@ function CreateReminder(props) {
 	};
 
 	const submit = () => {
+		if (selectedDays && selectedDays.length === 0) {
+			FlashMessage.message('Alert', 'Select days to continue', '#ff4444');
+			return;
+		}
+		if (selectedUser && selectedUser.length === 0) {
+			FlashMessage.message('Alert', 'Select user to continue', '#ff4444');
+			return;
+		}
 		let reminders = [];
 		selectedUser.map((user) => {
 			reminders.push({

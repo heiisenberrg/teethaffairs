@@ -10,7 +10,7 @@ import {
 	GET_USER_LIST,
 	GET_USER_NOTE,
 	GET_DEACTIVATE_USER_ID,
-	GET_NOTE_LIST,
+	// GET_NOTE_LIST,
 	GET_DOCTORS_LIST,
 	GET_QUESTION,
 	GET_DOCTOR_DETAIL,
@@ -68,7 +68,6 @@ function fetchAddMember(payload) {
 	const data = {
 		...payload.payload
 	};
-	console.log('==========',data);
 	return from(
 		apiCall({
 			url:
@@ -211,7 +210,7 @@ function toNotes(response) {
 
 function fetchNotesEpic(action$) {
 	return action$.pipe(
-		ofType(GET_NOTE_LIST),
+		ofType(),
 		mergeMap(fetchNoteList)
 	);
 }

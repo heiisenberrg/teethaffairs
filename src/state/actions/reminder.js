@@ -73,3 +73,7 @@ export const fetchReminderBasedOnFilterFailure = error => ({
 	type: constants.GET_REMINDER_LIST_BASED_ON_FILTER_FAILURE,
 	error
 });
+
+export const clearReminder = () => ({
+	type: constants.CLEAR_REMINDER
+});

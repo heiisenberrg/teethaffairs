@@ -157,6 +157,20 @@ export const getDentalVisitsFailure = error => ({
 	error
 });
 
+export const getRemoteConsultationsForPatients = () => ({
+	type: constants.GET_REMOTE_CONSULTATION_FOR_PATIENTS
+});
+
+export const getRemoteConsultationsForPatientsSuccess = response => ({
+	type: constants.GET_REMOTE_CONSULTATION_FOR_PATIENTS_SUCCESS,
+	response
+});
+
+export const getRemoteConsultationsForPatientsFailure = error => ({
+	type: constants.GET_REMOTE_CONSULTATION_FOR_PATIENTS_FAILURE,
+	error
+});
+
 export const createDentalVisits = (data, onSuccess, onFailure) => ({
 	type: constants.CREATE_DENTAL_VISIT,
 	data,
@@ -207,9 +221,12 @@ export const deleteDentalVisitFailure = error => ({
 	error
 });
 
-export const updateUserNote = (data) => ({
+export const updateUserNote = (data, id, onSuccess, onFailure) => ({
 	type: constants.UPDATE_USER_NOTE,
-	data
+	data,
+	id,
+	onSuccess,
+	onFailure
 });
 
 export const updateUserNoteSuccess = response => ({
@@ -225,4 +242,8 @@ export const updateUserNoteFailure = error => ({
 export const setDoctorDetail = data => ({
 	type: constants.SET_DOCTOR,
 	data
+});
+
+export const clearJournal= () => ({
+	type: constants.CLEAR_JOURNAL
 });

@@ -1,23 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import {
-	View,
-	Text,
 	KeyboardAvoidingView,
 	Image,
 	TextInput,
 	Switch,
 	TouchableOpacity,
-	ScrollView
+	ScrollView,
+	Dimensions,
+	FlatList
 } from 'react-native';
 
 import { connect } from 'react-redux';
 
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import CheckBox from 'react-native-check-box';
 
 import TextBoxRadioButton from '../textInputs/TextBoxRadioButton';
-
+import View from '../global/View';
+import Text from '../global/Text';
+import Icon from '../global/Icon';
+import Toast from '../../components/Toast';
 import {
 	getDoctorsList,
 	getQuestion
@@ -26,20 +28,52 @@ import {
 import styles from './styles';
 import globalStyles from '../../globalStyles';
 import FlashMessage from '../global/FlashMessage';
+import { getCards } from '../../state/actions/payment';
 
 /* eslint-disable no-mixed-spaces-and-tabs */
 
-var medical_conditions = [];
 var allergies_array = [];
 
 const userNoteSchema = yup.object({
 	height: yup.number(),
 	weight: yup.number(),
 	age: yup.number(),
-	allergies: yup.string(),
+	allergies: yup.array(),
+	medications: yup.array(),
+	medical_conditions: yup.array(),
 	id: yup.string(),
 	zipcode: yup.string()
 });
+
+const cardBrands = {
+	visa: '#1FE9A7',
+	mastercard: '#119989',
+	default: '#0BE3DF'
+};
+
+const drugs = [
+	'Amoxicilin 500',
+	'Amoxicilin 250',
+	'Amoxicilin 250 liq',
+	'Amoxicilin prophy',
+	'Augumentin 800',
+	'Clindamycin 150',
+	'Ibuprofen 800',
+	'Motrin 800',
+	'Paracetamol 650',
+	'Stemitil MD',
+	'Zintac'
+];
+
+const medicalConditions = [
+	'Diabetes', 
+	'Blood Pressure', 
+	'High Blood Pressure', 
+	'Respiratory Issues', 
+	'Digestive Issues',
+	'Thyroid Issues',
+	'Heart Issues'
+];
 
 function UserRemoteConsultation(props) {
 	const {
@@ -48,35 +82,47 @@ function UserRemoteConsultation(props) {
 		doctors_list,
 		getQuestion,
 		doctor,
-		user
+		user,
+		getCards,
+		cards,
+		navigation
 	} = props;
 
 	const [ showHistoryForm, setShowHistoryForm ] = useState(false);
 	const [ isEnabled, setIsEnabled ] = useState(false);
-	const [ isDiabetes, setIsDiabetes ] = useState(false);
-	const [ isHighBloodPressure, setIsHighBloodPressure ] = useState(false);
-	const [ isHeartIssues, setIsHeartIssues ] = useState(false);
-	const [ isRespiratoryIssues, setIsRespiratoryIssues ] = useState(false);
-	const [ isDigestiveIssues, setIsDigestiveIssues ] = useState(false);
-	const [ isThyroidIssues, setIsThyroidIssues ] = useState(false);
-	const [ arrayHolder, setArrayHolder ] = useState([]);
+	const [ allergiesList, setAllergiesList ] = useState([]);
 	const [ textInputHolder, setTextInputHolder ] = useState('');
 	const [ userNoteId, setUserNoteId ] = useState('');
 	const [ userZipCode, setUserZipCode ] = useState('');
+	const [ selectedCardId, setSelectedCardId ] = useState('');
+	const [ showModal, setShowModal ] = useState(false);
+	const [ showDropDown, setShowDropDown ] = useState(false);
+	const [ selectedDrugs, setSelectedDrugs ] = useState([]);
+	const [ selectedMedicalConditions, setMedicalConditionsList ] = useState([]);
+	const [ filteredDrugs, setFilteredDrugs ] = useState([]);
+	const [ searchValue, setSearchValue ] = useState('');
 
 	const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
 	const handleSubmit = (data) => {
+		const updateNoteData = {
+			height: data.height,
+			weight: data.weight,
+			allergies: allergiesList,
+			age: data.age,
+			medical_conditions: selectedMedicalConditions,
+			medications: selectedDrugs
+		};
 		const question_data = {
 			patient_zipcode: userZipCode,
 			doctor_zipcode: userZipCode,
-			doctor: doctor.id
+			doctor: doctor.id,
+			card_id: selectedCardId
 		};
-		data.allergies = arrayHolder;
 		if (doctor && doctor.id && userZipCode) {
 			getQuestion(
 				{ 
-					data,
+					data: updateNoteData,
 					question_data,
 					userNoteId 
 				},
@@ -88,24 +134,47 @@ function UserRemoteConsultation(props) {
 		}
 	};
 
-	const handleCheckBox = (value, state, isChecked) => {
-		if (isChecked === true) {
-			medical_conditions.push(value);
-		} else {
-			medical_conditions = medical_conditions.filter((data) =>
-				(data !== value ? data : '')
-			);
+	const filterDrugs = value => {
+		let filteredDrugs = drugs;
+		if (value !== '') {
+			filteredDrugs = [];
+			drugs.map(x => {
+				if (x.includes(value)) {
+					filteredDrugs.push(x);
+				}
+			});
 		}
+		setFilteredDrugs(filteredDrugs);
+		setShowDropDown(true);
 	};
 
-	const handleRemoveCheckBox = (value) => {
-		medical_conditions = medical_conditions.filter((data) =>
-			(data !== value ? data : '')
-		);
+	const selectDrug = item => {
+		let data = [ ...selectedDrugs ];
+		if (data.indexOf(item) !== -1) {
+			data.splice(data.indexOf(item), 1);
+		} else {
+			data.push(item);
+		}
+		setSelectedDrugs(data);
+	};
+
+	const selectMedicalCondition = item => {
+		let data = [ ...selectedMedicalConditions ];
+		if (data.indexOf(item) !== -1) {
+			data.splice(data.indexOf(item), 1);
+		} else {
+			data.push(item);
+		}
+		setMedicalConditionsList(data);
+	};
+
+	const handleToastSuccess = () => {
+		setShowModal(false);
+		navigation.navigate('Home');
 	};
 
 	const onSuccess = () => {
-		alert('questions has been sent');
+		setShowModal(true);
 	};
 
 	const onFailure = () => {
@@ -118,6 +187,7 @@ function UserRemoteConsultation(props) {
 			getDoctorsList({ pincode: user.zipcodes[0] }, onFailure);
 		}
 		getUserNoteId();
+		getCards();
 	}, []);
 
 	const getUserNoteId = () => {
@@ -127,7 +197,7 @@ function UserRemoteConsultation(props) {
 	const joinData = () => {
 		if (textInputHolder !== '') {
 			allergies_array.push(textInputHolder);
-			setArrayHolder(allergies_array);
+			setAllergiesList(allergies_array);
 			setTextInputHolder('');
 		}
 	};
@@ -136,9 +206,90 @@ function UserRemoteConsultation(props) {
 		allergies_array = allergies_array.filter((data) =>
 			(data !== remove_item ? data : '')
 		);
-		setArrayHolder(allergies_array);
+		setAllergiesList(allergies_array);
 		setTextInputHolder('');
 	};
+
+	const renderPaymentCard = () => {
+		return (
+			<View style={ styles.carouselContainer }>
+				<FlatList
+					data={ cards }
+					decelerationRate="fast"
+					horizontal={ true }
+					pagingEnabled={ false }
+					showsHorizontalScrollIndicator={ false }
+					snapToInterval={ width }
+					snapToAlignment="center"
+					contentContainerStyle={ styles.scrollContainer }
+					onViewableItemsChanged={ onViewRef.current }
+					viewabilityConfig={ viewConfigRef.current }
+					keyExtractor={ item => item.id }
+					renderItem={ renderItem }
+				/>
+			</View>
+		);
+	};
+
+	const { width } = Dimensions.get('window');
+
+	const renderItem = ({ item, index }) => {
+		return (
+			<TouchableOpacity
+				key={ `carditem-${index}` }
+				// onPress={ () => navigation.navigate('ChangeCard') }
+				style={ {
+					...styles.cardContainer,
+					...styles.card,
+					// ...(index === 0 && { marginLeft: 20 }),
+					...{
+						backgroundColor:
+							cardBrands[
+								item.brand !== '' ? item.brand.toLowerCase() : 'default'
+							] ? cardBrands[
+								item.brand !== '' ? item.brand.toLowerCase() : 'default'
+							] : cardBrands.default
+					}
+				} }>
+				<View row jC={ 'flex-end' } style={ styles.m10 }>
+					<Text c={ 'white' } w={ 'bold' } s={ 16 }>
+						{item.brand}
+					</Text>
+				</View>
+				<View row jC={ 'flex-start' } style={ styles.m15 }>
+					<Text c={ 'white' } s={ 40 } w={ 'bold' }>
+						.... .... ....{' '}
+					</Text>
+					<Text c={ 'white' } s={ 20 } w={ 'bold' }>
+						{item.last4}
+					</Text>
+				</View>
+				<View row jC={ 'space-between' } style={ styles.details }>
+					<View>
+						<Text c={ 'white' } s={ 14 } style={ styles.upperCase }>
+							Cardholder name
+						</Text>
+						<Text c={ 'white' } s={ 18 } w={ '500' } style={ styles.mv10 }>
+							{item.name}
+						</Text>
+					</View>
+					<View>
+						<Text c={ 'white' } s={ 14 } style={ styles.upperCase }>
+							Expiry date
+						</Text>
+						<Text c={ 'white' } s={ 18 } w={ '500' } style={ styles.mv10 }>
+							{item.exp_month} / {item.exp_year}
+						</Text>
+					</View>
+				</View>
+			</TouchableOpacity>
+		);
+	};
+
+	const onViewRef = React.useRef(({ viewableItems })=> {
+		setSelectedCardId(viewableItems[0].item.id);
+	});
+	const viewConfigRef = React.useRef({ viewAreaCoveragePercentThreshold: 50 }); 
 
 	return (
 		<View style={ styles.container }>
@@ -148,7 +299,8 @@ function UserRemoteConsultation(props) {
 						initialValues={ {
 							height: '',
 							weight: '',
-							allergies: '',
+							allergies: [],
+							age: '',
 							id: '',
 							zipcode: ''
 						} }
@@ -260,7 +412,7 @@ function UserRemoteConsultation(props) {
 													</TouchableOpacity>
 												</View>
 												<View style={ styles.dummy1 }>
-													{arrayHolder.map((data, index) => {
+													{allergiesList.map((data, index) => {
 														return (
 															<View
 																style={ styles.enteredAllergiesBox }
@@ -283,305 +435,56 @@ function UserRemoteConsultation(props) {
 													Type none if no allergies
 												</Text>
 											</View>
-
-											<View style={ styles.allergiesBox }>
-												<Text style={ styles.label1 }>
-													Medical conditions (Select all that apply)
+											<View style={ styles.m10 }>
+												<Text s={ 14 } lh={ 16 } w={ 'bold' } style={ styles.mv5 }>
+													Medical Conditions
 												</Text>
-												<View style={ styles.medicalContainer }>
-													<View style={ styles.medicalIssueContainer }>
-														<View style={ styles.checkBoxWrapper }>
-															<Text style={ styles.checkBoxText }>Diabetes</Text>
-															<CheckBox
-																checkedImage={
-																	<View style={ styles.customCheckbox }>
-																		<Image
-																			style={ styles.checkedStyle }
-																			source={ require('../../assets/checkbox.png') }
-																		/>
-																	</View>
-																}
-																unCheckedImage={
-																	<View style={ styles.customCheckbox } />
-																}
-																style={ styles.checkbox }
-																onClick={ () => {
-																	handleCheckBox(
-																		'Diabetes',
-																		setIsDiabetes(!isDiabetes),
-																		!isDiabetes
-																	);
-																} }
-																isChecked={ isDiabetes }
-															/>
-														</View>
-														<View style={ styles.checkBoxWrapper }>
-															<Text style={ styles.checkBoxText }>
-																High Blood Pressure
-															</Text>
-															<CheckBox
-																checkedImage={
-																	<View style={ styles.customCheckbox }>
-																		<Image
-																			style={ styles.checkedStyle }
-																			source={ require('../../assets/checkbox.png') }
-																		/>
-																	</View>
-																}
-																unCheckedImage={
-																	<View style={ styles.customCheckbox } />
-																}
-																style={ styles.checkbox }
-																onClick={ () => {
-																	handleCheckBox(
-																		'High Blood Pressure',
-																		setIsHighBloodPressure(
-																			!isHighBloodPressure
-																		),
-																		!isHighBloodPressure
-																	);
-																} }
-																isChecked={ isHighBloodPressure }
-															/>
-														</View>
-														<View style={ styles.checkBoxWrapper }>
-															<Text style={ styles.checkBoxText }>
-																Heart issues
-															</Text>
-															<CheckBox
-																checkedImage={
-																	<View style={ styles.customCheckbox }>
-																		<Image
-																			style={ styles.checkedStyle }
-																			source={ require('../../assets/checkbox.png') }
-																		/>
-																	</View>
-																}
-																unCheckedImage={
-																	<View style={ styles.customCheckbox } />
-																}
-																style={ styles.checkbox }
-																onClick={ () => {
-																	handleCheckBox(
-																		'Heart Issues',
-																		setIsHeartIssues(!isHeartIssues),
-																		!isHeartIssues
-																	);
-																} }
-																isChecked={ isHeartIssues }
-															/>
-														</View>
-														<View style={ styles.checkBoxWrapper }>
-															<Text style={ styles.checkBoxText }>
-																Respiratory issues
-															</Text>
-															<CheckBox
-																checkedImage={
-																	<View style={ styles.customCheckbox }>
-																		<Image
-																			style={ styles.checkedStyle }
-																			source={ require('../../assets/checkbox.png') }
-																		/>
-																	</View>
-																}
-																unCheckedImage={
-																	<View style={ styles.customCheckbox } />
-																}
-																style={ styles.checkbox }
-																onClick={ () => {
-																	handleCheckBox(
-																		'Respiratory Issues',
-																		setIsRespiratoryIssues(
-																			!isRespiratoryIssues
-																		),
-																		!isRespiratoryIssues
-																	);
-																} }
-																isChecked={ isRespiratoryIssues }
-															/>
-														</View>
-														<View style={ styles.checkBoxWrapper }>
-															<Text style={ styles.checkBoxText }>
-																Digestive issues
-															</Text>
-															<CheckBox
-																checkedImage={
-																	<View style={ styles.customCheckbox }>
-																		<Image
-																			style={ styles.checkedStyle }
-																			source={ require('../../assets/checkbox.png') }
-																		/>
-																	</View>
-																}
-																unCheckedImage={
-																	<View style={ styles.customCheckbox } />
-																}
-																style={ styles.checkbox }
-																onClick={ () => {
-																	handleCheckBox(
-																		'Digestive Issues',
-																		setIsDigestiveIssues(!isDigestiveIssues),
-																		!isDigestiveIssues
-																	);
-																} }
-																isChecked={ isDigestiveIssues }
-															/>
-														</View>
-														<View style={ styles.checkBoxWrapper }>
-															<Text style={ styles.checkBoxText }>
-																Thyroid issues
-															</Text>
-															<CheckBox
-																checkedImage={
-																	<View style={ styles.customCheckbox }>
-																		<Image
-																			style={ styles.checkedStyle }
-																			source={ require('../../assets/checkbox.png') }
-																		/>
-																	</View>
-																}
-																unCheckedImage={
-																	<View style={ styles.customCheckbox } />
-																}
-																style={ styles.checkbox }
-																onClick={ () => {
-																	handleCheckBox(
-																		'Thyroid Issues',
-																		setIsThyroidIssues(!isThyroidIssues),
-																		!isThyroidIssues
-																	);
-																} }
-																isChecked={ isThyroidIssues }
-															/>
-														</View>
-													</View>
-													<View style={ styles.issueTextWrapper }>
-														{isDiabetes ? (
-															<View style={ styles.selectedTextWrapper }>
-																<Text
-																	style={ styles.crossText }
-																	onPress={ () => {
-																		handleRemoveCheckBox(
-																			'Diabetes',
-																			setIsDiabetes(!isDiabetes)
+												<View row style={ styles.mv10 }>
+													<View style={ styles.flex }>
+														<View style={ styles.medicalConditionContainer }>
+															<ScrollView
+																automaticallyAdjustContentInsets={ false }
+																contentContainerStyle={ styles.flexGrow }
+																showsVerticalScrollIndicator={ false }>
+																{medicalConditions &&
+																	medicalConditions.map((item, index) => {
+																		return (
+																			<View
+																				row
+																				key={ `index-${index}` }
+																				style={ styles.dropdownContent }>
+																				<Text>{item}</Text>
+																				<TouchableOpacity
+																					style={ {
+																						...styles.searchContainer,
+																						...{
+																							borderColor: '#CAC7C7',
+																							backgroundColor:
+																								selectedMedicalConditions.indexOf(item) !== -1
+																									? '#00C57D'
+																									: 'white'
+																						}
+																					} }
+																					onPress={ () => selectMedicalCondition(item) }>
+																					<Icon
+																						type={ 'MaterialCommunityIcons' }
+																						name={ 'check' }
+																						color={ 'white' }
+																						size={ 15 }
+																					/>
+																				</TouchableOpacity>
+																			</View>
 																		);
-																	} }>
-																	x
-																</Text>
-																<Text style={ styles.selectedText }>
-																	Diabetes
-																</Text>
-															</View>
-														) : (
-															<Text style={ styles.dummy } />
-														)}
-														{isHighBloodPressure ? (
-															<View style={ styles.selectedTextWrapper }>
-																<Text
-																	style={ styles.crossText }
-																	onPress={ () => {
-																		handleRemoveCheckBox(
-																			'High Blood Pressure',
-																			setIsHighBloodPressure(
-																				!isHighBloodPressure
-																			)
-																		);
-																	} }>
-																	x
-																</Text>
-																<Text style={ styles.selectedText }>
-																	High Blood Pressure
-																</Text>
-															</View>
-														) : (
-															<Text style={ styles.dummy } />
-														)}
-														{isHeartIssues ? (
-															<View style={ styles.selectedTextWrapper }>
-																<Text
-																	style={ styles.crossText }
-																	onPress={ () => {
-																		handleRemoveCheckBox(
-																			'Heart Issues',
-																			setIsHeartIssues(!isHeartIssues)
-																		);
-																	} }>
-																	x
-																</Text>
-																<Text style={ styles.selectedText }>
-																	Heart Issues
-																</Text>
-															</View>
-														) : (
-															<Text style={ styles.dummy } />
-														)}
-
-														{isRespiratoryIssues ? (
-															<View style={ styles.selectedTextWrapper }>
-																<Text
-																	style={ styles.crossText }
-																	onPress={ () => {
-																		handleRemoveCheckBox(
-																			'Respiratory Issues',
-																			setIsRespiratoryIssues(
-																				!isRespiratoryIssues
-																			)
-																		);
-																	} }>
-																	x
-																</Text>
-																<Text style={ styles.selectedText }>
-																	Respiratory Issues
-																</Text>
-															</View>
-														) : (
-															<Text style={ styles.dummy } />
-														)}
-														{isDigestiveIssues ? (
-															<View style={ styles.selectedTextWrapper }>
-																<Text
-																	style={ styles.crossText }
-																	onPress={ () => {
-																		handleRemoveCheckBox(
-																			'Digestive Issues',
-																			setIsDigestiveIssues(!isDigestiveIssues)
-																		);
-																	} }>
-																	x
-																</Text>
-																<Text style={ styles.selectedText }>
-																	Digestive Issues
-																</Text>
-															</View>
-														) : (
-															<Text style={ styles.dummy } />
-														)}
-														{isThyroidIssues ? (
-															<View style={ styles.selectedTextWrapper }>
-																<Text
-																	style={ styles.crossText }
-																	onPress={ () => {
-																		handleRemoveCheckBox(
-																			'Thyroid Issues',
-																			setIsThyroidIssues(!isThyroidIssues)
-																		);
-																	} }>
-																	x
-																</Text>
-																<Text style={ styles.selectedText }>
-																	Thyroid Issues
-																</Text>
-															</View>
-														) : (
-															<Text style={ styles.dummy } />
-														)}
+																	})}
+															</ScrollView>
+														</View>
 													</View>
 												</View>
 											</View>
 											<View style={ styles.allergiesBox }>
 												<View style={ styles.switchWrapper }>
 													<Text style={ styles.switchText }>
-														Taking any medications (Select all that apply)
+														Taking any medications
 													</Text>
 													<Switch
 														style={ styles.switchButton }
@@ -592,225 +495,101 @@ function UserRemoteConsultation(props) {
 														value={ isEnabled }
 													/>
 												</View>
-												{isEnabled ? (
-													<View style={ styles.medicalContainer }>
-														<View style={ styles.medicalIssueContainer }>
-															<View style={ styles.checkBoxWrapper }>
-																<Text style={ styles.checkBoxText }>
-																	Diabetes
-																</Text>
-																<CheckBox
-																	checkedImage={
-																		<View style={ styles.customCheckbox }>
-																			<Image
-																				style={ styles.checkedStyle }
-																				source={ require('../../assets/checkbox.png') }
-																			/>
+												{
+												isEnabled &&
+													<View style={ styles.m10 }>
+														<View style={ styles.flex }>
+															<FlatList
+																numColumns={ 2 }
+																data={ selectedDrugs }
+																renderItem={ ({ item, index }) => {
+																	return (
+																		<View
+																			key={ `drugs-${index}` }
+																			row
+																			aI={ 'center' }
+																			style={ styles.selectedDrugContent }>
+																			<TouchableOpacity
+																				style={ styles.m5 }
+																				onPress={ () => selectDrug(item) }>
+																				<Icon
+																					type={ 'MaterialCommunityIcons' }
+																					name={ 'close' }
+																					color={ 'red' }
+																					size={ 18 }
+																				/>
+																			</TouchableOpacity>
+																			<Text>{item}</Text>
 																		</View>
-																	}
-																	unCheckedImage={
-																		<View style={ styles.customCheckbox } />
-																	}
-																	style={ styles.checkbox }
-																	onClick={ () => {
-																		setIsDiabetes(!isDiabetes);
-																	} }
-																	isChecked={ isDiabetes }
-																/>
-															</View>
-															<View style={ styles.checkBoxWrapper }>
-																<Text style={ styles.checkBoxText }>
-																	High Blood Pressure
-																</Text>
-																<CheckBox
-																	checkedImage={
-																		<View style={ styles.customCheckbox }>
-																			<Image
-																				style={ styles.checkedStyle }
-																				source={ require('../../assets/checkbox.png') }
-																			/>
-																		</View>
-																	}
-																	unCheckedImage={
-																		<View style={ styles.customCheckbox } />
-																	}
-																	style={ styles.checkbox }
-																	onClick={ () => {
-																		setIsHighBloodPressure(
-																			!isHighBloodPressure
-																		);
-																	} }
-																	isChecked={ isHighBloodPressure }
-																/>
-															</View>
-															<View style={ styles.checkBoxWrapper }>
-																<Text style={ styles.checkBoxText }>
-																	Heart issues
-																</Text>
-																<CheckBox
-																	checkedImage={
-																		<View style={ styles.customCheckbox }>
-																			<Image
-																				style={ styles.checkedStyle }
-																				source={ require('../../assets/checkbox.png') }
-																			/>
-																		</View>
-																	}
-																	unCheckedImage={
-																		<View style={ styles.customCheckbox } />
-																	}
-																	style={ styles.checkbox }
-																	onClick={ () => {
-																		setIsHeartIssues(!isHeartIssues);
-																	} }
-																	isChecked={ isHeartIssues }
-																/>
-															</View>
-															<View style={ styles.checkBoxWrapper }>
-																<Text style={ styles.checkBoxText }>
-																	Respiratory issues
-																</Text>
-																<CheckBox
-																	checkedImage={
-																		<View style={ styles.customCheckbox }>
-																			<Image
-																				style={ styles.checkedStyle }
-																				source={ require('../../assets/checkbox.png') }
-																			/>
-																		</View>
-																	}
-																	unCheckedImage={
-																		<View style={ styles.customCheckbox } />
-																	}
-																	style={ styles.checkbox }
-																	onClick={ () => {
-																		setIsRespiratoryIssues(
-																			!isRespiratoryIssues
-																		);
-																	} }
-																	isChecked={ isRespiratoryIssues }
-																/>
-															</View>
-															<View style={ styles.checkBoxWrapper }>
-																<Text style={ styles.checkBoxText }>
-																	Digestive issues
-																</Text>
-																<CheckBox
-																	checkedImage={
-																		<View style={ styles.customCheckbox }>
-																			<Image
-																				style={ styles.checkedStyle }
-																				source={ require('../../assets/checkbox.png') }
-																			/>
-																		</View>
-																	}
-																	unCheckedImage={
-																		<View style={ styles.customCheckbox } />
-																	}
-																	style={ styles.checkbox }
-																	onClick={ () => {
-																		setIsDigestiveIssues(!isDigestiveIssues);
-																	} }
-																	isChecked={ isDigestiveIssues }
-																/>
-															</View>
-															<View style={ styles.checkBoxWrapper }>
-																<Text style={ styles.checkBoxText }>
-																	Thyroid issues
-																</Text>
-																<CheckBox
-																	checkedImage={
-																		<View style={ styles.customCheckbox }>
-																			<Image
-																				style={ styles.checkedStyle }
-																				source={ require('../../assets/checkbox.png') }
-																			/>
-																		</View>
-																	}
-																	unCheckedImage={
-																		<View style={ styles.customCheckbox } />
-																	}
-																	style={ styles.checkbox }
-																	onClick={ () => {
-																		setIsThyroidIssues(!isThyroidIssues);
-																	} }
-																	isChecked={ isThyroidIssues }
-																/>
-															</View>
+																	);
+																} }
+															/>
 														</View>
-														<View style={ styles.issueTextWrapper }>
-															{isDiabetes ? (
-																<View style={ styles.selectedTextWrapper }>
-																	<Text style={ styles.crossText }>x</Text>
-																	<Text style={ styles.selectedText }>
-																		Diabetes
-																	</Text>
+														<View row style={ styles.mv10 }>
+															<View style={ styles.flex }>
+																<View row center style={ styles.searchContent }>
+																	<TextInput
+																		style={ [ styles.p10, styles.flex ] }
+																		value={ searchValue }
+																		onChangeText={ value => [
+																			setSearchValue(value),
+																			filterDrugs(value)
+																		] }
+																	/>
+																	<TouchableOpacity
+																		style={ styles.m10 }
+																		onPress={ () => setShowDropDown(!showDropDown) }>
+																		<Icon
+																			type={ 'Ionicons' }
+																			name={ 'ios-search' }
+																			size={ 18 }
+																			color={ 'grey' }
+																		/>
+																	</TouchableOpacity>
 																</View>
-															) : (
-																<Text style={ styles.dummy } />
-															)}
-															{isHighBloodPressure ? (
-																<View style={ styles.selectedTextWrapper }>
-																	<Text style={ styles.crossText }>x</Text>
-																	<Text style={ styles.selectedText }>
-																		High Blood Pressure
-																	</Text>
-																</View>
-															) : (
-																<Text style={ styles.dummy } />
-															)}
-															{isHeartIssues ? (
-																<View style={ styles.selectedTextWrapper }>
-																	<Text style={ styles.crossText }>x</Text>
-																	<Text style={ styles.selectedText }>
-																		Heart Issues
-																	</Text>
-																</View>
-															) : (
-																<Text style={ styles.dummy } />
-															)}
-
-															{isRespiratoryIssues ? (
-																<View style={ styles.selectedTextWrapper }>
-																	<Text style={ styles.crossText }>x</Text>
-																	<Text style={ styles.selectedText }>
-																		Respiratory Issues
-																	</Text>
-																</View>
-															) : (
-																<Text style={ styles.dummy } />
-															)}
-															{isDigestiveIssues ? (
-																<View style={ styles.selectedTextWrapper }>
-																	<Text style={ styles.crossText }>x</Text>
-																	<Text style={ styles.selectedText }>
-																		Digestive Issues
-																	</Text>
-																</View>
-															) : (
-																<Text style={ styles.dummy } />
-															)}
-															{isThyroidIssues ? (
-																<View style={ styles.selectedTextWrapper }>
-																	<Text
-																		style={ styles.crossText }
-																		onPress={ () =>
-																			setIsThyroidIssues(!isThyroidIssues)
-																		}>
-																		x
-																	</Text>
-																	<Text style={ styles.selectedText }>
-																		Thyroid Issues
-																	</Text>
-																</View>
-															) : (
-																<Text style={ styles.dummy } />
-															)}
+																{showDropDown && (
+																	<View style={ styles.dropdownContainer }>
+																		<ScrollView
+																			automaticallyAdjustContentInsets={ false }
+																			contentContainerStyle={ styles.flexGrow }
+																			showsVerticalScrollIndicator={ false }>
+																			{filteredDrugs &&
+																				filteredDrugs.map((item, index) => {
+																					return (
+																						<View
+																							row
+																							key={ `index-${index}` }
+																							style={ styles.dropdownContent }>
+																							<Text>{item}</Text>
+																							<TouchableOpacity
+																								style={ {
+																									...styles.searchContainer,
+																									...{
+																										borderColor: '#CAC7C7',
+																										backgroundColor:
+																											selectedDrugs.indexOf(item) !== -1
+																												? '#00C57D'
+																												: 'white'
+																									}
+																								} }
+																								onPress={ () => selectDrug(item) }>
+																								<Icon
+																									type={ 'MaterialCommunityIcons' }
+																									name={ 'check' }
+																									color={ 'white' }
+																									size={ 15 }
+																								/>
+																							</TouchableOpacity>
+																						</View>
+																					);
+																				})}
+																		</ScrollView>
+																	</View>
+																)}
+															</View>
 														</View>
 													</View>
-												) : (
-													<Text />
-												)}
+												}
 											</View>
 										</View>
 									</ScrollView>
@@ -821,6 +600,7 @@ function UserRemoteConsultation(props) {
 									<Text style={ styles.dentistText }>choose a dentist</Text>
 									<TextBoxRadioButton options={ doctors_list } onSuccess />
 								</View>
+								{renderPaymentCard()}
 								<View style={ styles.sendButtonWrapper }>
 									<TouchableOpacity
 										style={ globalStyles.secondaryButton }
@@ -831,6 +611,14 @@ function UserRemoteConsultation(props) {
 							</View>
 						)}
 					</Formik>
+					<Toast
+						title="success"
+						message="Question sent successfully."
+						showModal={ showModal }
+						handleSubmit={ handleToastSuccess }
+						showClose={ false }
+						successButtontext="Ok"
+					/>
 				</KeyboardAvoidingView>
 			</ScrollView>
 		</View>
@@ -841,10 +629,12 @@ function mapStateToProps(state) {
 	return {
 		doctors_list: state.journal.doctors_list,
 		doctor: state.journal.doctor,
-		user: state.user.user
+		user: state.user.user,
+		cards: state.payment.cards
 	};
 }
 export default connect(mapStateToProps, {
 	getDoctorsList,
-	getQuestion
+	getQuestion,
+	getCards
 })(UserRemoteConsultation);

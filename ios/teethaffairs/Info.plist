@@ -42,11 +42,11 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Camera Permission</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>For taking a photo</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Photo Library Permission</string>
+	<string>For choosing a photo</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>For saving a photo</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

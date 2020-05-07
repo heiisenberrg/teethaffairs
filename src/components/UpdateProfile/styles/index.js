@@ -59,9 +59,9 @@ const styles = StyleSheet.create({
 		position: 'relative'
 	},
 	label: {
-		color: '#6A6A6A',
+		color: '#363636',
 		backgroundColor: 'white',
-		fontSize: 12
+		fontSize: 13
     },
     errorText: {
 		color: '#CF0000',

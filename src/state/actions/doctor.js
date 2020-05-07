@@ -75,3 +75,7 @@ export const updateDoctorProfileFailure = error => ({
 	type: constants.UPDATE_DOCTOR_PROFILE_FAILURE,
 	error
 });
+
+export const clearDoctor = () => ({
+	type: constants.CLEAR_DOCTOR
+});

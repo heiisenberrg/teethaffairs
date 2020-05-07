@@ -43,6 +43,7 @@ function DashboardStack() {
 				gestureEnabled: false,
 				headerTintColor: 'white'
 			}) }
+			initialRouteName="Home"
 		>
 			<Stack.Screen
 				name="Home"

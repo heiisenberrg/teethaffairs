@@ -1,5 +1,13 @@
 import { StyleSheet } from 'react-native';
 
+const groupButton = {
+	color: '#14DF94',
+	borderWidth: 1,
+	paddingHorizontal: 50,
+	paddingVertical: 5,
+	borderColor: '#14DF94'
+};
+
 const styles = StyleSheet.create({
 	note: {
 		fontSize:11,
@@ -32,7 +40,7 @@ const styles = StyleSheet.create({
 	header: {
 		textAlign: 'center',
 		fontSize: 22,
-		marginTop: 200,
+		marginTop: 25,
 		fontWeight: 'bold',
 		color: '#3F4440',
 		marginBottom: 10
@@ -62,6 +70,32 @@ const styles = StyleSheet.create({
 		color: '#CF0000',
 		fontSize: 12,
 		marginLeft: 17
+	},
+	groupButtonContainer: {
+		marginTop: 100,
+		flexDirection: 'row',
+		justifyContent: 'center'
+	},
+	groupButton: {
+		color: '#14DF94',
+		borderWidth: 1,
+		paddingHorizontal: 50,
+		paddingVertical: 5,
+		borderColor: '#14DF94'
+	},
+	buttonLeftCorner: {
+		...groupButton,
+		borderTopLeftRadius: 5,
+		borderBottomLeftRadius: 5
+	},
+	buttonRightCorner: {
+		...groupButton,
+		borderTopRightRadius: 5,
+		borderBottomRightRadius: 5
+	},
+	activeGroupButton: {
+		backgroundColor: '#14DF94',
+		color: '#ffffff'
 	}
 });
 

@@ -5,58 +5,43 @@ module.exports = {
   storeJsonValues: function storeJsonValues(key, jsonObject) {
     try {
       this.setItem(key, JSON.stringify(jsonObject));
-    } catch (error) {
-      console.log(`Error storing JsonValues ---', ${error}!`);
-    }
+    } catch (error) {}
   },
 
   setItem: async function storeStringValues(key, value) {
     try {
       await AsyncStorage.setItem(key, value);
-    } catch (error) {
-      console.log(`Error storing StringValues ---, ${error}!`);
-    }
+    } catch (error) {}
   },
 
   mergeItem: async function mergeItem(key, value) {
     try {
       await AsyncStorage.mergeItem(key, JSON.stringify(value));
-    } catch (error) {
-      console.log(`Error retrieving data ---',${error}!`);
-    }
+    } catch (error) {}
   },
 
   getAllKeys: async function getAllKeys(callback) {
     try {
       await AsyncStorage.getAllKeys((error, result) => {
-        if (result !== null) {
-          console.log(`All Keys ---',${result}!`);
-        }
         if (callback) {
           callback(error, result);
         }
       });
-    } catch (error) {
-      console.log(`Error getting Keys ---, ${error}!`);
-    }
+    } catch (error) {}
   },
 
   getItem: async function getItem(key) {
     try {
       const result = await AsyncStorage.getItem(key);
       return JSON.parse(result);
-    } catch (error) {
-      console.log(`Error retrieving data ---',${error}!`);
-    }
+    } catch (error) {}
   },
 
   getStringItem: async function getItem(key) {
     try {
       const result = await AsyncStorage.getItem(key);
       return result;
-    } catch (error) {
-      console.log(`Error retrieving data ---',${error}!`);
-    }
+    } catch (error) {}
   },
 
   getJsonObject: async function getJsonObject(key, callback) {
@@ -69,32 +54,25 @@ module.exports = {
           callback(result);
         }
       });
-    } catch (error) {
-      console.log(`Error retrieving data ---,${error}!`);
-    }
+    } catch (error) {}
   },
 
   clearAll: async function clearValues() {
     try {
       await AsyncStorage.clear();
-    } catch (error) {
-      console.log(`Error while clear the values ---'${error}!`);
-    }
+    } catch (error) {}
   },
 
   removeItem: async function removeItem(key, callback) {
     try {
       await AsyncStorage.removeItem(key, (error, result) => {
         if (result !== null) {
-          console.log(`removed key & value ---${key}!,'&',${result}!`);
           result = JSON.parse(result);
         }
         if (callback) {
           callback(result);
         }
       });
-    } catch (error) {
-      console.log(`Error while clear the values ---${error}!`);
-    }
+    } catch (error) {}
   }
 };

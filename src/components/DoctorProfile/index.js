@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Image, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { Image, Text, TouchableOpacity, ScrollView, Platform } from 'react-native';
 import View from '../global/View';
 import Icon from '../global/Icon';
 import { connect } from 'react-redux';
@@ -11,8 +11,9 @@ import * as yup from 'yup';
 import styles from './styles';
 import globalStyles from '../../globalStyles/index';
 import TextInputField from '../textInputs/TextInputField';
+import RNFetchBlob from 'rn-fetch-blob';
 
-import { getMyProfile } from '../../state/actions/user';
+import { getMyProfile, uploadProfilePicture } from '../../state/actions/user';
 import { updateDoctorProfile } from '../../state/actions/doctor';
 
 const profileSchema = yup.object({
@@ -34,7 +35,7 @@ const profileSchema = yup.object({
 });
 
 const DoctorProfile = (props) => {
-    const { navigation, getMyProfile, user, updateDoctorProfile } = props;
+    const { navigation, getMyProfile, user, updateDoctorProfile, uploadProfilePicture } = props;
     
     const imageOptions = {
         title: 'Profile Photo',
@@ -59,7 +60,6 @@ const DoctorProfile = (props) => {
     }, []);
 
     useEffect(() => {
-        console.log('====+useruseruseruser++++++', user);
         if(doesUserProfileExists()) {
             const values = {
                 office_name:  user.user_profile[0].office_name,
@@ -94,40 +94,45 @@ const DoctorProfile = (props) => {
 			path: 'images'
 		};
 		ImagePicker.launchCamera(options, response => {
-			console.log('Response = ', response);
 			if (response.didCancel) {
-				console.log('User cancelled image picker');
 			} else if (response.error) {
-				console.log('ImagePicker Error: ', response.error);
 			} else if (response.customButton) {
-				console.log('User tapped custom button: ', response.customButton);
 			} else {
-				console.log('response', JSON.stringify(response));
 				let source = {
 					...response
 				};
-				setProfileImage(source);
+                setProfileImage(source);
+                saveProfilePhoto(source);
 			}
 		});
 	};
 
 	const takeImageHandler = () => {
 		ImagePicker.showImagePicker(imageOptions, response => {
-			console.log('========image picker=======', response);
 			if (response.didCancel) {
-				console.log('User cancelled image picker');
 			} else if (response.error) {
-				console.log('ImagePicker Error: ', response.error);
 			} else if (response.customButton) {
-				console.log('User tapped custom button: ', response.customButton);
 				launchCamera();
 			} else {
 				let source = {
 					...response
 				};
-				setProfileImage(source);
+                setProfileImage(source);
+                saveProfilePhoto(source);
 			}
 		});
+    };
+
+    const saveProfilePhoto = (item) => {
+        const data = [
+            {
+                name: 'profile_pic',
+                filename: `profile${Date.now()}`,
+                data: Platform.OS === 'android' ? RNFetchBlob.wrap(item.uri) :  RNFetchBlob.wrap(item.uri.replace('file://', '')),
+                type: item.type
+            }
+        ];
+        uploadProfilePicture(data);
     };
 
     const handleOnSave = (values) => {
@@ -438,5 +443,5 @@ const mapStateToProps = (state) => {
 
 export default connect(
 	mapStateToProps,
-	{ getMyProfile, updateDoctorProfile }
+	{ getMyProfile, updateDoctorProfile, uploadProfilePicture }
 )(DoctorProfile);

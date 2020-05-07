@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import Profile from '../../components/Profile';
+import UserHistory from '../../components/UserHistory';
 import DoctorHistory from '../../components/DoctorHistory';
 
 function History(props) {
@@ -10,7 +10,7 @@ function History(props) {
 	return (
 		user && user.user_type === 'DOCTOR' 
 		? <DoctorHistory { ...props } />
-		: <Profile { ...props } />	);
+		: <UserHistory { ...props } />	);
 }
 
 const mapStateToProps = (state) => {

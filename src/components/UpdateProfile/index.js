@@ -1,30 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { Image, Text, TouchableOpacity, ScrollView, TextInput, Platform } from 'react-native';
+import { Image, Text, TouchableOpacity, ScrollView, Platform } from 'react-native';
 import View from '../global/View';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import ImagePicker from 'react-native-image-picker';
-import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import DateTimePicker from '@react-native-community/datetimepicker';
-
+import RNFetchBlob from 'rn-fetch-blob';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-
+import { getMyProfile, uploadProfilePicture, editUser } from '../../state/actions/user';
 import styles from './styles';
-import passwordStyle from '../textInputs/style';
 import globalStyles from '../../globalStyles/index';
 import TextInputField from '../textInputs/TextInputField';
 import calender from '../../assets/calender.png';
 
 const profileSchema = yup.object({
-    zipcode: yup.string(),
+    first_name: yup.string().required('Required'),
+    last_name: yup.string().required('Required'),
     email: yup.string(), //office email,
-	first_name: yup.string(),
-    last_name: yup.string()
+    date_of_birth: yup.string().required('Required')
 });
 
 const UpdateProfile = (props) => {
-    const { user } = props;
+    const { user, getMyProfile, uploadProfilePicture, editUser } = props;
     
     const imageOptions = {
         title: 'Profile Photo',
@@ -35,25 +33,31 @@ const UpdateProfile = (props) => {
         takePhotoButtonTitle: null
     };
     
-    const [ profileImage, setProfileImage ] = useState({ uri: user.profile_pic });
+    const [ profileImage, setProfileImage ] = useState({});
     const doesUserProfileExists = () => user && user.user_profile && user.user_profile.length > 0;
     const [ initialValues, setInitialValues ] = useState({});
-    const [ showEye, setShowEye ] = useState(true);
     const [ date, setDate ] = useState(new Date());
 	const [ mode, setMode ] = useState('date');
-	const [ show, setShow ] = useState(false);
-	const [ birthDate, setBirthDate ] = useState(user.date_of_birth);
+    const [ show, setShow ] = useState(false);
+    const [ birthDate, setBirthDate ] = useState(user.date_of_birth);
+    
+    useEffect(() => {
+        getMyProfile();
+    }, []);
 
     useEffect(() => {
         if(doesUserProfileExists()) {
             const values = {
                 email: user.email,
                 first_name: user.first_name,
-                last_name: user.last_name
+                last_name: user.last_name,
+                date_of_birth: birthDate
             };
             setInitialValues(values);
         }
-        setProfileImage({ uri: user.profile_pic });
+        if(user && user.profile_pic) {
+            setProfileImage({ uri: user.profile_pic });
+        }
     }, [ user ]);
 
     const launchCamera = () => {
@@ -62,65 +66,49 @@ const UpdateProfile = (props) => {
 			path: 'images'
 		};
 		ImagePicker.launchCamera(options, response => {
-			console.log('Response = ', response);
 			if (response.didCancel) {
-				console.log('User cancelled image picker');
 			} else if (response.error) {
-				console.log('ImagePicker Error: ', response.error);
 			} else if (response.customButton) {
-				console.log('User tapped custom button: ', response.customButton);
 			} else {
-				console.log('response', JSON.stringify(response));
 				let source = {
 					...response
 				};
-				setProfileImage(source);
+                setProfileImage(source);
+                saveProfilePhoto(source);
 			}
 		});
 	};
 
 	const takeImageHandler = () => {
 		ImagePicker.showImagePicker(imageOptions, response => {
-			console.log('========image picker=======', response);
 			if (response.didCancel) {
-				console.log('User cancelled image picker');
 			} else if (response.error) {
-				console.log('ImagePicker Error: ', response.error);
 			} else if (response.customButton) {
-				console.log('User tapped custom button: ', response.customButton);
 				launchCamera();
 			} else {
 				let source = {
 					...response
 				};
-				setProfileImage(source);
+                setProfileImage(source);
+                saveProfilePhoto(source);
 			}
-		});
+        });
     };
 
-    const handleOnSave = () => {
-        // const data = {
-            // first_name: values.first_name,
-            // last_name: values.first_name,
-            // phone: 'string',
-            // email: values.email,
-            // zipcode: [
-            //   '621001'
-            // ],
-            // profile: {
-            //   city: values.city,
-            //   state: values.state,
-            //   office_name: values.office_name,
-            //   office_phone: values.office_phone,
-            //   office_address1: values.office_address1,
-            //   office_address2: values.office_address2,
-            //   office_tax_id: values.office_tax_id,
-            //   license_exp_date: values.license_exp_date,
-            //   license_no: values.licence_no,
-            //   routing_number: values.routing_routing_number,
-            //   account_number: values.account_number
-            // }
-        // };
+    const saveProfilePhoto = (item) => {
+        const data = [
+            {
+                name: 'profile_pic',
+                filename: `profile${Date.now()}`,
+                data: Platform.OS === 'android' ? RNFetchBlob.wrap(item.uri) :  RNFetchBlob.wrap(item.uri.replace('file://', '')),
+                type: item.type
+            }
+        ];
+        uploadProfilePicture(data);
+    };
+
+    const handleSubmit = (values) => {
+        editUser(values);
     };
 
     const onChange = (event, selectedDate) => {
@@ -142,10 +130,6 @@ const UpdateProfile = (props) => {
 	const showMode = currentMode => {
 		setShow(true);
 		setMode(currentMode);
-	};
-
-    const passwordHandler = () => {
-		setShowEye(!showEye);
 	};
 
     const showDatepicker = () => {
@@ -174,7 +158,7 @@ const UpdateProfile = (props) => {
                 enableReinitialize
                 validationSchema={ profileSchema }
                 onSubmit={ values => {
-                    handleOnSave(values);
+                    handleSubmit(values);
                 } }
             >
                 {
@@ -207,36 +191,7 @@ const UpdateProfile = (props) => {
                                     onBlur={ props.handleBlur('email') }
                                     error={ props.touched.email && props.errors.email }
                                     secureTextEntry={ false }
-                                />
-                                <View style={ passwordStyle.textInputContainer }>
-                                    <View style={ passwordStyle.labelContainer }>
-                                        <Text style={ passwordStyle.label }>Password</Text>
-                                    </View>
-                                    <TextInput
-                                        style={ passwordStyle.textInput }
-                                        placeholder="Enter Your Password"
-                                        onChangeText={ props.handleChange('password') }
-                                        value={ props.values.password }
-                                        onBlur={ props.handleBlur('password') }
-                                        secureTextEntry={ showEye ? true : false }
-                                    />
-                                    <TouchableOpacity
-                                        onPress={ passwordHandler }
-                                        style={ styles.eyeIcon }>
-                                        {showEye ? (
-                                            <AntDesignIcon name="eye" size={ 17 } color="#5C5C5C" />
-                                        ) : (
-                                            <AntDesignIcon name="eyeo" size={ 17 } color="#5C5C5C" />
-                                        )}
-                                    </TouchableOpacity>
-                                    {props.touched.password && props.errors.password ? (
-                                        <Text style={ passwordStyle.errorText }>
-                                            {props.errors.password}
-                                        </Text>
-                                    ) : (
-                                        <Text style={ passwordStyle.errorText } />
-                                    )}
-                                </View>
+                                />               
                                 <View style={ styles.textInputContainer }>
 									<View style={ styles.labelContainer }>
 										<Text style={ styles.label }>Date of birth</Text>
@@ -286,12 +241,11 @@ const UpdateProfile = (props) => {
 
 const mapStateToProps = (state) => {
 	return {
-        userRole: state.user.user_type,
         user: state.user.user
 	};
 };
 
 export default connect(
 	mapStateToProps,
-	null
+	{ getMyProfile, uploadProfilePicture, editUser }
 )(UpdateProfile);

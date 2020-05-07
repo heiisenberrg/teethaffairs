@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useState, useEffect } from 'react';
 import { Provider } from 'react-redux';
-
+import { PERMISSIONS, check, request, RESULTS } from 'react-native-permissions';
 import MainNavigation from './src/navigation';
 import store from './src/state/store';
 import Splash from './src/screens/Splash';
@@ -36,6 +36,25 @@ function App() {
 	const [ isLoading, setIsLoading ] = useState(true);
 	const [ isAuth, setIsAuth ] = useState(false);
 	const [ user, setUser ] = useState({});
+
+	const [ cameraGranted, setCameraGranted ] = useState(false);
+
+	const handleCameraPermission = async () => {
+		const res = await check(PERMISSIONS.IOS.CAMERA);
+
+		if (res === RESULTS.GRANTED) {
+			setCameraGranted(true);
+		} else if (res === RESULTS.DENIED) {
+		const res2 = await request(PERMISSIONS.IOS.CAMERA);
+		res2 === RESULTS.GRANTED 
+			? setCameraGranted(true)
+			: setCameraGranted(false);
+		}
+	};
+	
+	useEffect(() => {
+		handleCameraPermission(); 
+	}, []);
 
 	useEffect(() => {
 		const checkAuth = async () => {
