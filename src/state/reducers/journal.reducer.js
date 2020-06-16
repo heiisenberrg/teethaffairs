@@ -187,12 +187,17 @@ function journalReducer(state = initialState, action) {
 			return {
 				...state,
 				loading: false,
-				patientRemoteConsultation: action.response.data
+				patientRemoteConsultation: action.response
 			};
 		case constants.GET_REMOTE_CONSULTATION_FOR_PATIENTS_FAILURE:
 			return {
 				...state,
 				loading: false
+			};
+		case constants.GET_REMOTE_CONSULTATION_FOR_PATIENTS:
+			return {
+				...state,
+				loading: true
 			};
 		case constants.CREATE_DENTAL_VISIT:
 			return {
@@ -263,7 +268,14 @@ function journalReducer(state = initialState, action) {
 		case constants.CLEAR_JOURNAL:
 			return {
 				...state,
-				...initialState
+				usersList: [],
+				notes: [],
+				doctor_zipcode: '',
+				doctor: {},
+				visits: [],
+				patientRemoteConsultation: [],
+				doctors_list: [],
+				loading: false
 			};
 		default:
 			return state;

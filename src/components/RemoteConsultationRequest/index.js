@@ -5,8 +5,11 @@ import {
 	ScrollView,
 	TouchableOpacity,
 	TextInput,
-	Modal
+	Modal,
+	KeyboardAvoidingView
 } from 'react-native';
+import Toast from '../../components/Toast';
+import FlashMessage from '../../components/global/FlashMessage';
 import View from '../global/View';
 import Text from '../global/Text';
 import Icon from '../global/Icon';
@@ -14,6 +17,11 @@ import styles from './style';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { answerQuestion, rejectQuestion, verifyPin } from '../../state/actions/doctor';
+import ImagePreviewer from '../../components/global/ImagePreviewer';
+import { CommonActions } from '@react-navigation/native';
+
+/* eslint-disable no-undef */
+const keyboardVerticalOffset = Platform.OS === 'ios' ? 0: 0;
 
 const detail = [
 	{
@@ -43,7 +51,7 @@ const detail = [
 	},
 	{
 		question: 'Pain type',
-		answer: '',
+		answer: 'pain_type',
 		type: 'string'
 	},
 	{
@@ -69,7 +77,7 @@ const detail = [
 	{
 		question: 'When did the issue start',
 		answer: 'issue_start_date',
-		type: 'date'
+		type: 'string'
 	},
 	{
 		question: 'Swelling size',
@@ -136,7 +144,11 @@ function RemoteConsultationRequest(props) {
 	const [ opinion, setOpinion ] = useState('');
 	const [ treatment, setTreatment ] = useState('');
 	const [ showError, setShowError ] = useState(false);
-
+	const [ uri, setUri ] = useState('');
+	const [ enablePreview, setEnablePreview ] = useState(false);
+	const [ showToast, setShowToast ] = useState(false);
+	let scrollView;
+	
 	useEffect(() => {
 		setShowModal(!showModal);
 		if (route && route.params && Object.keys(route.params).length > 0) {
@@ -173,37 +185,79 @@ function RemoteConsultationRequest(props) {
 			verifyPin( { 
 				secret_pin: pinValue, 
 				question_id: data.id 
-			}, () => [ setShowModal(!showModal), setModalContent('reject') ], () => setShowError(!showError) );
+			}, verifyPinSuccess, () => setShowError(!showError) );
+		} else {
+			FlashMessage.message('Alert', 'Please enter the pin to continue', 'red');
 		}
 	};
 
-	const submit = type => {
-		if (!isResponse) {
-			if (type === 'answer') {
-				setIsResponse(!isResponse);
-				setIsQuestionVisible(!isQuestionVisible);
-			} else if (type === 'reject') {
-				setShowModal(!showModal);
-			} else if (type === 'confirm') {
-				let rejectData = {
-					resp_status: false,
-					response_text: rejectReasons[rejectReason]
-				};
-				rejectQuestion({ data: rejectData, id: data.id, navigation });
-			}
+	function verifyPinSuccess(response) {
+		if(response && response.error_code === 2001) {
+			FlashMessage.message('Alert', 'Invalid PIN', 'red');
+			navigation.goBack();
 		} else {
-			if (type === 'answer') {
-				let answerData = {
-					resp_status: true,
-					response_text: 'Follow the treatment',
-					doctor_opinion: opinion,
-					recommended_treatment: treatment,
-					recommended_followup: followUp[selectedFollowup],
-					recommended_medications: selectedDrugs.join(' ')
-				};
-				answerQuestion({ data: answerData, id: data.id, navigation });
-			}
+			setShowModal(!showModal);
+			setModalContent('reject');
 		}
+	}
+
+	const submit = type => {
+			if (!isResponse) {
+				if (type === 'answer') {
+					setIsResponse(!isResponse);
+					setIsQuestionVisible(!isQuestionVisible);
+					scrollView.scrollTo({ x: 0, y: 0, animated: true });
+				} else if (type === 'reject') {
+					setShowModal(!showModal);
+				} else if (type === 'confirm') {
+					let rejectData = {
+						resp_status: false,
+						response_text: rejectReasons[rejectReason]
+					};
+					if(rejectReason === '') {
+						FlashMessage.message('Alert', 'Please choose any one of the options.', '#ff4444');
+					}
+					else {
+						rejectQuestion({ data: rejectData, id: data.id, navigation });
+					}
+				}
+			} else {
+				if(selectedFollowup !== '' && opinion && treatment && selectedDrugs.length > 0) {
+					if (type === 'answer') {
+						let answerData = {
+							resp_status: true,
+							response_text: 'Follow the treatment',
+							doctor_opinion: opinion,
+							recommended_treatment: treatment,
+							recommended_followup: followUp[selectedFollowup],
+							recommended_medications: selectedDrugs.join(' ')
+						};
+						answerQuestion({ data: answerData, id: data.id, onSuccess: () => onAnswerSuccess() });
+					}
+				} else {
+					FlashMessage.message('Alert', 'Please fill up all fields', 'red');
+				}
+		}
+	};
+
+	const onAnswerSuccess = () => {
+		setShowToast(!showToast);
+	};
+
+	const navigateToListScreen = () => {
+		setShowToast(!showToast);
+		navigation.popToTop();
+		navigation.dispatch(
+			CommonActions.reset({
+				index: 0,
+				routes: [ { name: 'AppTabs', key: 'Home' } ]
+			})
+		);
+		navigation.navigate('Home');
+	};
+
+	const handlePreview = () => {
+		setEnablePreview(!enablePreview);
 	};
 
 	const patientQuestions = () => {
@@ -252,6 +306,10 @@ function RemoteConsultationRequest(props) {
 	const doctorResponse = () => {
 		return (
 			<View style={ styles.mv10 }>
+				
+			<KeyboardAvoidingView
+				behavior={ `${Platform.OS === 'ios' ? 'padding' : 'absolute'}` }
+				keyboardVerticalOffset={ keyboardVerticalOffset }>
 				<Text
 					s={ 14 }
 					lh={ 16 }
@@ -268,6 +326,7 @@ function RemoteConsultationRequest(props) {
 						<TextInput
 							numberOfLines={ 4 }
 							multiline={ true }
+							textAlignVertical="top"
 							value={ opinion }
 							style={ [ styles.p10, styles.flex ] }
 							onChangeText={ value => setOpinion(value) }
@@ -282,6 +341,7 @@ function RemoteConsultationRequest(props) {
 						<TextInput
 							numberOfLines={ 4 }
 							multiline={ true }
+							textAlignVertical="top"
 							value={ treatment }
 							style={ [ styles.p10, styles.flex ] }
 							onChangeText={ value => setTreatment(value) }
@@ -417,6 +477,7 @@ function RemoteConsultationRequest(props) {
 						</View>
 					</View>
 				</View>
+				</KeyboardAvoidingView>
 			</View>
 		);
 	};
@@ -472,7 +533,7 @@ function RemoteConsultationRequest(props) {
 							Allergies:
 						</Text>
 						<Text s={ 14 } lh={ 16 } style={ styles.mv5 }>
-							{data.allergies ? data.allergies.join(' ') : 'N/A'}
+							{data.allergies ? data.allergies.join(', ') : 'N/A'}
 						</Text>
 					</View>
 					<View style={ styles.flexColumn }>
@@ -480,7 +541,7 @@ function RemoteConsultationRequest(props) {
 							Medical Conditions:
 						</Text>
 						<Text s={ 14 } lh={ 16 } style={ styles.mv5 }>
-							{data.medical_conditions ? data.medical_conditions : 'N/A'}
+							{data.medical_conditions ? data.medical_conditions.join(', ') : 'N/A'}
 						</Text>
 					</View>
 					<View style={ styles.flexColumn }>
@@ -488,7 +549,7 @@ function RemoteConsultationRequest(props) {
 							Taking any medications:
 						</Text>
 						<Text s={ 14 } lh={ 16 } style={ styles.mv5 }>
-							{data.medications ? data.medications : 'N/A'}
+							{data.medications ? data.medications.join(', ') : 'N/A'}
 						</Text>
 					</View>
 				</View>
@@ -503,17 +564,23 @@ function RemoteConsultationRequest(props) {
 					Attachments
 				</Text>
 				<FlatList
-					numColumns={ 6 }
+					numColumns={ 4 }
 					data={ data.media }
 					renderItem={ ({ item, index }) => {
 						return (
-							<Image
+							<TouchableOpacity
+								activeOpacity={ 0.9 }
+								onPress={ () => [ setUri(item.media), handlePreview() ] }
 								key={ `${item}-${index}` }
-								style={ styles.attachmentImage }
-								source={ {
-									uri: item.media
-								} }
-							/>
+							>
+								<Image
+									key={ `${item}-${index}` }
+									style={ styles.attachmentImage }
+									source={ {
+										uri: item.media
+									} }
+								/>
+							</TouchableOpacity>
 						);
 					} }
 				/>
@@ -604,8 +671,8 @@ function RemoteConsultationRequest(props) {
 						</TouchableOpacity>
 						{modalContent === 'pin' && (
 							<>
-								<View row center style={ styles.p10 }>
-									<Text s={ 18 } w={ 'bold' } lh={ 16 }>
+								<View row center>
+									<Text s={ 18 } w={ 'bold' } lh={ 16 } style={ styles.p10 }>
 										Enter Pin Number
 									</Text>
 								</View>
@@ -640,12 +707,12 @@ function RemoteConsultationRequest(props) {
 						)}
 						{modalContent !== 'pin' && (
 							<>
-								<View row center style={ styles.ph10 }>
+								<View row center>
 									<Text
 										s={ 18 }
 										w={ 'bold' }
 										lh={ 16 }
-										style={ styles.upperCase }
+										style={ { ...styles.upperCase, ...styles.p10 } }
 										c={ '#108F79' }>
 										Reason for Reject
 									</Text>
@@ -696,10 +763,25 @@ function RemoteConsultationRequest(props) {
 		);
 	};
 
+	const toast = () => {
+		return (<Toast
+			title="Success"
+			message="Successfully submitted the answer"
+			showModal={ showToast }
+			handleSubmit={ navigateToListScreen }
+			showClose={ false }
+			successButtontext="Continue"
+		/>);
+	};
+
 	return (
 		<ScrollView
 			showsVerticalScrollIndicator={ false }
-			style={ styles.scrollViewContainer }>
+			style={ styles.scrollViewContainer }
+			ref={ ref => {
+				scrollView = ref;
+			} }
+			>
 			{!isResponse && (
 				<View row jC={ 'center' }>
 					<View center style={ styles.container }>
@@ -731,6 +813,12 @@ function RemoteConsultationRequest(props) {
 			{patientQuestions()}
 			{isResponse && doctorResponse()}
 			{actionButtons()}
+			<ImagePreviewer
+				uri={ uri }
+				enablePreview={ enablePreview }
+				handlePreview={ handlePreview }
+			/>
+			{toast()}
 		</ScrollView>
 	);
 }

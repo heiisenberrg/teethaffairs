@@ -5,7 +5,7 @@ const { width } = Dimensions.get('screen');
 const styles = StyleSheet.create({
 	textInputContainer: {
 		position: 'relative',
-		marginBottom: 14
+		marginVertical: 10
 	},
 	labelContainer: {
 		position: 'absolute',
@@ -22,7 +22,8 @@ const styles = StyleSheet.create({
 		justifyContent: 'flex-end',
 		height: 44,
 		borderRadius: 20,
-		paddingHorizontal: 25
+		paddingHorizontal: 25,
+		color: 'black'
 	},
 	label: {
 		color: '#363636',

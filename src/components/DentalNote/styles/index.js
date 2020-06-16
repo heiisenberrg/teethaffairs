@@ -3,10 +3,14 @@ import { Dimensions, StyleSheet, Platform } from 'react-native';
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
+    wrapper: { flex: 1 },
 	container: {
+        flex: 1,
+        display: 'flex',
+        justifyContent: 'center',
         padding: 10,
         marginTop: 20,
-        height: (height - 210),
+        maxHeight: (height - 210),
         width: width
     },
     cardContainer: {
@@ -112,11 +116,10 @@ const styles = StyleSheet.create({
     },
     descriptionContainer: {
         display: 'flex',
-				// paddingVertical: 10,
-				flex: 1,
-				position:'relative',
-				top: -20,
-				flexDirection:'row'
+        flex: 1,
+        position:'relative',
+        top: -20,
+        flexDirection:'row'
     },
     description: {
         fontSize: 14,
@@ -134,9 +137,11 @@ const styles = StyleSheet.create({
         marginRight: 10
     },
     emptyResult: {
+        flex: 1,
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        paddingVertical: 10
     },
     filterContainer: {
 		position: 'absolute',
@@ -313,7 +318,7 @@ const styles = StyleSheet.create({
 		title1: {
 			fontSize: 12,
 			color:'#363636'
-		}
+        }
 });
 
 export default styles;

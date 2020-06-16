@@ -20,7 +20,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
-
+import ImagePreviewer from '../../components/global/ImagePreviewer';
 var date = new Date().getDate();
 var month = new Date();
 var year = new Date().getFullYear();
@@ -42,7 +42,8 @@ const monthNames = [
 function NotePreview(props) {
 	const { route, navigation, getDeleteNote } = props;
 	const [ isDeleteModalVisible, setIsDeleteModalVisible ] = useState(false);
-
+	const [ uri, setUri ] = useState('');
+	const [ enablePreview, setEnablePreview ] = useState(false);
 	const { previewNote } = route.params;
 
 	const handleDeleteNote = (noteId) => {
@@ -71,6 +72,10 @@ function NotePreview(props) {
 		});
 	}, []);
 
+	const handlePreview = () => {
+		setEnablePreview(!enablePreview);
+	};
+
 	return (
 		<SafeAreaView>
 			<ScrollView
@@ -90,7 +95,7 @@ function NotePreview(props) {
 						<Text style={ styles.contentText }>
 							Remote consultation fees $20.00 Prescription request fee $10.00.
 							(Option to request RX will be provided) Note: You will NOT be
-							changed for remote consultation until provider responds. If the
+							charged for remote consultation until provider responds. If the
 							doctor recommends Rx, you will have the option to accept or deny
 						</Text>
 					</View>
@@ -110,10 +115,10 @@ function NotePreview(props) {
 									<View style={ styles.miniProfileImageWrap }>
 										<View style={ styles.miniProfileImageWrap1 }>
 											<Image
-												source={ require('../../assets/profile-pic.png') }
+												source={ previewNote?.patient_pic?.profile_pic ? { uri: previewNote?.patient_pic?.profile_pic } : require('../../assets/profile.png') }
 												style={ styles.image3 }
 											/>
-											<Text style={ styles.dateText }>You</Text>
+											<Text style={ styles.dateText }>{previewNote.patient_name}</Text>
 										</View>
 										<View style={ styles.miniProfileImageWrap2 }>
 											<Image
@@ -154,12 +159,14 @@ function NotePreview(props) {
 									previewNote.media.length > 0 &&
 									previewNote.media.map((data, index) => {
 										return (
-											<View key={ index } style={ styles.imagePreview1 }>
+											<TouchableOpacity
+												onPress={ () => [ setUri(data.media), handlePreview() ] }
+												key={ index } style={ styles.imagePreview1 }>
 												<Image
 													source={ { uri: data.media } }
 													style={ styles.image }
 												/>
-											</View>
+											</TouchableOpacity>
 										);
 									})}
 							</View>
@@ -174,8 +181,7 @@ function NotePreview(props) {
 								)}
 							</View>
 							<View style={ styles.queryWrapper }>
-								<Text style={ styles.queryText }>Where side ?</Text>
-								<Text style={ styles.patientDetails } />
+								<Text style={ styles.queryText }>Which side ?</Text>
 								{previewNote.side_of_issue !== '' ? (
 									<Text style={ styles.patientDetails }>
 										{previewNote.side_of_issue}
@@ -192,6 +198,16 @@ function NotePreview(props) {
 									</Text>
 								) : (
 									<Text style={ styles.patientDetails }>NA</Text>
+								)}
+							</View>
+							<View style={ styles.queryWrapper }>
+								<Text style={ styles.queryText }>Pain type</Text>
+								{previewNote.pain_type !== '' ? (
+									<Text style={ styles.patientDetails }>
+										{previewNote.pain_type}
+									</Text>
+								) : (
+									<Text style={ styles.patientDetails }>N/A</Text>
 								)}
 							</View>
 							<View style={ styles.queryWrapper }>
@@ -290,6 +306,11 @@ function NotePreview(props) {
 						</View>
 					</View>
 				</View>
+				<ImagePreviewer
+					uri={ uri }
+					enablePreview={ enablePreview }
+					handlePreview={ handlePreview }
+				/>
 			</ScrollView>
 			<Modal transparent={ true } visible={ isDeleteModalVisible }>
 				<View style={ styles.modalWrap }>

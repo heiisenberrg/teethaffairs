@@ -127,13 +127,13 @@ const UpdateProfile = (props) => {
 		setDate(currentDate);
 	};
 
-	const showMode = currentMode => {
-		setShow(true);
+	const showMode = (currentMode, value) => {
+		setShow(value);
 		setMode(currentMode);
 	};
 
-    const showDatepicker = () => {
-		showMode('date');
+    const showDatepicker = (value) => {
+		showMode('date', value);
 	};
 
     return (
@@ -198,7 +198,7 @@ const UpdateProfile = (props) => {
 									</View>
 									<TouchableOpacity
 										style={ styles.dataPicker }
-										onPress={ showDatepicker }>
+										onPress={ () => showDatepicker(!show) }>
 										{birthDate !== '' ? (
 											<Text style={ styles.calenderText }>{moment(birthDate).format('MMM/DD/YYYY')}</Text>
 										) : (
@@ -215,10 +215,10 @@ const UpdateProfile = (props) => {
 								{show && (
 									<DateTimePicker
 										testID="dateTimePicker"
-										timeZoneOffsetInMinutes={ 0 }
 										value={ date }
 										mode={ mode }
-										display="default"
+                                        display="default"
+                                        maximumDate={ new Date() }
 										onChange={ onChange }
 										neutralButtonLabel="clear"
 									/>

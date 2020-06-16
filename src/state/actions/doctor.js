@@ -1,5 +1,19 @@
 import constants from '../constants/doctor.constant';
 
+export const getHistoryQuestions = () => ({
+	type: constants.GET_HISTORY_QUESTIONS
+});
+
+export const getHistoryQuestionsSuccess = response => ({
+	type: constants.GET_HISTORY_QUESTIONS_SUCCESS,
+	response
+});
+
+export const getHistoryQuestionsFailure = error => ({
+	type: constants.GET_HISTORY_QUESTIONS_FAILURE,
+	error
+});
+
 export const getQuestions = () => ({
 	type: constants.GET_QUESTIONS
 });

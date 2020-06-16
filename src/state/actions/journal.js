@@ -140,11 +140,9 @@ export const getDeleteNoteFailure = error => ({
 	error
 });
 
-export const getDentalVisits = (data, onSuccess, onFailure) => ({
+export const getDentalVisits = (data) => ({
 	type: constants.GET_DENTAL_VISITS,
-	data,
-	onSuccess,
-	onFailure
+	data
 });
 
 export const getDentalVisitsSuccess = response => ({
@@ -157,8 +155,9 @@ export const getDentalVisitsFailure = error => ({
 	error
 });
 
-export const getRemoteConsultationsForPatients = () => ({
-	type: constants.GET_REMOTE_CONSULTATION_FOR_PATIENTS
+export const getRemoteConsultationsForPatients = (data) => ({
+	type: constants.GET_REMOTE_CONSULTATION_FOR_PATIENTS,
+	data
 });
 
 export const getRemoteConsultationsForPatientsSuccess = response => ({
@@ -171,11 +170,10 @@ export const getRemoteConsultationsForPatientsFailure = error => ({
 	error
 });
 
-export const createDentalVisits = (data, onSuccess, onFailure) => ({
+export const createDentalVisits = (data, onSuccess) => ({
 	type: constants.CREATE_DENTAL_VISIT,
 	data,
-	onSuccess,
-	onFailure
+	onSuccess 
 });
 
 export const createDentalVisitsSuccess = response => ({
@@ -188,12 +186,11 @@ export const createDentalVisitsFailure = error => ({
 	error
 });
 
-export const updateDentalVisit = (id, data, onSuccess, onFailure) => ({
+export const updateDentalVisit = (id, data, onSuccess) => ({
 	type: constants.SAVE_EDITED_DENTAL_VISIT,
 	id,
 	data,
-	onSuccess,
-	onFailure
+	onSuccess
 });
 
 export const updateDentalVisitSuccess = response => ({

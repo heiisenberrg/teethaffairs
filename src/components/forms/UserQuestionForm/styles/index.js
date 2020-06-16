@@ -9,11 +9,21 @@ const styles = StyleSheet.create({
 		width: width,
 		padding: 10
 	},
+	inputText: {
+		borderColor: '#A1A1A1',
+		borderWidth: 1,
+		borderRadius: 5,
+		color: 'black',
+		height: 40,
+		marginHorizontal: 4,
+		marginVertical: 10,
+		fontSize: 16,
+		paddingHorizontal: 10
+	},
 	stepIndicator: {
-		// marginTop: 25,
 		marginVertical: 20,
-		alignItems: 'center'
-		// marginBottom: 40
+		alignItems: 'center',
+		overflow: 'hidden'
 	},
 	imageWrap: {
 		marginBottom: 20,
@@ -26,6 +36,8 @@ const styles = StyleSheet.create({
 		marginLeft: 5
 	},
 	imageContainer: {
+		display: 'flex',
+		flex: 1,
 		flexDirection: 'row',
 		flexWrap: 'wrap'
 	},
@@ -58,21 +70,19 @@ const styles = StyleSheet.create({
 		height: '100%'
 	},
 	cameraTextPreview: {
-		width: 80,
-		height: 80,
-		marginBottom: 10,
+		width: width / 1.5,
+		alignSelf: 'center',
+		display: 'flex',
 		justifyContent: 'center',
-		alignItems: 'center',
-		marginRight: 40
+		alignItems: 'center'
 	},
 	cameraText: {
 		fontSize: 14,
 		color: '#6A6A6A',
-		textAlign: 'center',
-		width: width-100,
-		position: 'absolute',
-		left:0,
-		lineHeight: 20
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'center',
+		flex: 1
 	},
 	symtamsContainer: {
 		marginBottom: 24
@@ -87,7 +97,8 @@ const styles = StyleSheet.create({
 	},
 	arrowWrap: {
 		flexDirection: 'row',
-		justifyContent: 'center'
+		justifyContent: 'center',
+		alignItems: 'center'
 	},
 	arrow: {
 		marginLeft: 10
@@ -139,8 +150,6 @@ const styles = StyleSheet.create({
 		borderRadius: 50,
 		width: width - 200,
 		marginHorizontal: 10
-		// position: 'relative',
-		// top: 15
 	},
 	rangeText: {
 		marginTop: 10,
@@ -229,11 +238,11 @@ const styles = StyleSheet.create({
 		color: '#4A4A4A',
 		textAlign: 'center'
 	},
-	buttonContainer:{
+	buttonContainer: {
 		marginBottom: 18
 	},
 	hideText: {
-		display:'none'
+		display: 'none'
 	},
 	profileContainer: {
 		flex: 1,
@@ -427,6 +436,12 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 		fontSize: 16,
 		textTransform: 'uppercase'
+	},
+	keyboard: {
+		overflow: 'scroll'
+	},
+	keyboard1: {
+		flex: 1
 	}
 });
 

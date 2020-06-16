@@ -9,43 +9,46 @@ import View from '../global/View';
 import Icon from '../global/Icon';
 
 import styles from './styles';
-import { getQuestions } from '../../state/actions/doctor';
+import { getHistoryQuestions } from '../../state/actions/doctor';
+
+var answered = 0;
+var rejected = 0;
 
 const DoctorHistory = props => {
-    const { questions, getQuestions } = props;
-
+	const { questions, getHistoryQuestions, navigation } = props;
 	const [ list, setList ] = useState([]);
 	const [ filterBy, setFilterBy ] = useState('answered');
 	const [ length, setLength ] = useState( { answered: '', rejected: '' } );
 
-    useEffect(() => {
-        getQuestions(() => { }, () => {});
-    }, []);
+	useEffect(() => {
+		getHistoryQuestions(() => { }, () => {});
+	}, [ filterBy ]);
 
-    useEffect(() => {
-		filterList('answered');
+	useEffect(() => {
+		filterList(filterBy);
 	}, [ questions ]);
 	
 	const filterList = type => {
-		let data = [];
-		questions.map((item) => {
-			if (type === 'answered' && item.responded) {
-               data.push(item);
-			} else if (type === 'rejected' && item.rejected) {
-				data.push(item);
-			}
-		});
-		let arrayLength = { ...length };
-		arrayLength[type] = data.length;
-		setLength(arrayLength);
-		setList(data);
+		if(questions) {
+			let arrayLength = { ...length };
+			arrayLength[type] = (type === 'answered') ? questions.answered.length : questions.rejected.length;
+			setLength(arrayLength);
+			setList((type === 'answered') ? [ ...questions.answered ] : [ ...questions.rejected ]);
+			rejected = (questions.rejected).length;
+			answered = (questions.answered).length;
+		}	
 	};
+
+	const enableDentalQuestionView = data => {
+		navigation.navigate('DentistResponse', { data: data });
+  };
 
     const _renderDentalVisitCards = ({ item: question, index }) => (
 		<TouchableOpacity
 			key={ `cards-${index}` }
 			style={ styles.card }
 			activeOpacity={ 0.8 }
+			onPress={ () => enableDentalQuestionView(question) }
 		>
 			<View
 				style={ styles.cardHeader }
@@ -64,7 +67,7 @@ const DoctorHistory = props => {
 					<View style={ styles.avatarContent }>
 						<Image
 							style={ styles.avatar }
-							source={ question.patient_pic.profile_pic ? { uri: question.patient_pic.profile_pic } : require('../../assets/profile.png') }
+							source={ question?.patient_pic?.profile_pic ? { uri: question.patient_pic.profile_pic } : require('../../assets/profile.png') }
 						/>
 						<Text style={ [ styles.normalText, styles.person ] }>{question.patient_name}</Text>
 						<Text style={ styles.normalText }>{moment(question.question_asked_on).format('DD MMM YYYY')}</Text>
@@ -96,25 +99,24 @@ const DoctorHistory = props => {
     
     return (
         <View style={ styles.container }>
-            {/* <View column center style={ styles.questionContainer }> */}
 			<View row  style={ styles.filterContainer }>
 				<TouchableOpacity
 					style={ [ styles.buttonWrapper, (filterBy === 'answered' ? styles.answeredButton : styles.answeredInactive) ] }
 					activeOpacity={ 0.8 }
 					onPress={ () => [ setFilterBy('answered'), filterList('answered') ] }
 				>
-					<Text style={ [ styles.buttonText, (filterBy === 'rejected' && styles.inactiveAnswer) ] }>Answered({length.answered})</Text>
+					<Text style={ [ styles.buttonText, (filterBy === 'rejected' && styles.inactiveAnswer) ] }>Answered({answered})</Text>
 				</TouchableOpacity>
 				<TouchableOpacity
 					style={ [ styles.buttonWrapper, (filterBy === 'rejected' ? styles.rejectedButton : styles.rejectedInactive) ] }
 					activeOpacity={ 0.8 }
 					onPress={ () => [ setFilterBy('rejected'), filterList('rejected') ] }
 				>
-					<Text style={ [ styles.buttonText, (filterBy === 'answered' && styles.inactiveReject ) ] }>Rejected({length.rejected})</Text>
+					<Text style={ [ styles.buttonText, (filterBy === 'answered' && styles.inactiveReject ) ] }>Rejected({rejected})</Text>
 				</TouchableOpacity>
 			</View>
             {
-                list && list.length !== 0 ?
+                list && list.length > 0 ?
                     <FlatList
                         style={ styles.questionContainer }
 						data={ list }
@@ -125,19 +127,18 @@ const DoctorHistory = props => {
                     />
                     :
                     <View style={ styles.emptyResult }>
-                        <Text>No Teledental Questions To Answer</Text>
+                        <Text>No Teledental Questions.</Text>
                     </View>
             }
-            {/* </View> */}
         </View>
     );
 };
 
 const mapStateToProps = (state) => ({
-    questions: state.doctor.questions
+    questions: state.doctor.historyQuestions
 });
 
 export default connect(
 	mapStateToProps,
-	{ getQuestions }
+	{ getHistoryQuestions }
 )(DoctorHistory);

@@ -31,7 +31,6 @@ function fetchReminderList(payload) {
 	).pipe(
 		map(response => toReminderList(response.data)),
 		catchError(error => {
-			console.warn('error', error);
 			return of({
 				type: 'GET_REMINDER_LIST_FAILURE',
 				payload: onFailure(error.response)
@@ -97,7 +96,6 @@ function deleteReminder(payload) {
 	).pipe(
 		map(() => toDeleteReminder(data.data)),
 		catchError(error => {
-			console.warn('error', error);
 			return of({
 				type: 'GET_REMINDER_LIST_FAILURE',
 				payload: error.response
@@ -161,7 +159,6 @@ function fetchReminderListBasedOnFilter(payload) {
 	).pipe(
 		map(response => toReminderListBasedOnFilter(response.data)),
 		catchError(error => {
-			console.warn('fetch error', error);
 			return of({
 				type: 'GET_REMINDER_LIST_FAILURE',
 				payload: onFailure(error.response)

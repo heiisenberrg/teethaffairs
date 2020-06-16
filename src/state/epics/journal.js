@@ -10,15 +10,12 @@ import {
 	GET_USER_LIST,
 	GET_USER_NOTE,
 	GET_DEACTIVATE_USER_ID,
-	// GET_NOTE_LIST,
 	GET_DOCTORS_LIST,
 	GET_QUESTION,
 	GET_DOCTOR_DETAIL,
 	GET_DENTAL_VISITS,
 	CREATE_DENTAL_VISIT,
 	GET_DELETE_NOTE
-	// SAVE_EDITED_DENTAL_VISIT
-	// DELETE_DENTAL_VISIT
 } from '../constants/journal';
 import {
 	setAddMember,
@@ -133,18 +130,6 @@ function fetchUserNoteEpic(action$) {
 
 function fetchNote(payload) {
 	const { onFailure } = payload;
-
-	// const formData = Object.entries({ ...payload.payload })
-	// 	.map(pair => `${pair[0]}=${pair[1]}`)
-	// 	.join('&');
-
-	// const data = {
-	// 	formData,
-	// 	publicRoute: false,
-	// 	headers: {
-	// 		'Content-Type': 'application/x-www-form-urlencoded'
-	// 	}
-	// };
 
 	return from(
 		apiCall({
@@ -282,10 +267,6 @@ function fetchNoteUpdate(payload) {
 	const formData = Object.entries({ ...payload.payload })
 		.map(pair => `${pair[0]}=${pair[1]}`)
 		.join('&');
-
-	// const formData1 = Object.entries({ ...payload.payload1 })
-	// 	.map(pair => `${pair[0]}=${pair[1]}`)
-	// 	.join('&');
 
 	const data = {
 		formData,

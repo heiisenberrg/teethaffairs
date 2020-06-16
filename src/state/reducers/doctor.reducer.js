@@ -2,11 +2,46 @@ import constants from '../constants/doctor.constant';
 
 const initialState = {
 	questions: [],
+	historyQuestions: {
+		answered: [],
+		rejected: []
+	},
 	loading: false
+};
+
+var answered;
+var rejected;
+
+const parseHistoryQuestions = (data) => {
+	answered = [];
+	rejected = [];
+
+	answered = data.filter(datum => datum.answered === true);
+	rejected = data.filter(datum => datum.rejected === true);
+	return {
+		answered: answered,
+		rejected: rejected
+	};
 };
 
 function doctorReducer(state = initialState, action) {
 	switch (action.type) {
+		case constants.GET_HISTORY_QUESTIONS:
+			return {
+				...state,
+				loading: true
+			};
+		case constants.GET_HISTORY_QUESTIONS_SUCCESS:
+			return {
+				...state,
+				loading: false,
+				historyQuestions: parseHistoryQuestions(action.response.data)
+			};
+		case constants.GET_HISTORY_QUESTIONS_FAILURE:
+			return {
+				...state,
+				loading: false
+			};
 		case constants.GET_QUESTIONS:
 			return {
 				...state,
@@ -86,7 +121,8 @@ function doctorReducer(state = initialState, action) {
 		case constants.CLEAR_DOCTOR:
 			return {
 				...state,
-				...initialState
+				questions: [],
+				loading: false
 			};
 		default:
 			return state;

@@ -93,9 +93,7 @@ function rejectQuestionsEpic(action$) {
 }
 
 function rejectQuestions(payload) {
-	console.warn('inside payload===>>>>', payload);
 	const { data, onSuccess, onFailure } = payload;
-
 	return from(
 		apiCall({
 			url: `${Endpoints.GET_QUESTIONS}${data.id}/reject-question/`,

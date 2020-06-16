@@ -21,11 +21,12 @@ function UserHistory(props) {
     const [ list, setlist ] = useState([]);
     const [ isVisible, setVisible ] = useState(false);
     const [ showModal, setShowModal ] = useState(false);
+    const [ filterBy, setFilterBy ] = useState(null);
 
     const [ user, setUser ] = useState(userDetails && (userDetails.user_type !== 'PRIMARY_PATIENT' || userDetails.user_type !== 'PRIMARY-PATIENT') ?
         {
             id: userDetails.id,
-            name: `${userDetails.first_name} ${userDetails.last_name}`,
+            name: `${userDetails.first_name}`,
             avatar: userDetails.profile_pic
         } :
         {
@@ -34,25 +35,21 @@ function UserHistory(props) {
             avatar: null
         });
 
-    const getDentalVisitsSuccess = () => {
-    };
-
     useEffect(() => {
         if (userDetails && (userDetails.user_type === 'PRIMARY_PATIENT' || userDetails.user_type === 'PRIMARY-PATIENT')) {
-            getUsers();
+          getUsers();
         }
-        const data = {
-            user_id: user.id
+        let data = {
+          user_id: user.id
         };
-        getHistory(data, getDentalVisitsSuccess, getDentalVisitsFailure);
-    }, [ user ]);
-
-    const getDentalVisitsFailure = () => {
-        // alert('Network error');
-    };
+        if(filterBy) {
+			data.filter_tag = filterBy;
+        }
+        getHistory(data);
+    }, [ user, filterBy ]);
 
     useEffect(() => {
-        setlist(history);
+				setlist(history);
     }, [ history ]);
 
     const getLabel = type => {
@@ -69,7 +66,7 @@ function UserHistory(props) {
     };
 
     const getTitle = item => {
-        const { type } = item;
+				const { type } = item;
         switch(type) {
             case 'note':
                 return item.title;
@@ -113,40 +110,10 @@ function UserHistory(props) {
                         />
                         <Text style={ styles.normalText }>
                             {moment(item.created_on).format('DD MMM YYYY')}
-							{/* {visi.question_asked_on.split('T')[0].split('-')[2]}&nbsp;
-							{
-								monthNames[
-									question.question_asked_on.split('T')[0].split('-')[1] - 1
-								]
-							}
-							&nbsp;
-							{question.question_asked_on.split('T')[0].split('-')[0]} */}
                         </Text>
                     </View>
                 </View>
             </View>
-            {/* <Text>
-			{item.visit_description}
-			</Text> */}
-            {/* <View style={ styles.descriptionWrap }>
-				<Text style={ styles.visitText }>hfjkhfjk fhjjhj fkbjkj jfkbj vkjkjfjkjj</Text>
-
-			</View> */}
-            {/* <View style={ styles.doctorDetails }>
-				<View style={ styles.doctorProfile }>
-					<Image
-						style={ styles.doctorPic }
-						source={ require('../../../assets/profile.png') }
-					/>
-				</View>
-				<View style={ styles.doctorInfo }>
-					<Text style={ styles.doctorNameText }>Dr. {question.patient_name}</Text>
-					<Text style={ styles.addressText }>
-						Dentist , New York, Lic no : 2555-6564-2564-154
-					</Text>
-					<Text style={ styles.addressText }>Answered 9 hours ago</Text>
-				</View>
-			</View> */}
         </TouchableOpacity>
     );
 
@@ -203,7 +170,7 @@ function UserHistory(props) {
                                             <View jC={ 'flex-start' }>
                                                 <Image
                                                     style={ styles.filterImage }
-                                                    source={ user && user.profile_pic ? { uri: user.profile_pic } : require('../../assets/profile.png') }
+                                                    source={ data && data.profile_pic ? { uri: data.profile_pic } : require('../../assets/profile.png') }
                                                 />
                                             </View>
                                             <View
@@ -222,31 +189,20 @@ function UserHistory(props) {
                 </TouchableOpacity>
             </View>
             <View style={ styles.container }>
-                {
-                    list && list.length !== 0 &&
-                    <View style={ styles.searchContainer }>
-                        {/* <View style={ styles.searchInput }>
-                            <TextInput
-                                style={ styles.renderHeader }
-                                placeholder="Search"
-                                onChangeText={ () => { } }
-                                inlineImageLeft='search_icon'
-                            />
-                        </View> */}
-                        <TouchableOpacity
-                            style={ styles.filterIcon }
-                            onPress={ handleFilters }
-                        >
-                            <Text style={ styles.filterText }>Filter</Text>
-                            <Icon
-                                type={ 'FontAwesome' }
-                                name={ 'filter' }
-                                color="#B8B8B8"
-                                size={ 20 }
-                            />
-                        </TouchableOpacity>
-                    </View>
-                }
+                <View style={ styles.searchContainer }>
+                    <TouchableOpacity
+                        style={ styles.filterIcon }
+                        onPress={ handleFilters }
+                    >
+                        <Text style={ styles.filterText }>Filter</Text>
+                        <Icon
+                            type={ 'FontAwesome' }
+                            name={ 'filter' }
+                            color="#B8B8B8"
+                            size={ 20 }
+                        />
+                    </TouchableOpacity>
+                </View>
                 <SafeAreaView
                     style={ styles.cardContainer }
                 >
@@ -285,22 +241,41 @@ function UserHistory(props) {
                             />
                             <Text style={ styles.filterText1 }>Filter</Text>
                         </View>
-                        <Text style={ styles.filterHeader1 }
-                            onPress={ () => setShowModal(!showModal) } >
-                            Recent Events
+                        <Text 
+                            style={ styles.filterHeader1 }
+                            activeOpacity={ 0.9 }
+                            onPress={ () => [ setFilterBy(null), setShowModal(!showModal) ] }
+                        >
+                            All
 							</Text>
-                        <Text style={ styles.filterHeader }>
+                        <Text 
+                            activeOpacity={ 0.9 }
+                            onPress={ () => [ setFilterBy('notes'), setShowModal(!showModal) ] }
+                            style={ styles.filterHeader }
+                        >
                             Notes
 							</Text>
-                        <Text style={ styles.filterHeader }>
+                        <Text 
+                            activeOpacity={ 0.9 }
+                            onPress={ () => [ setFilterBy('visits'), setShowModal(!showModal) ] }
+                            style={ styles.filterHeader }
+                        >
                             Dental Visits
 							</Text>
-                        <Text style={ styles.filterHeader }>
+                        <Text 
+                            activeOpacity={ 0.9 }
+                            onPress={ () => [ setFilterBy('questions'), setShowModal(!showModal) ] }
+                            style={ styles.filterHeader }
+                        >
                             Question and Answers
 							</Text>
-                        <Text style={ styles.filterHeader2 }>
-                            Health History
-							</Text>
+                        <Text 
+                            activeOpacity={ 0.9 }
+                            onPress={ () => [ setFilterBy('reminders'), setShowModal(!showModal) ] }
+                            style={ styles.filterHeader2 }
+                        >
+                            Reminders
+						</Text>
                     </View>
                 </View>
             </Modal>

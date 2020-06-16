@@ -35,16 +35,9 @@ const emailVerifySchema = yup.object({
 function EmailVerificationForm(props) {
 	const { navigation, getOneTimePassword, is_verified } = props;
 
-	const onGetEmailVerificationSuccess = () => {
-	};
-	const onGetEmailVerificationFailure = error => {
-		return alert(error.data.detail);
-	};
 	const handleSubmit = data => {
 		getOneTimePassword(
-			data,
-			onGetEmailVerificationSuccess,
-			onGetEmailVerificationFailure
+			data
 		);
 	};
 

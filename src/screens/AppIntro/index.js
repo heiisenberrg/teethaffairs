@@ -70,14 +70,7 @@ function AppIntro(props) {
 	};
 
 	const handleSkipIntro = () => {
-		// let userDetails = await localStorage.getItem('user');
-		// console.log('======inside app intro', userDetails);
-		// if(userDetails && Object.keys(userDetails).length > 0) {
-		// 	loginSuccess(userDetails);
-		// 	navigation.navigate('AppTabs');
-		// } else {
 			navigation.navigate('Login');
-		// }
 	};
 
 	const renderNextButton = () => {

@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
 		marginTop: 25
 	},
 	contentText: {
+		textTransform: 'capitalize',
 		fontSize: 13,
 		textAlign: 'center',
 		color: '#3F4440',
@@ -67,7 +68,6 @@ const styles = StyleSheet.create({
 		height: 122,
 		borderRadius: 5,
 		justifyContent: 'center',
-		// marginLeft: 20,
 		flex: 1
 	},
 
@@ -82,7 +82,6 @@ const styles = StyleSheet.create({
 	},
 	imageWrap3: {
 		backgroundColor: '#1CD08F',
-		// marginRight: 10,
 		height: 122,
 		borderRadius: 5,
 		justifyContent: 'center',

@@ -130,7 +130,8 @@ const styles = StyleSheet.create({
     emptyResult: {
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        paddingVertical: 10
     },
     filterContainer: {
 		position: 'absolute',
@@ -222,14 +223,12 @@ const styles = StyleSheet.create({
         padding: 10
     },
     visitWrapper: {
-        paddingLeft: 10,
-        flex: 1,
-        display: 'flex',
+        padding: 10,
         margin: 15,
         shadowColor: '#707070',
-		shadowOffset: { width: 0, height: 2 },
-		shadowOpacity: 0.5,
-		shadowRadius: 2,
+				shadowOffset: { width: 0, height: 2 },
+				shadowOpacity: 0.5,
+				shadowRadius: 2,
         elevation: 2,
         backgroundColor: 'white',
         borderRadius: 5

@@ -7,6 +7,9 @@ const styles = StyleSheet.create({
 		backgroundColor: 'white',
 		flexGrow: 1
 	},
+	passwordWrapper: {
+		flexDirection: 'row'
+	},
 	inputText: {
 		borderWidth: 1,
 		borderColor: 'blue',
@@ -27,7 +30,6 @@ const styles = StyleSheet.create({
 	errorText: {
 		color: '#CF0000',
 		marginBottom: 10,
-		marginTop: 1,
 		textAlign: 'left',
 		fontSize: 12,
 		marginLeft: 10
@@ -50,6 +52,7 @@ const styles = StyleSheet.create({
 		zIndex: 1
 	},
 	textInputContainer: {
+		marginTop: 10,
 		height: 45,
 		width: '100%',
 		position: 'relative'
@@ -273,8 +276,8 @@ const styles = StyleSheet.create({
 	},
 	eyeIcon: {
 		position: 'absolute',
-		right: 20,
-		top: 15
+		right: 65,
+		top: 12
 	},
 	profileImageContainer: {
 		marginTop: 25,
@@ -293,7 +296,7 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		height: 45,
 		position: 'relative',
-		marginBottom: 10,
+		marginTop: 10,
 		flex: 1,
 		borderColor: '#A1A1A1',
 		justifyContent: 'flex-end',
@@ -313,15 +316,8 @@ const styles = StyleSheet.create({
 		backgroundColor: '#000000aa',
 		flex: 1,
 		justifyContent: 'center'
-		// alignContent:'center',
-		// alignItems:'center'
 	},
 	successModalTextWrap: {
-		// marginTop: 5,
-		// marginBottom: 10,
-		// marginRight: 20,
-		// marginLeft: 10,
-		// padding: 20,
 		borderRadius: 10,
 		margin: 25
 	},
@@ -369,12 +365,56 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		alignContent: 'center',
-		// marginLeft: 250,
-		// margin
-		// position: 'relative',
-		// top: 10,
 		marginLeft: 260,
 		marginTop: 10
+	},
+	popoverContainerText: {
+		display: 'flex',
+		flex: 1,
+		margin: 10
+	},
+	popoverTitle: {
+		fontSize: 14,
+		fontWeight: 'bold'
+	},
+	popoverText: {
+		fontSize: 12,
+		marginVertical: 5
+	},
+	popoverLineItem: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		flex: 1
+	},
+	bullet: {
+		width: 8,
+		height: 8,
+		borderRadius: 50,
+		backgroundColor: '#14DF94',
+		marginHorizontal: 10
+	},
+	icon: {
+		width: 30,
+		height: 30,
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: '#FFF',
+		alignSelf: 'center',
+		borderRadius: 50,
+		borderWidth: 1,
+		borderColor: '#ACACAC',
+		marginHorizontal: 10
+	},
+	infoIcon: {
+		backgroundColor: '#f48100',
+		borderColor: '#FFF'
+	},
+	tooltipContainer: {
+		display: 'flex',
+		justifyContent: 'flex-start'
+	},
+	activeTickIcon: {
+		backgroundColor: '#14DF94'
 	}
 });
 

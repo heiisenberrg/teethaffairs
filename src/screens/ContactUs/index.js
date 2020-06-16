@@ -10,19 +10,23 @@ import globalStyles from '../../globalStyles';
 
 const contactSchema = yup.object({
 	name: yup
-	.string()
-	.min(1)
-	.required('Required'),
-	description: yup.string().required('Required'),
+		.string()
+		.min(1)
+		.required('Required')
+		.trim(),
+	description: yup
+		.string()
+		.required('Required')
+		.trim(),
 	email: yup
-	.string()
-	.email()
-	.required('Invalid Email')
-	.matches(
-		/[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$/,
-		'Is not in correct format'
-	),
-	phone: yup.string()
+		.string()
+		.email()
+		.required('Invalid Email')
+		.matches(
+			/[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$/,
+			'Is not in correct format'
+		),
+	phone: yup.string().trim()
 });
 
 function ContactUs(props) {
@@ -34,19 +38,17 @@ function ContactUs(props) {
 	};
 
 	return (
-		<View style={ styles.container }>
+		<ScrollView contentContainerStyle={ styles.container }>
 			<View style={ styles.queriesContainer }>
 				<Text style={ styles.header }>If you have any Queries</Text>
-				<Text style={ styles.decription }>
-					Please Fill the Below Details and click the submit button Our
-					TeethAffairs admin will respond to your registered Email Id
+				<Text style={ styles.description }>
+					Please fill the below details and click the submit button. Our
+					TeethAffairs admin will respond to your registered Email Id.
 				</Text>
 			</View>
-			<ScrollView
-				showsVerticalScrollIndicator={ false }
-			>
+			<ScrollView showsVerticalScrollIndicator={ false }>
 				<Formik
-					initialValues={ { 
+					initialValues={ {
 						name: '',
 						description: '',
 						email: '',
@@ -56,10 +58,8 @@ function ContactUs(props) {
 					validationSchema={ contactSchema }
 					onSubmit={ (values, actions) => {
 						handleSubmit(values, actions);
-					} }
-				>
-					{
-						props => (
+					} }>
+					{props => (
 						<View style={ styles.formContainer }>
 							<TextInputField
 								lable="Name"
@@ -71,8 +71,8 @@ function ContactUs(props) {
 								secureTextEntry={ false }
 							/>
 							<TextInputField
-								lable="Descriptiom"
-								placeholder="Enter Descriptiom"
+								lable="Description"
+								placeholder="Enter Description"
 								onChangeText={ props.handleChange('description') }
 								value={ props.values.description }
 								onBlur={ props.handleBlur('description') }
@@ -99,7 +99,7 @@ function ContactUs(props) {
 								keyboardType="email-address"
 								secureTextEntry={ false }
 							/>
-							<View style={ styles.buttonWrap }>
+							<View>
 								<TouchableOpacity
 									style={ globalStyles.secondaryButton }
 									onPress={ props.handleSubmit }>
@@ -110,7 +110,7 @@ function ContactUs(props) {
 					)}
 				</Formik>
 			</ScrollView>
-		</View>
+		</ScrollView>
 	);
 }
 

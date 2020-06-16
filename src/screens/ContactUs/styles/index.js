@@ -8,9 +8,12 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between'
 	},
 	queriesContainer: {
-		marginTop: 80,
+		display: 'flex',
 		justifyContent: 'center',
 		alignItems: 'center'
+	},
+	description: {
+		textAlign: 'center'
 	},
 	header: {
 		fontWeight: 'bold',

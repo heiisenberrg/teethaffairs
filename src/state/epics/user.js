@@ -30,7 +30,6 @@ import {
 import { apiCall } from '../../utilities/axios-interceptor';
 import Endpoints from '../../constants/endPoint';
 
-// const loginURL = '/dental_auth/login/';
 const signupURL = '/dental_auth/sign-up/';
 const verifyEmailURL = '/dental_auth/verify-email/';
 const forgetPasswordURL = '/dental_auth/forgot-pin/';
@@ -347,7 +346,6 @@ function getUsers() {
 	).pipe(
 		map(response => toSetUsers(response.data)),
 		catchError(error => {
-			console.warn('error', error);
 			return of({
 				type: 'GET_USERS_FAILURE',
 				payload: error.response
@@ -377,7 +375,6 @@ function getMyProfile() {
 	).pipe(
 		map(response => toSetProfileData(response.data)),
 		catchError(error => {
-			console.warn('error', error);
 			return of({
 				type: 'GET_MY_PROFILE_FAILURE',
 				payload: error.response

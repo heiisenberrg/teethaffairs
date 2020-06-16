@@ -117,7 +117,9 @@ const styles = StyleSheet.create({
 	deleteContainer: {
 		flexDirection: 'row',
 		justifyContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
+		position: 'relative',
+		left: 5
 	},
 	deleteText: {
 		color: '#FA5050',
@@ -204,7 +206,7 @@ const styles = StyleSheet.create({
 	expandedTitle: {
 		fontSize: 14
 	},
-	expandedSubtitle: {
+	expandedSubTitle: {
 		fontSize: 12,
 		color: '#363636'
 	},
@@ -298,6 +300,58 @@ const styles = StyleSheet.create({
 		height: 17,
 		borderWidth: 0.5,
 		marginRight: 10
+	},
+	modalWrap: {
+		backgroundColor: '#000000aa',
+		flex: 1,
+		justifyContent: 'center'
+	},
+	successModalTextWrap: {
+		borderRadius: 10,
+		margin: 25
+	},
+	successTextWrap: {
+		alignItems: 'center',
+		marginBottom: 40
+	},
+	closeIconContainer: {
+		position: 'absolute',
+		right: 10
+	},
+	closeIcon: {
+		marginTop: 10
+	},
+	successIcon: {
+		marginTop: 20
+	},
+	successModalText: {
+		marginTop: 10,
+		color: 'white'
+	},
+	modalButtonContainer: {
+		flexDirection: 'row',
+		justifyContent: 'center'
+	},
+	continueButtonText: {
+		color: '#555555',
+		textAlign: 'center',
+		fontWeight: 'bold',
+		fontSize: 16,
+		textTransform: 'uppercase'
+	},
+	continueButton: {
+		paddingTop: 5,
+		paddingBottom: 5,
+		backgroundColor: 'white',
+		borderRadius: 20,
+		borderWidth: 1,
+		borderColor: 'white',
+		width: 120,
+		marginBottom: 10,
+		alignItems: 'center',
+		alignContent: 'center',
+		alignSelf: 'center',
+		marginLeft: 10
 	}
 });
 

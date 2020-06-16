@@ -56,7 +56,8 @@ function paymentReducer(state = initialState, action) {
 		case constants.CLEAR_PAYMENT:
 			return {
 				...state,
-				...initialState
+				cards: [],
+				loading: false
 			};
 		default:
 			return state;

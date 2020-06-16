@@ -11,6 +11,7 @@ import EmailVerification from '../screens/EmailVerification';
 import AccountSuccess from '../screens/AccountSuccess';
 import VerificationSuccess from '../screens/VerificationSuccess';
 import PasswordResetVerify from '../screens/PasswordResetVerify';
+import TermsAndConditions from '../screens/TermsAndConditions';
 
 import globalStyles from '../globalStyles';
 
@@ -31,7 +32,8 @@ function OnBoarding() {
 	return (
 		<Stack.Navigator
 			screenOptions={ {
-				headerTintColor: 'white'
+				headerTintColor: 'white',
+				gestureEnabled: false
 			} }>
 			<Stack.Screen
 				name="AppIntro"
@@ -152,6 +154,26 @@ function OnBoarding() {
 						color: '#129079'
 					},
 					headerBackTitleVisible: false
+				} }
+			/>
+			<Stack.Screen
+				name="TermsAndConditions"
+				component={ TermsAndConditions }
+				options={ {
+					headerBackTitleVisible: false,
+					headerTitle: 'Terms & Conditions',
+					headerTitleAlign: 'center',
+					headerTitleContainerStyle: {
+						alignItems: 'center'
+					},
+					headerStyle: {
+						backgroundColor: '#129079',
+						height: 80
+					},
+					headerTitleStyle: {
+						color: 'white',
+						fontSize: 20
+					}
 				} }
 			/>
 		</Stack.Navigator>

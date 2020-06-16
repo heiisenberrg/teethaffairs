@@ -23,7 +23,7 @@ function Dashboard(props) {
 const mapStateToProps = (state) => {
 	return {
 		user: state.user.user,
-		loading: state.doctor.loading
+		loading: state.doctor.loading || state.reminder.loading
 	};
 };
 

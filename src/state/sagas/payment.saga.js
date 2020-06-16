@@ -2,7 +2,6 @@ import { call, put } from 'redux-saga/effects';
 import {
   getCardsSuccess,
   getCardsFailure,
-  // createCardSuccess,
   createCardFailure,
   upgradeAppSuccess,
   upgradeAppFailure
@@ -27,7 +26,6 @@ export function* createCard (action) {
     if (response) {
       data.onSuccess();
     }
-    // yield put(createCardSuccess(response));
   } catch (e) {
     yield put(createCardFailure(e));
   }

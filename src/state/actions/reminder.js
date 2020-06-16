@@ -44,9 +44,10 @@ export const updateReminderFailure = error => ({
 	error
 });
 
-export const deleteReminder = data => ({
+export const deleteReminder = (data, navigation) => ({
 	type: constants.DELETE_REMINDER,
-	data
+	data,
+	navigation
 });
 
 export const deleteReminderSuccess = response => ({
@@ -76,4 +77,20 @@ export const fetchReminderBasedOnFilterFailure = error => ({
 
 export const clearReminder = () => ({
 	type: constants.CLEAR_REMINDER
+});
+
+
+export const getReminder = (data) => ({
+	type: constants.GET_REMINDER,
+	data
+});
+
+export const getReminderSuccess = response => ({
+	type: constants.GET_REMINDER_SUCCESS,
+	response
+});
+
+export const getReminderFailure = error => ({
+	type: constants.GET_REMINDER_FAILURE,
+	error
 });

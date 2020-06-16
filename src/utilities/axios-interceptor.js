@@ -1,6 +1,5 @@
 import axios from 'axios';
 import store from '../state/store';
-// import { refreshTheToken } from '../state/actions/user';
 import RNFetchBlob from 'rn-fetch-blob';
 import Config from 'react-native-config';
 import localStorage from '../state/localstorage';
@@ -14,11 +13,6 @@ const checkAuth = async () => {
 	return access;
 };
 
-// const protocol = 'http://';
-// const hostname = process.env.NODE_ENV === 'development'
-// ? 'test1.teethaffairs.com:8000'
-// : 'api.teethaffairs.com';
-// const hostname = 'test1.teethaffairs.com:8000';
 export const client = axios.create({
 	baseURL: `${Config.PROTOCOL}${Config.HOST_NAME}`
 });
@@ -114,7 +108,6 @@ client.interceptors.response.use(
 						'Something went wrong.  Please check your information and try again.'
 					);
 				case 401:
-					// store.dispatch({ type: UserConstant.GET_LOGIN_SUCCESS });
 					return refreshTokenAndReattemptRequest(error);
 				default:
 					throw new Error(

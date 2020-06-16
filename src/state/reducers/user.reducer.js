@@ -15,11 +15,31 @@ const initialState = {
 	users: [],
 	user: {},
 	loading: false,
-	deviceToken: ''
+	deviceToken: '',
+	notifications: []
 };
 
 function userReducer(state = initialState, action) {
 	switch (action.type) {
+		case constants.UPDATE_USER:
+			return {
+				...state,
+				loading: true
+			};
+		case constants.UPDATE_USER_SUCCESS:
+			return {
+				...state,
+				loading: false,
+				user: {
+					...state.user,
+					...action.response
+				}
+			};
+		case constants.UPDATE_USER_FAILURE:
+			return {
+				...state,
+				loading: false
+			};
 		case constants.SET_DEVICE_TOKEN:
 			return {
 				...state,
@@ -170,7 +190,21 @@ function userReducer(state = initialState, action) {
 		case constants.CLEAR_USER:
 			return {
 				...state,
-				...initialState
+				access: '',
+				email: '',
+				first_name: '',
+				last_name: '',
+				id: '',
+				is_verified: false,
+				user_type: '',
+				gender: '',
+				profile_pic: null,
+				zipcode: '',
+				errorMessage: '',
+				users: [],
+				user: {},
+				loading: false,
+				deviceToken: ''
 			};
 		case constants.SUBMIT_CONTACT_US:
 			return {
@@ -198,6 +232,22 @@ function userReducer(state = initialState, action) {
 				loading: false
 			};
 		case constants.UPLOAD_PROFILE_PICTURE_FAILURE:
+			return {
+				...state,
+				loading: false
+			};
+		case constants.GET_NOTIFICATIONS:
+			return {
+				...state,
+				loading: true
+			};
+		case constants.GET_NOTIFICATIONS_SUCCESS:
+			return {
+				...state,
+				loading: false,
+				notifications: action.response
+			};
+		case constants.GET_NOTIFICATIONS_FAILURE:
 			return {
 				...state,
 				loading: false

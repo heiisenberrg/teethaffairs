@@ -7,7 +7,6 @@ function UserConfirmPay(props) {
 	const { navigation } = props;
 
 	const onPressHandler = () => {
-		alert('Question sent successfully!');
 		navigation.navigate('Home');
 	};
 	return (

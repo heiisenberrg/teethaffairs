@@ -18,7 +18,6 @@ const styles = StyleSheet.create({
 		borderColor: 'grey',
 		borderRadius: 5,
 		flex: 1
-		// width: '33%'
 	},
 	hourText: {
 		paddingLeft: 10,
@@ -29,7 +28,6 @@ const styles = StyleSheet.create({
 		borderColor: 'grey',
 		borderRadius: 5,
 		flex: 1,
-		// width: '33%',
 		marginHorizontal: 10
 	},
 	minuteText: {
@@ -41,7 +39,6 @@ const styles = StyleSheet.create({
 		borderColor: 'grey',
 		borderRadius: 5,
 		flex: 1
-		// width: '27%'
 	},
 	timeZoneText: {
 		paddingLeft: 10,
@@ -49,13 +46,11 @@ const styles = StyleSheet.create({
 	},
 	muteContainer: {
 		marginVertical: 20
-		// width: '18%'
 	},
 	daysContainer: {
 		paddingVertical: 10,
 		width,
 		flex: 1
-		// width: '82%'
 	},
 	selectAllContent: {
 		borderRadius: 1,
@@ -67,7 +62,6 @@ const styles = StyleSheet.create({
 	dayContainer: {
 		marginVertical: 15,
 		flex: 1
-		// width: '65%'
 	},
 	dayContent: {
 		borderRadius: 5,

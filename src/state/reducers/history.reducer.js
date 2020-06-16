@@ -26,7 +26,8 @@ function historyReducer(state = initialState, action) {
 		case constants.CLEAR_HISTORY:
 			return {
 				...state,
-				...initialState
+				histories: [],
+				loading: false
 			};
 		default:
 			return state;

@@ -43,20 +43,24 @@ function Settings(props) {
 						colors={ [ '#0A8A7B', '#33D197', '#00C57D' ] }
 						style={ styles.upgradeContainer }>
 						<Text style={ styles.header }>Settings</Text>
-						<Text style={ styles.planText }>you are using the basic plan !</Text>
+						<Text style={ styles.planText }>
+						{user.upgraded ? 'you are in upgraded app' : 'you are using the basic plan !'}</Text>
 						<Text style={ styles.paymentText1 }>
-							Upgrade Your App with Just $10
+							{user.upgraded ? 'Now you can store all the data permanently.' : 'Upgrade Your App with Just $10'}
 						</Text>
 						<Text style={ styles.paymentText2 }>
-							and store all the data permanently in the app
+							{user.upgraded ? '' : 
+							'and store all the data permanently in the app'}
 						</Text>
-						<View style={ styles.buttonWrap }>
+						{user.upgraded ? <Text></Text> : 
+							<View style={ styles.buttonWrap }>
 							<TouchableOpacity
 								style={ globalStyles.tertiaryButton }
-								onPress={ () => navigation.navigate('ChangeCard') }>
+								onPress={ () => navigation.navigate('ChangeCard', { source: 'settings' }) }>
 								<Text style={ globalStyles.tertiaryButtonText }>upgrade app</Text>
 							</TouchableOpacity>
-						</View>
+						</View>}
+
 					</LinearGradient>
 				}
 				<TouchableOpacity

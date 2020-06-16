@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
 	textInput: {
 		flex: 1,
 		borderWidth: 1,
+		color: 'black',
 		borderColor: '#A1A1A1',
 		justifyContent: 'flex-end',
 		height: 44,

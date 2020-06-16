@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Image } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { connect } from 'react-redux';
+import { CommonActions } from '@react-navigation/native';
 
 import Dashboard from './DashboardStack';
 import Journal from './JournalStack';
 import History from './HistoryStack';
 import Settings from './SettingsStack';
-import Reminder from '../screens/Reminder';
+import Notification from './NotificationStack';
 
 import HomeIcon from '../assets/logo-color.png';
 import HistoryIcon from '../assets/history.png';
@@ -19,10 +20,7 @@ import styles from './styles';
 const Tab = createBottomTabNavigator();
 
 function AppTabs(props) {
-	const { user } = props;
-	// if (navigation && user && user.user_type === 'DOCTOR') {
-	// 	navigation.jumpTo('Teledental');
-	// }
+	const { user, navigation } = props;
 
 	const [ doesLoggedInUserDoctor, setDoesLoggedInUserDoctor ] = useState(false);
 
@@ -45,6 +43,17 @@ function AppTabs(props) {
 						return <Image source={ HistoryIcon } color={ color } />;
 					}
 				} }
+				listeners={ {
+					tabPress: () => {
+						navigation.dispatch(
+							CommonActions.reset({
+								index: 0,
+								routes: [ { name: 'AppTabs', key: 'History' } ]
+							})
+						);
+						navigation.navigate('History');
+					}
+				} }
 			/>
 			<Tab.Screen
 				name= { doesLoggedInUserDoctor ? 'Teledental' : 'Journal' }
@@ -53,6 +62,17 @@ function AppTabs(props) {
 					tabBarLabel: doesLoggedInUserDoctor ? 'Teledental' : 'Journal',
 					tabBarIcon: ({ color }) => {
 						return <Image source={ JournalIcon } color={ color } />;
+					}
+				} }
+				listeners={ {
+					tabPress: () => {
+						navigation.dispatch(
+							CommonActions.reset({
+								index: 0,
+								routes: [ { name: 'AppTabs', key: doesLoggedInUserDoctor ? 'Teledental' : 'Journal' } ]
+							})
+						);
+						navigation.navigate(doesLoggedInUserDoctor ? 'Teledental' : 'Journal');
 					}
 				} }
 			/>
@@ -67,14 +87,36 @@ function AppTabs(props) {
 						);
 					}
 				} }
+				listeners={ {
+					tabPress: () => {
+						navigation.dispatch(
+							CommonActions.reset({
+								index: 0,
+								routes: [ { name: 'AppTabs', key: 'Home' } ]
+							})
+						);
+						navigation.navigate('Home');
+					}
+				} }
 			/>
 			<Tab.Screen
-				name="Reminder"
-				component={ Reminder }
+				name="Notification"
+				component={ Notification }
 				options={ {
 					tabBarLabel: 'Notification',
 					tabBarIcon: ({ color }) => {
 						return <Image source={ NotificationIcon } color={ color } />;
+					}
+				} }
+				listeners={ {
+					tabPress: () => {
+						navigation.dispatch(
+							CommonActions.reset({
+								index: 0,
+								routes: [ { name: 'AppTabs', key: 'Notification' } ]
+							})
+						);
+						navigation.navigate('Notification');
 					}
 				} }
 			/>
@@ -86,6 +128,17 @@ function AppTabs(props) {
 					tabBarLabel: 'Settings',
 					tabBarIcon: ({ color }) => {
 						return <Image source={ SettingsIcon } color={ color } />;
+					}
+				} }
+				listeners={ {
+					tabPress: () => {
+						navigation.dispatch(
+							CommonActions.reset({
+								index: 0,
+								routes: [ { name: 'AppTabs', key: 'Settings' } ]
+							})
+						);
+						navigation.navigate('Settings');
 					}
 				} }
 			/>

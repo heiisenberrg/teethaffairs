@@ -50,6 +50,7 @@ import {
 	createNote,
 	updateNote
 } from '../services/journal.service';
+import FlashMessage from '../../components/global/FlashMessage';
 
 export function* fetchAddMember(action) {
 	const { data } = action;
@@ -121,19 +122,10 @@ export function* fetchSendQuestion(action) {
 		onSuccess();
 		yield put(getQuestionSuccess(response));
 	} catch (e) {
+		FlashMessage.message('Failure', 'Something went wrong. Please try again later.', '#ff4444');
 		yield put(getQuestionFailure(e));
 	}
 }
-
-// export function* fetchSendQuestion(action) {
-// 	const { data } = action;
-// 	try {
-// 		const response = yield call(sendQuestions, data);
-// 		yield put(getQuestionSuccess(response));
-// 	} catch (e) {
-// 		yield put(getQuestionFailure(e));
-// 	}
-// }
 
 export function* getDentalVisits(action) {
 	const { data } = action;
@@ -149,7 +141,7 @@ export function* getRemoteConsultationsForPatients(action) {
 	const { data } = action;
 	try {
 		const response = yield call(getRemoteConsultationsForPatient, data);
-		yield put(getRemoteConsultationsForPatientsSuccess(response));
+		yield put(getRemoteConsultationsForPatientsSuccess(response.data));
 	} catch (e) {
 		yield put(getRemoteConsultationsForPatientsFailure(e));
 	}
@@ -168,13 +160,12 @@ export function* createUserNote(action) {
 }
 
 export function* createDentalVisit(action) {
-	const { data, onSuccess, onFailure } = action;
+	const { data, onSuccess } = action;
 	try {
 		const response = yield call(dentalVisitCreate, data);
 		onSuccess();
 		yield put(createDentalVisitsSuccess(response));
 	} catch (e) {
-		onFailure();
 		yield put(createDentalVisitsFailure(e));
 	}
 }
@@ -192,13 +183,12 @@ export function* fetchDeleteNotes(action) {
 }
 
 export function* editDentalVisit(action) {
-	const { id, data, onSuccess, onFailure } = action;
+	const { id, data, onSuccess } = action;
 	try {
 		const response = yield call(updateDentalVisit, id, data);
 		onSuccess();
 		yield put(updateDentalVisitSuccess(response));
 	} catch (e) {
-		onFailure();
 		yield put(updateDentalVisitFailure(e));
 	}
 }

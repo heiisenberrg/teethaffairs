@@ -8,6 +8,8 @@ import Splash from './src/screens/Splash';
 import FlashMessage from 'react-native-flash-message';
 import localStorage from './src/state/localstorage';
 
+/* eslint-disable no-mixed-spaces-and-tabs */
+
 // For Getting Network Requests in React Native Debugger.
 global.XMLHttpRequest = global.originalXMLHttpRequest
 	? global.originalXMLHttpRequest
@@ -37,7 +39,7 @@ function App() {
 	const [ isAuth, setIsAuth ] = useState(false);
 	const [ user, setUser ] = useState({});
 
-	const [ cameraGranted, setCameraGranted ] = useState(false);
+	const [ , setCameraGranted ] = useState(false);
 
 	const handleCameraPermission = async () => {
 		const res = await check(PERMISSIONS.IOS.CAMERA);
@@ -45,15 +47,15 @@ function App() {
 		if (res === RESULTS.GRANTED) {
 			setCameraGranted(true);
 		} else if (res === RESULTS.DENIED) {
-		const res2 = await request(PERMISSIONS.IOS.CAMERA);
-		res2 === RESULTS.GRANTED 
-			? setCameraGranted(true)
-			: setCameraGranted(false);
+			const res2 = await request(PERMISSIONS.IOS.CAMERA);
+			res2 === RESULTS.GRANTED
+				? setCameraGranted(true)
+				: setCameraGranted(false);
 		}
 	};
-	
+
 	useEffect(() => {
-		handleCameraPermission(); 
+		handleCameraPermission();
 	}, []);
 
 	useEffect(() => {
@@ -78,8 +80,15 @@ function App() {
 	}
 	return (
 		<Provider store={ store }>
-			<MainNavigation isAuth={ isAuth } user={ user }/>
-			<FlashMessage position="top" style={ { borderBottomLeftRadius: 20, borderBottomRightRadius: 20, zIndex: 1001 } } />
+			<MainNavigation isAuth={ isAuth } user={ user } />
+			<FlashMessage
+				position="top"
+				style={ {
+					borderBottomLeftRadius: 20,
+					borderBottomRightRadius: 20,
+					zIndex: 1001
+				} }
+			/>
 		</Provider>
 	);
 }

@@ -9,6 +9,7 @@ function NormalTextInput(props) {
 			<Text style={ styles.label1 }>{props.lable}</Text>
 			<TextInput
 				multiline
+				textAlignVertical="top"
 				style={ props.saveas !== undefined ? styles.saveAs: styles.textInput1 }
 				placeholder={ props.placeholder }
 				onChangeText={ props.onChangeText }

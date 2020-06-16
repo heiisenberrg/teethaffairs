@@ -5,7 +5,9 @@ import {
 	Image,
 	KeyboardAvoidingView,
 	TouchableOpacity,
-	ScrollView
+	ScrollView,
+	BackHandler,
+	Alert
 } from 'react-native';
 
 import { Formik } from 'formik';
@@ -36,18 +38,40 @@ function Profile(props) {
 		navigation.navigate('AddQuestion', { data: userNotes });
 	};
 
-	useEffect(function() {
-		if(user) {
-			setFirstName(user.first_name);
-			setLastName(user.last_name);
-		}
-	}, [ user ]);
+	useEffect(
+		function() {
+			if (user) {
+				setFirstName(user.first_name);
+				setLastName(user.last_name);
+			}
+		},
+		[ user ]
+	);
+
+	useEffect(() => {
+    const backAction = () => {
+      Alert.alert('Hold on!', 'Are you sure you want to exit App.', [
+        {
+          text: 'Cancel',
+          onPress: () => null,
+          style: 'cancel'
+        },
+        { text: 'YES', onPress: () => BackHandler.exitApp() }
+      ]);
+      return true;
+    };
+
+	const backHandler = BackHandler.addEventListener(
+		'hardwareBackPress',
+			backAction
+		);
+			return () => backHandler.remove();
+		}, []);
 
 	return (
 		<KeyboardAvoidingView
 			behavior="padding"
-			keyboardVerticalOffset={ keyboardVerticalOffset }
-		>
+			keyboardVerticalOffset={ keyboardVerticalOffset }>
 			<ScrollView
 				showsVerticalScrollIndicator={ false }
 				contentContainerStyle={ styles.container }>
@@ -59,14 +83,16 @@ function Profile(props) {
 				</Text>
 				<Text style={ styles.welcomeText }>welcome to teethAffairs</Text>
 				<View style={ styles.contentWrapText }>
+					{
+						user && (user.user_type === 'PRIMARY_PATIENT' || user.user_type === 'PRIMARY-PATIENT') &&
+						<Text style={ styles.contentText }>
+							Now you can add family members
+						</Text>
+					}
 					<Text style={ styles.contentText }>
-						Now you can add family members to keep track of their dental
-						habits, dental visit, journal and ask questions to a real dentist
-						24/7.
+						To keep track of the dental habits, dental visit, journal and ask questions to a real dentist 24/7.
 					</Text>
-					<Text style={ styles.contentText }>
-						Answer provided within 24 hrs.
-					</Text>
+					<Text style={ styles.contentText }>Answer provided within 24 hrs.</Text>
 				</View>
 				<View style={ styles.imageStyle }>
 					<View style={ styles.imageContainer }>
@@ -83,18 +109,14 @@ function Profile(props) {
 							onPress={ () => navigation.navigate('ListReminder') }>
 							<View style={ styles.contentWrap }>
 								<Image source={ require('../../assets/alarm.png') } />
-								<Text style={ styles.imageContent }>Blush/Floss Reminder</Text>
+								<Text style={ styles.imageContent }>Brush/Floss Reminder</Text>
 							</View>
 						</TouchableOpacity>
 						<TouchableOpacity
 							style={ styles.imageWrap3 }
 							onPress={ () => navigation.navigate('AddDentalNote') }>
 							<View style={ styles.contentWrap }>
-								<Icon
-									type={ 'FontAwesome5' }
-									name={ 'notes-medical' }
-									size={ 35 }
-								/>
+								<Icon type={ 'FontAwesome5' } name={ 'notes-medical' } size={ 35 } />
 								<Text style={ styles.imageContent }>notes</Text>
 							</View>
 						</TouchableOpacity>
@@ -159,8 +181,11 @@ function Profile(props) {
 	);
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
 	user: state.user.user
 });
 
-export default connect(mapStateToProps, null)(Profile);
+export default connect(
+	mapStateToProps,
+	null
+)(Profile);

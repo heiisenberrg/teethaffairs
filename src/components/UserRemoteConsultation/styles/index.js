@@ -68,7 +68,8 @@ const styles = StyleSheet.create({
 		borderRadius: 6,
 		marginRight: 5,
 		marginLeft: 5,
-		height: 35
+		height: 35,
+		color: 'black'
 	},
 	errorText: {
 		color: '#CF0000',
@@ -80,7 +81,8 @@ const styles = StyleSheet.create({
 		marginTop: 15,
 		marginLeft: 1,
 		marginRight: 15,
-		flex: 1	},
+		flex: 1
+	},
 	allergiesTextInput: {
 		borderWidth: 1,
 		borderColor: '#A1A1A1',
@@ -135,21 +137,22 @@ const styles = StyleSheet.create({
 	},
 	checkbox: {
 		height: 14,
-		position:'relative',
-		top:5
+		position: 'relative',
+		top: 5
 	},
 	customCheckbox: {
-	width: 15,
-	height: 15,
-	borderWidth: 1,
-	borderColor: '#2E2E2E',
-	position:'relative',
-	top:4,
-	borderRadius: 2
+		width: 15,
+		height: 15,
+		borderWidth: 1,
+		borderColor: '#2E2E2E',
+		position: 'relative',
+		top: 4,
+		borderRadius: 2
 	},
 	checkedStyle: {
-	position:'absolute',
-	top: 2,right: 1
+		position: 'absolute',
+		top: 2,
+		right: 1
 	},
 	issueTextWrapper: {
 		marginTop: 20,
@@ -170,7 +173,7 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 		marginTop: 2,
 		marginRight: 5,
-		marginLeft:5 
+		marginLeft: 5
 	},
 	selectedTextWrapper: {
 		flexDirection: 'row',
@@ -204,7 +207,7 @@ const styles = StyleSheet.create({
 		fontSize: 13
 	},
 	switchButton: {
-		position:'relative',
+		position: 'relative',
 		marginLeft: 10,
 		marginBottom: 10
 	},
@@ -329,7 +332,7 @@ const styles = StyleSheet.create({
 		flex: 1
 	},
 	histoyrFormBlock: {
-		borderWidth:1,
+		borderWidth: 1,
 		margin: 7,
 		borderColor: '#ffffff',
 		backgroundColor: '#ffffff',
@@ -394,8 +397,7 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderBottomLeftRadius: 5,
 		borderBottomRightRadius: 5,
-		borderColor: '#A1A1A1',
-		maxHeight: 150
+		borderColor: '#A1A1A1'
 	},
 	dropdownContainer: {
 		elevation: 2,

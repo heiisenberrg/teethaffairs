@@ -5,6 +5,7 @@ import View from '../../global/View';
 import Text from '../../global/Text';
 import { connect } from 'react-redux';
 import { getCards, upgradeApp } from '../../../state/actions/payment';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const cardBrands = {
 	visa: '#1FE9A7',
@@ -13,9 +14,10 @@ const cardBrands = {
 };
 
 function changeCard(props) {
-	const { navigation, cards, getCards, upgradeApp, user } = props;
+	const { route, navigation, cards, getCards, upgradeApp, user } = props;
 	const [ selectedCardId, setSelectedCardId ] = useState(0);
 	const [ amount ] = useState(10);
+	const { source } = route.params;
 	
 	useEffect(() => {
 		getCards();
@@ -30,7 +32,6 @@ function changeCard(props) {
 				style={ {
 					...styles.cardContainer,
 					...styles.card,
-					// ...(index === 0 && { marginLeft: 20 }),
 					...{
 						backgroundColor:
 							cardBrands[
@@ -90,6 +91,7 @@ function changeCard(props) {
 
 	return (
 		<View style={ styles.container }>
+			<ScrollView>
 			{
 				cards && cards.length > 0 &&
 				<View style={ styles.carouselContainer }>
@@ -117,10 +119,13 @@ function changeCard(props) {
 				</View>
 				<View row jC={ 'space-between' }>
 					<Text s={ 16 } c={ '#363636' } style={ styles.p15 }>
-						Remote Consultation
+						{
+							source !== 'settings' ? 
+							'Remote Consultation' : 'Upgrade Plan'
+						}
 					</Text>
 					<Text s={ 16 } c={ '#363636' } style={ styles.p15 }>
-						${amount}.00
+						$ {amount}.00
 					</Text>
 				</View>
 				<View row jC={ 'space-between' }>
@@ -128,7 +133,7 @@ function changeCard(props) {
 						Tax & Fees
 					</Text>
 					<Text s={ 16 } c={ '#363636' } style={ styles.p15 }>
-						$00.00
+						$ 0.00
 					</Text>
 				</View>
 				<View style={ { ...styles.mv10, ...styles.bw } } />
@@ -137,7 +142,7 @@ function changeCard(props) {
 						Amount Payable
 					</Text>
 					<Text s={ 22 } c={ '#363636' } style={ styles.p15 }>
-						${amount}.00
+						$ {amount}.00
 					</Text>
 				</View>
 			</View>
@@ -148,6 +153,7 @@ function changeCard(props) {
 					Pay now
 				</Text>
 			</TouchableOpacity>
+			</ScrollView>
 		</View>
 	);
 }

@@ -44,3 +44,10 @@ export const viewByFilter = data =>
         data,
         withCredentials: true
     });
+
+export const get = data =>
+	apiCall({
+        url: `${REMINDER_BASE_URL}${data.id}/`,
+        method: 'GET',
+        withCredentials: true
+    });

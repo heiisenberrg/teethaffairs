@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
 	},
 	dentalVisitWrapper: { marginTop: 10 },
 	wrapper: {  
-		paddingTop: 5,
+		paddingTop: 2,
 		display: 'flex'
 	},
 	title: {
@@ -21,8 +21,9 @@ const styles = StyleSheet.create({
 	inputText: {
 		borderColor: '#A1A1A1',
 		borderWidth: 1,
+		color: 'black',
 		borderRadius: 5,
-		height: 40,
+		height: 50,
 		marginHorizontal: 5,
 		fontSize: 16,
 		paddingHorizontal: 10
@@ -101,6 +102,11 @@ const styles = StyleSheet.create({
 	flexEnd: {
 		justifyContent: 'flex-end', 
 		alignItems: 'flex-end'
+	},
+	errorText: {
+		color: '#CF0000',
+		fontSize: 12,
+		margin: 5
 	}
 });
 

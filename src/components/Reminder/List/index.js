@@ -11,21 +11,44 @@ import { connect } from 'react-redux';
 import styles from './styles';
 import Icon from '../../global/Icon';
 import View from '../../global/View';
-import { fetchReminders, updateReminder, deleteReminder, fetchReminderBasedOnFilter } from '../../../state/actions/reminder';
+import {
+	fetchReminders,
+	updateReminder,
+	deleteReminder,
+	fetchReminderBasedOnFilter
+} from '../../../state/actions/reminder';
 import { getUsers } from '../../../state/actions/user';
 import moment from 'moment';
-import Loader from '../../global/Loader';
+import LinearGradient from 'react-native-linear-gradient';
 
 function ListReminder(props) {
-	const { navigation, fetchReminders, reminderList, updateReminder, deleteReminder, getUsers, userList, fetchReminderBasedOnFilter, userDetails, loading } = props;
+	const {
+		route,
+		navigation,
+		fetchReminders,
+		reminderList,
+		updateReminder,
+		deleteReminder,
+		getUsers,
+		userList,
+		fetchReminderBasedOnFilter,
+		userDetails
+	} = props;
 	const [ isVisible, setVisible ] = useState(false);
 	const [ expandedCards, setExpandedCards ] = useState([]);
 	const [ showModal, setShowModal ] = useState(false);
+	const [ showDeleteModal, setShowDeleteModal ] = useState(false);
 	const [ selectedContent, setSelectedContent ] = useState('');
 	const [ selectedReminder, setSelectedReminder ] = useState('');
-	const [ selectedUser, setSelectedUser ] = useState(userDetails && userDetails.id ? { id: userDetails.id, username: userDetails.first_name } : {});
+	const [ selectedUser, setSelectedUser ] = useState(
+		userDetails && userDetails.id
+			? { id: userDetails.id, username: userDetails.first_name }
+			: {}
+	);
 	const [ selectedDay, setSelectedDay ] = useState('');
 	const days = [ 'S', 'M', 'T', 'W', 'T', 'F', 'S' ];
+	const days1 = [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ];
+
 	const editContent = [
 		{ icon: 'check', content: 'I already brushed and flossed' },
 		{ icon: 'pause', content: 'Remind me after 30 minutes again' },
@@ -38,7 +61,10 @@ function ListReminder(props) {
 
 	useEffect(() => {
 		fetchReminders();
-		if (userDetails.user_type === 'PRIMARY-PATIENT' || userDetails.user_type === 'PRIMARY_PATIENT') {
+		if (
+			userDetails.user_type === 'PRIMARY-PATIENT' ||
+			userDetails.user_type === 'PRIMARY_PATIENT'
+		) {
 			getUsers();
 		}
 	}, []);
@@ -50,12 +76,40 @@ function ListReminder(props) {
 			updateReminder(list[selectedReminder]);
 		}
 	}, [ selectedContent ]);
-	
+
 	useEffect(() => {
 		if (selectedDay !== '') {
-			fetchReminderBasedOnFilter( { user_id: selectedUser.id, day: `${selectedDay + 1}` } );
+			fetchReminderBasedOnFilter({
+				user_id: selectedUser.id,
+				day: `${days1[selectedDay]}`
+			});
+		} else if (
+			selectedDay === '' &&
+			selectedUser &&
+			Object.keys(selectedUser).length &&
+			userDetails.id !== selectedUser.id
+		) {
+			fetchReminderBasedOnFilter({ user_id: selectedUser.id, day: 'Sun' });
+			setSelectedDay(0);
+		} else if (
+			route &&
+			route.params &&
+			Object.keys(route.params).length &&
+			route.params.refresh
+		) {
+			if (selectedUser.id === userDetails.id && selectedDay === '') {
+				fetchReminders();
+			} else if (selectedDay !== '') {
+				fetchReminderBasedOnFilter({
+					user_id: selectedUser.id,
+					day: `${days1[selectedDay]}`
+				});
+			} else {
+				fetchReminderBasedOnFilter({ user_id: selectedUser.id, day: '' });
+			}
+			setExpandedCards([]);
 		}
-	}, [ selectedDay, selectedUser ]);
+	}, [ selectedDay, selectedUser, route ]);
 
 	const changeExpandedCards = index => {
 		if (expandedCards && expandedCards.indexOf(index) !== -1) {
@@ -67,11 +121,10 @@ function ListReminder(props) {
 		}
 	};
 
-	const removeReminder = index => {
+	const removeReminder = () => {
 		const data = [ ...reminderList ];
-		data.splice(index, 1);
-		changeExpandedCards(index);
-		deleteReminder({ id: reminderList[index].id, data });
+		deleteReminder({ id: reminderList[selectedReminder].id, data }, navigation);
+		setShowDeleteModal(false);
 	};
 
 	const _renderNoteCards = ({ item, index }) => {
@@ -90,48 +143,16 @@ function ListReminder(props) {
 					<View jC={ 'flex-start' }>
 						<Image
 							style={ styles.profileImage }
-							source={ require('../../../assets/profile.png') }
+							source={
+								item.profile_pic !== null
+									? { uri: item.profile_pic }
+									: require('../../../assets/profile.png')
+							}
 						/>
-						{/* <View
-							row
-							center
-							style={ {
-								...styles.statusContainer,
-								...{
-									backgroundColor:
-										index === 0
-											? '#00C57D'
-											: index === 1
-												? '#FA5050'
-												: '#858585',
-									borderColor:
-										index === 0
-											? '#00C57D'
-											: index === 1
-												? '#FA5050'
-												: '#858585'
-								}
-							} }>
-							<View style={ styles.statusContent }>
-								<Icon
-									type={ 'MaterialCommunityIcons' }
-									name={
-										index === 0
-											? 'check'
-											: index === 1
-												? 'exclamation'
-												: 'pause'
-									}
-									color={ 'white' }
-									size={ 14 }
-								/>
-							</View>
-						</View> */}
 					</View>
 					<View row center jC={ 'space-between' } style={ styles.titleContainer }>
 						<View>
 							<Text style={ styles.expandedTitle }>{item.reminder_text}</Text>
-							{/* <Text style={ styles.expandedSubTitle }>You and 4 others</Text> */}
 						</View>
 						<View row center>
 							<TouchableOpacity>
@@ -160,7 +181,10 @@ function ListReminder(props) {
 						<View row jC={ 'space-between' } style={ styles.actionContainer }>
 							<TouchableOpacity
 								style={ styles.editContainer }
-								onPress={ () => [ navigation.navigate('CreateReminder', { data: item, index }), setSelectedReminder(index) ] }>
+								onPress={ () => [
+									navigation.navigate('CreateReminder', { data: item, index }),
+									setSelectedReminder(index)
+								] }>
 								<Icon
 									type={ 'MaterialCommunityIcons' }
 									name={ 'pencil' }
@@ -169,7 +193,12 @@ function ListReminder(props) {
 								/>
 								<Text style={ styles.editText }>Edit</Text>
 							</TouchableOpacity>
-							<TouchableOpacity style={ styles.deleteContainer } onPress={ () => removeReminder(index) }>
+							<TouchableOpacity
+								style={ styles.deleteContainer }
+								onPress={ () => [
+									setSelectedReminder(index),
+									setShowDeleteModal(true)
+								] }>
 								<Icon
 									type={ 'MaterialCommunityIcons' }
 									name={ 'trash-can-outline' }
@@ -181,6 +210,46 @@ function ListReminder(props) {
 						</View>
 					</View>
 				)}
+				<Modal transparent={ true } visible={ showDeleteModal }>
+					<View style={ styles.modalWrap }>
+						<LinearGradient
+							start={ { x: 0.4, y: 0.1 } }
+							end={ { x: 0.8, y: 1.1 } }
+							colors={ [ '#0F8E79', '#66CC80' ] }
+							style={ styles.successModalTextWrap }>
+							<View style={ styles.successTextWrap }>
+								<TouchableOpacity
+									style={ styles.closeIconContainer }
+									onPress={ () => setShowDeleteModal(false) }>
+									<Image
+										source={ require('../../../assets/cross.png') }
+										style={ styles.closeIcon }
+									/>
+								</TouchableOpacity>
+
+								<Image
+									source={ require('../../../assets/bin-icon.png') }
+									style={ styles.successIcon }
+								/>
+								<Text style={ styles.successModalText }>
+									Do you want to delete the reminder?
+								</Text>
+							</View>
+							<View style={ styles.modalButtonContainer }>
+								<TouchableOpacity
+									style={ styles.continueButton }
+									onPress={ () => removeReminder(index) }>
+									<Text style={ styles.continueButtonText }>Yes</Text>
+								</TouchableOpacity>
+								<TouchableOpacity
+									style={ styles.continueButton }
+									onPress={ () => setShowDeleteModal(false) }>
+									<Text style={ styles.continueButtonText }>No</Text>
+								</TouchableOpacity>
+							</View>
+						</LinearGradient>
+					</View>
+				</Modal>
 			</TouchableOpacity>
 		);
 	};
@@ -188,10 +257,8 @@ function ListReminder(props) {
 	const modal = () => {
 		return (
 			<Modal transparent={ true } visible={ showModal }>
-				<View
-					style={ styles.modalContainer }>
-					<View
-						style={ styles.modalContent }>
+				<View style={ styles.modalContainer }>
+					<View style={ styles.modalContent }>
 						<TouchableOpacity
 							style={ styles.crossButton }
 							onPress={ () => setShowModal(!showModal) }>
@@ -239,9 +306,7 @@ function ListReminder(props) {
 							{editContent &&
 								editContent.map((item, index) => {
 									return (
-										<View row
-											key={ `modal-${index}` }
-											style={ styles.modContent }>
+										<View row key={ `modal-${index}` } style={ styles.modContent }>
 											<View
 												row
 												center
@@ -252,14 +317,14 @@ function ListReminder(props) {
 															item.icon === 'check'
 																? '#00C57D'
 																: item.icon === 'exclamation'
-																	? '#FA5050'
-																	: '#858585',
+																? '#FA5050'
+																: '#858585',
 														borderColor:
 															item.icon === 'check'
 																? '#00C57D'
 																: item.icon === 'exclamation'
-																	? '#FA5050'
-																	: '#858585'
+																? '#FA5050'
+																: '#858585'
 													}
 												} }>
 												<View style={ styles.statusContent }>
@@ -273,10 +338,19 @@ function ListReminder(props) {
 											</View>
 											<TouchableOpacity
 												style={ styles.radioContainer }
-												onPress={ () => setSelectedContent(selectedContent === index ? '' : index) }
-											>
+												onPress={ () =>
+													setSelectedContent(
+														selectedContent === index ? '' : index
+													)
+												}>
 												<View
-													style={ { ...styles.radioGroup, ...{ backgroundColor: selectedContent === index ? '#33D197' : 'white' } } }
+													style={ {
+														...styles.radioGroup,
+														...{
+															backgroundColor:
+																selectedContent === index ? '#33D197' : 'white'
+														}
+													} }
 												/>
 											</TouchableOpacity>
 											<View style={ styles.width80 }>
@@ -294,7 +368,6 @@ function ListReminder(props) {
 
 	return (
 		<>
-			<Loader loading={ loading } />
 			<View style={ styles.divider } />
 			<View center style={ styles.filterContainer }>
 				<TouchableOpacity style={ styles.filter } activeOpacity={ 0.9 }>
@@ -302,14 +375,28 @@ function ListReminder(props) {
 						<View jC={ 'flex-start' }>
 							<Image
 								style={ styles.filterImage }
-								source={ selectedUser && selectedUser.profile_pic ? { uri:  selectedUser.profile_pic } : require('../../../assets/profile.png')  }
+								source={
+									selectedUser && selectedUser.profile_pic
+										? { uri: selectedUser.profile_pic }
+										: require('../../../assets/profile.png')
+								}
 							/>
 						</View>
 						<View row center jC={ 'space-between' } style={ styles.filterContent }>
-							<Text style={ styles.filterText }>{Object.keys(selectedUser).length === 0 && userList && userList.length > 0 ? userList[0].username : selectedUser.username}</Text>
+							<Text style={ styles.filterText }>
+								{Object.keys(selectedUser).length === 0 &&
+								userList &&
+								userList.length > 0
+									? userList[0].username
+									: selectedUser.username}
+							</Text>
 							<TouchableOpacity
 								style={ styles.filterArrow }
-								onPress={ () => (userList && userList.length > 0 ? setVisible(!isVisible) : null) }>
+								onPress={ () =>
+									(userList && userList.length > 0
+										? setVisible(!isVisible)
+										: null)
+								}>
 								<Icon
 									type={ 'Ionicons' }
 									name={ !isVisible ? 'md-arrow-dropright' : 'md-arrow-dropdown' }
@@ -324,24 +411,37 @@ function ListReminder(props) {
 							<ScrollView
 								contentContainerStyle={ styles.scrollView }
 								showsVerticalScrollIndicator={ false }>
-								{userList && userList.map((data, index) => { 
-									return(
-										<TouchableOpacity key={ `user${index}` } style={ styles.userContainer } onPress={ () => [ setSelectedUser(data), setVisible(!isVisible) ] }>
-											<View row style={ styles.profileWrapper }>
-												<View jC={ 'flex-start' }>
-													<Image
-														style={ styles.filterImage }
-														source={ selectedUser && selectedUser.profile_pic ? { uri:  selectedUser.profile_pic } : require('../../../assets/profile.png') }
-													/>
+								{userList &&
+									userList.map((data, index) => {
+										return (
+											<TouchableOpacity
+												key={ `user${index}` }
+												style={ styles.userContainer }
+												onPress={ () => [
+													setSelectedUser(data),
+													setVisible(!isVisible)
+												] }>
+												<View row style={ styles.profileWrapper }>
+													<View jC={ 'flex-start' }>
+														<Image
+															style={ styles.filterImage }
+															source={
+																data && data.profile_pic !== null
+																	? { uri: data.profile_pic }
+																	: require('../../../assets/profile.png')
+															}
+														/>
+													</View>
+													<View style={ styles.userContent }>
+														<Text style={ styles.userContentText }>
+															{data.username}
+														</Text>
+													</View>
 												</View>
-												<View style={ styles.userContent }>
-													<Text style={ styles.userContentText }>{data.username}</Text>
-												</View>
-											</View>
-											<View style={ styles.separator } />
-										</TouchableOpacity>
-									);
-								})}
+												<View style={ styles.separator } />
+											</TouchableOpacity>
+										);
+									})}
 							</ScrollView>
 						</View>
 					)}
@@ -354,10 +454,14 @@ function ListReminder(props) {
 							<TouchableOpacity
 								onPress={ () => setSelectedDay(index) }
 								key={ `days-index${index}` }
-								style={ { ...styles.daysContent, ...{
-									borderColor: selectedDay === index ? '#33D197' : '#CAC7C7',
-									backgroundColor: selectedDay === index ? '#33D197' : '#CAC7C7' } 
-									} }>
+								style={ {
+									...styles.daysContent,
+									...{
+										borderColor: selectedDay === index ? '#33D197' : '#CAC7C7',
+										backgroundColor:
+											selectedDay === index ? '#33D197' : '#CAC7C7'
+									}
+								} }>
 								<Text>{day}</Text>
 							</TouchableOpacity>
 						);
@@ -367,9 +471,13 @@ function ListReminder(props) {
 					<FlatList
 						data={ reminderList }
 						renderItem={ _renderNoteCards }
-						keyExtractor={ item => item.id }
-						extraData={ reminderList }
-						ListEmptyComponent={ () => (<View center><Text>No reminders</Text></View>) }
+						keyExtractor={ item => `${item.id}${reminderList.length}` }
+						extraData={ props }
+						ListEmptyComponent={ () => (
+							<View center>
+								<Text>No reminders</Text>
+							</View>
+						) }
 						showsVerticalScrollIndicator={ false }
 					/>
 					<TouchableOpacity
@@ -391,14 +499,14 @@ function ListReminder(props) {
 const mapStateToProps = state => ({
 	reminderList: state.reminder.reminderList,
 	userList: state.user.users,
-	userDetails: state.user.user,
-	loading: state.reminder.loading
+	userDetails: state.user.user
 });
 
 const mapDispatchToProps = dispatch => ({
 	fetchReminders: () => dispatch(fetchReminders()),
 	updateReminder: data => dispatch(updateReminder(data)),
-	deleteReminder: data => dispatch(deleteReminder(data)),
+	deleteReminder: (data, navigation) =>
+		dispatch(deleteReminder(data, navigation)),
 	getUsers: () => dispatch(getUsers()),
 	fetchReminderBasedOnFilter: data => dispatch(fetchReminderBasedOnFilter(data))
 });

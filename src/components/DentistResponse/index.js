@@ -13,6 +13,9 @@ import Icon from '../global/Icon';
 import styles from './styles';
 import moment from 'moment';
 import { connect } from 'react-redux';
+import { verifyPin } from '../../state/actions/doctor';
+import ImagePreviewer from '../../components/global/ImagePreviewer';
+import FlashMessage from '../../components/global/FlashMessage';
 
 const detail = [
 	{
@@ -42,7 +45,7 @@ const detail = [
 	},
 	{
 		question: 'Pain type',
-		answer: '',
+		answer: 'pain_type',
 		type: 'string'
 	},
 	{
@@ -68,7 +71,7 @@ const detail = [
 	{
 		question: 'When did the issue start',
 		answer: 'issue_start_date',
-		type: 'date'
+		type: 'string'
 	},
 	{
 		question: 'Swelling size',
@@ -101,15 +104,20 @@ const pharmacies = [
 ];
 
 function DentistResponse(props) {
-	const { route, navigation } = props;
+	const { route, navigation, verifyPin, user } = props;
 	const [ isResponse ] = useState(true);
 	const [ isQuestionVisible, setIsQuestionVisible ] = useState(true);
 	const [ showModal, setShowModal ] = useState(false);
+	const [ showVerifyPinModal, setShowVerifyPinModal ] = useState(true);
+	const [ showError, setShowError ] = useState(false);
+	const [ pinValue, setPinValue ] = useState('');
 	const [ data, setData ] = useState({});
 	const [ searchValue, setSearchValue ] = useState('');
 	const [ showDropDown, setShowDropDown ] = useState(false);
 	const [ filteredPharmacies, setFilteredPharmacies ] = useState([]);
 	const [ selectedPharmacy, setSelectedPharmacy ] = useState('');
+	const [ uri, setUri ] = useState('');
+	const [ enablePreview, setEnablePreview ] = useState(false);
 
 	useEffect(() => {
 		if (route && route.params && Object.keys(route.params).length > 0) {
@@ -131,6 +139,10 @@ function DentistResponse(props) {
 		setShowDropDown(true);
 	};
 
+	const handlePreview = () => {
+		setEnablePreview(!enablePreview);
+	};
+
 	const selectPharmacy = item => {
 		let data = [ ...selectedPharmacy ];
 		if (data.indexOf(item) !== -1) {
@@ -142,8 +154,26 @@ function DentistResponse(props) {
 		setSearchValue(item);
 		setShowDropDown(!showDropDown);
 	};
+	
+	const submitPin = () => {
+		if (pinValue !== '') {
+			verifyPin( { 
+				secret_pin: pinValue, 
+				question_id: data.id 
+			}, verifyPinSuccess, () => setShowError(!showError) );
+		} else {
+			FlashMessage.message('Alert', 'Please enter the pin to continue', 'red');
+		}
+	};
 
-	const submit = () => {};
+	function verifyPinSuccess(response) {
+		if(response && response.error_code === 2001) {
+			FlashMessage.message('Alert', 'Invalid PIN', 'red');
+			navigation.goBack();
+		} else {
+			setShowVerifyPinModal(!showVerifyPinModal);
+		}
+	}
 
 	const naviagteToNote = () => {
 		navigation.navigate('Note Preview', { previewNote: data });
@@ -235,7 +265,7 @@ function DentistResponse(props) {
 							Allergies:
 						</Text>
 						<Text s={ 14 } lh={ 16 } style={ styles.mv5 }>
-							{data.allergies ? data.allergies.join(' ') : 'N/A'}
+							{data.allergies ? data.allergies.join(', ') : 'N/A'}
 						</Text>
 					</View>
 					<View style={ styles.flexColumn }>
@@ -243,7 +273,7 @@ function DentistResponse(props) {
 							Medical Conditions:
 						</Text>
 						<Text s={ 14 } lh={ 16 } style={ styles.mv5 }>
-							{data.medical_conditions ? data.medical_conditions : 'N/A'}
+							{data.medical_conditions ? data.medical_conditions.join(', ') : 'N/A'}
 						</Text>
 					</View>
 					<View style={ styles.flexColumn }>
@@ -251,7 +281,7 @@ function DentistResponse(props) {
 							Taking any medications:
 						</Text>
 						<Text s={ 14 } lh={ 16 } style={ styles.mv5 }>
-							{data.medications ? data.medications : 'N/A'}
+							{data.medications ? data.medications.join(', ') : 'N/A'}
 						</Text>
 					</View>
 				</View>
@@ -275,13 +305,18 @@ function DentistResponse(props) {
 					) }
 					renderItem={ ({ item, index }) => {
 						return (
-							<Image
+							<TouchableOpacity
+								activeOpacity={ 0.9 }
+								onPress={ () => [ setUri(item.media), handlePreview() ] }
 								key={ `${item}-${index}` }
-								style={ styles.attachmentImage }
-								source={ {
-									uri: item.media
-								} }
-							/>
+							>
+								<Image
+									style={ styles.attachmentImage }
+									source={ {
+										uri: item.media
+									} }
+								/>
+							</TouchableOpacity>
 						);
 					} }
 					extraData={ data }
@@ -329,6 +364,8 @@ function DentistResponse(props) {
 	};
 
 	const actionButtons = () => {
+		/* eslint-disable no-unused-vars */
+
 		const docData =
 			Object.keys(data).length !== 0 &&
 			data.question_info &&
@@ -344,16 +381,19 @@ function DentistResponse(props) {
 						</Text>
 					</View>
 				)}
-				<TouchableOpacity
-					style={ [ styles.buttonContainer, styles.mv10 ] }
-					onPress={ () =>
-						(data.rejected ? naviagteToNote() : setShowModal(!showModal))
-					}>
-					<Text s={ 16 } lh={ 16 } w={ 'bold' } c={ 'white' } style={ styles.upperCase }>
-						{data.rejected ? 'Edit quesition' : 'Request prescription'}
-					</Text>
-				</TouchableOpacity>
-				{data && data.responded && (
+				{
+					data && data.responded &&
+					<TouchableOpacity
+						style={ [ styles.buttonContainer, styles.mv10 ] }
+						onPress={ () =>
+							(data.rejected ? naviagteToNote() : setShowModal(!showModal))
+						}>
+						<Text s={ 16 } lh={ 16 } w={ 'bold' } c={ 'white' } style={ styles.upperCase }>
+							{data.rejected ? 'Edit question' : 'Request prescription'}
+						</Text>
+					</TouchableOpacity>
+				}
+				{/* {data && data.responded && (
 					<View style={ styles.m15 }>
 						<View row style={ styles.actionables }>
 							<Icon
@@ -402,11 +442,13 @@ function DentistResponse(props) {
 								color={ '#7C7C7C' }
 							/>
 							<Text s={ 14 } style={ styles.actionableText }>
-								Call Dr. {docData.doctor_name}'s office to set up an appoinment
+								Find an other Teethaffairs dentist near you at the moment.
 							</Text>
 						</View>
 					</View>
-				)}
+				)} 
+				{/* it will be implemented in future*/}
+
 			</View>
 		);
 	};
@@ -443,6 +485,7 @@ function DentistResponse(props) {
 								<View style={ styles.flex }>
 									<View row center style={ styles.searchContent }>
 										<TextInput
+											textAlignVertical="top"
 											style={ [ styles.p10, styles.flex ] }
 											value={ searchValue }
 											onChangeText={ value => [
@@ -485,8 +528,7 @@ function DentistResponse(props) {
 								</View>
 							</View>
 							<TouchableOpacity
-								style={ [ styles.buttonContainer, styles.mv10 ] }
-								onPress={ () => submit() }>
+								style={ [ styles.buttonContainer, styles.mv10 ] }>
 								<Text
 									s={ 16 }
 									lh={ 16 }
@@ -497,6 +539,61 @@ function DentistResponse(props) {
 								</Text>
 							</TouchableOpacity>
 						</View>
+					</View>
+				</View>
+			</Modal>
+		);
+	};
+
+	const verifyPinModal = () => {
+		return (
+			<Modal transparent={ true } visible={ showVerifyPinModal }>
+				<View style={ styles.modalContainer }>
+					<View style={ styles.modalContent }>
+						<TouchableOpacity
+							style={ styles.crossButton }
+							onPress={ () => ([ setShowVerifyPinModal(!showVerifyPinModal), navigation.goBack() ]) }>
+							<Icon
+								type={ 'MaterialCommunityIcons' }
+								name={ 'close' }
+								color={ '#767676' }
+								size={ 22 }
+							/>
+						</TouchableOpacity>
+						<>
+							<View row center>
+								<Text s={ 18 } w={ 'bold' } lh={ 16 } style={ styles.p10 }>
+									Enter Pin Number
+								</Text>
+							</View>
+							<View row center style={ styles.pb10 }>
+								<Text s={ 15 } lh={ 16 }>
+									Enter the Pin number sent to your emailId
+								</Text>
+							</View>
+							<View row center style={ styles.searchContent }>
+								<TextInput
+									style={ [ styles.p10, styles.flex ] }
+									value={ pinValue }
+									keyboardType={ 'number-pad' }
+									onChangeText={ value => setPinValue(value) }
+								/>
+							</View>
+							{showError && <Text center c={ 'red' } style={ [ styles.upperCase, styles.mv10 ] }>Enter a valid pin</Text>}
+							<TouchableOpacity
+								style={ styles.okButton }
+								onPress={ submitPin }>
+								<Text
+									s={ 16 }
+									lh={ 16 }
+									w={ 'bold' }
+									c={ 'white' }
+									center
+									style={ styles.upperCase }>
+									OK
+								</Text>
+							</TouchableOpacity>
+						</>
 					</View>
 				</View>
 			</Modal>
@@ -514,7 +611,7 @@ function DentistResponse(props) {
 					<View center style={ styles.doctorImage }>
 						<Image
 							style={ styles.doctorImage }
-							source={ require('../../assets/profile.png') }
+							source={ docData?.doctor_pic?.profile_pic ? { uri: docData?.doctor_pic?.profile_pic } : require('../../assets/profile.png') }
 						/>
 					</View>
 					<View style={ styles.doctorNameContainer }>
@@ -526,7 +623,10 @@ function DentistResponse(props) {
 								Dentist , {docData.city}, Lic no : {docData.license_no}
 							</Text>
 							<Text s={ 14 } lh={ 26 } w={ '500' } c={ '#B8B8B8' }>
-								Answered {moment(docData.responded_on).fromNow()}
+							{
+								docData && docData.responded_on &&
+								<Text style={ styles.addressText }>Answered {moment(docData.responded_on).fromNow()}</Text>
+							}
 							</Text>
 						</View>
 					</View>
@@ -550,8 +650,8 @@ function DentistResponse(props) {
 							Recommended follow up:
 						</Text>
 						<Text s={ 14 } lh={ 16 } c={ '#4A4A4A' }>
-							{docData.recommended_followup
-								? docData.recommended_followup
+							{docData.followup
+								? docData.followup
 								: '-'}
 						</Text>
 					</View>
@@ -576,6 +676,16 @@ function DentistResponse(props) {
 							3. Medications are not to be taken in empty stomach unless
 							specifically instructed.
 						</Text> */}
+					</View>
+					<View style={ styles.mv10 }>
+						<Text s={ 14 } lh={ 30 } w={ 'bold' }>
+							Doctor Opinion:
+						</Text>
+						<Text s={ 14 } lh={ 16 } c={ '#4A4A4A' }>
+							{docData.doctor_opinion
+								? docData.doctor_opinion
+								: '-'}
+						</Text>
 					</View>
 				</View>
 			</View>
@@ -613,13 +723,32 @@ function DentistResponse(props) {
 				</View>
 			</View>
 			{patientQuestions()}
-			{data && (data.responded || data.rejected) && doctorResponse()}
-			{actionButtons()}
+			{data && (data.answered || data.rejected) && doctorResponse()}
+			{
+				data && (data.answered || data.rejected) && user && user.user_type !== 'DOCTOR' &&
+				actionButtons()
+			}
+			<ImagePreviewer
+				uri={ uri }
+				enablePreview={ enablePreview }
+				handlePreview={ handlePreview }
+			/>
+			{
+				user && user.user_type === 'DOCTOR' &&
+				verifyPinModal()
+			}
 		</ScrollView>
 	);
 }
 
-export default connect(
-	null,
-	null
-)(DentistResponse);
+const mapStateToProps = (state) => {
+	return {
+		user: state.user.user
+	};
+};
+
+const mapDispatchToProps = (dispatch) => ({
+	verifyPin: (data, onSuccess, onFailure) => dispatch(verifyPin(data, onSuccess, onFailure))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(DentistResponse);

@@ -21,7 +21,7 @@ const cardBrands = {
 };
 
 function PaymentList(props) {
-	const { cards, getCards, createCard, loading, navigation } = props;
+	const { cards, getCards, createCard, loading } = props;
 
 	const [ , setCardToken ] = useState('');
 
@@ -60,7 +60,7 @@ function PaymentList(props) {
 		return (
 			<TouchableOpacity
 				key={ `carditem-${index}` }
-				onPress={ () => navigation.navigate('ChangeCard') }
+				activeOpacity={ 1 }
 				style={ {
 					...styles.cardContainer,
 					...{
@@ -86,7 +86,7 @@ function PaymentList(props) {
 					</Text>
 				</View>
 				<View row jC={ 'space-between' } style={ styles.details }>
-					<View>
+					<View style={ styles.mr10 }>
 						<Text c={ 'white' } s={ 14 } style={ styles.upperCase }>
 							Cardholder name
 						</Text>
@@ -94,7 +94,7 @@ function PaymentList(props) {
 							{item.name}
 						</Text>
 					</View>
-					<View>
+					<View style={ styles.expire }>
 						<Text c={ 'white' } s={ 14 } style={ styles.upperCase }>
 							Expiry date
 						</Text>
@@ -147,101 +147,3 @@ export default connect(
 	mapStateToProps,
 	{ getCards, createCard }
 )(PaymentList);
-
-// import React, { useEffect, useState } from 'react';
-// import { Dimensions, TouchableOpacity, Image } from 'react-native';
-// import { getCards, createCard } from '../../../state/actions/payment';
-// import View from '../../global/View';
-// import Text from '../../global/Text';
-// import SnapCarousel from '../../SnapCarousel';
-// import styles from './styles';
-// import { connect } from 'react-redux';
-
-// const { width } = Dimensions.get('window');
-
-// function PaymentList(props) {
-// 	const { cards, getCards, createCard, loading } = props;
-
-// 	const [ cardToken, setCardToken ] = useState('');
-
-// 	console.log('inside cards===>>>>>', cardToken);
-
-// 	useEffect(() => {
-// 		getCards();
-// 	}, []);
-
-//     const renderItem = ({ item, index }) => {
-//         return (
-//             <View
-// 				key={ `card_${item.id}` }
-// 				style={ styles.cardContainer }>
-// 				<View row jC={ 'flex-end' } style={ styles.m10 }>
-// 					<Text c={ 'white' } w={ 'bold' } s={ 16 } >{item.brand}</Text>
-// 				</View>
-// 				<View row jC={ 'flex-start' } style={ styles.m15 }>
-// 					<Text c={ 'white' } s={ 40 } w={ 'bold' }>
-// 						.... .... ....{' '}
-// 					</Text>
-// 					<Text c={ 'white' } s={ 20 } w={ 'bold' }>
-// 						4567
-// 					</Text>
-// 				</View>
-// 				<View row jC={ 'space-between' } style={ styles.details }>
-// 					<View>
-// 						<Text c={ 'white' } s={ 14 } style={ styles.upperCase }>Cardholder name</Text>
-// 						<Text c={ 'white' } s={ 18 } w={ '500' } style={ styles.mv10 }>John Doe</Text>
-// 					</View>
-// 					<View>
-// 						<Text c={ 'white' } s={ 14 } style={ styles.upperCase }>Expiry date</Text>
-// 						<Text c={ 'white' } s={ 18 } w={ '500' } style={ styles.mv10 }>05 / 21</Text>
-// 					</View>
-// 				</View>
-// 			</View>
-//         );
-// 	};
-	
-// 	const handleViewableItemsChanged = ({ viewableItems }) => {
-// 		console.log( 'Snapped card data', viewableItems[0] );
-// 	};
-
-// 	return (
-// 		<View style={ styles.container }>
-// 			{
-// 				cards && cards.length > 0 &&
-// 				<SnapCarousel
-// 					data={ cards }
-// 					snapToInterval={ width - 40 }
-// 					style={ styles.scrollContainer }
-// 					onViewableItemsChanged={ handleViewableItemsChanged }
-// 					visibilityPercentage={ 20 }
-// 					renderItem={ renderItem }
-// 					key={ ({ item }) => item.id }
-// 				/>
-// 			}
-//             <TouchableOpacity
-//                 style={ styles.fabButton }
-//                 activeOpacity={ 0.8 }
-//                 // onPress={ () => navigation.navigate('CreateReminder') }
-//                 >
-//                 <Image
-//                     style={ styles.fabIcon }
-//                     source={ require('../../../assets/round-plus.png') }
-//                 />
-//             </TouchableOpacity>
-            
-// 		</View>
-// 	);
-// }
-
-// function mapStateToProps(state) {
-// 	return {
-// 		cards: state.payment.cards,
-// 		loading: state.payment.loading,
-// 		createCardSuccess: state.payment.createCardSuccess
-// 	};
-// }
-
-// export default connect(
-// 	mapStateToProps,
-// 	{ getCards, createCard }
-// )(PaymentList);

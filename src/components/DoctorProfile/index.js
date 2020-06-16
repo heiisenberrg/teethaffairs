@@ -17,21 +17,36 @@ import { getMyProfile, uploadProfilePicture } from '../../state/actions/user';
 import { updateDoctorProfile } from '../../state/actions/doctor';
 
 const profileSchema = yup.object({
+    email: yup
+        .string()
+        .email()
+        .required('Invalid Email')
+        .matches(
+            /[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$/,
+            'Is not in correct format'
+        ),
+    personal_email: yup
+        .string()
+        .email()
+        .required('Invalid Email')
+        .matches(
+            /[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$/,
+            'Is not in correct format'
+        ),
     office_name: yup.string(),
     office_address1: yup.string(),
     office_address2: yup.string(),
     office_tax_id: yup.string(),
     zipcode: yup.string(),
-    email: yup.string(), //office email,
     office_phone: yup.string(),
     
 	first_name: yup.string(),
     last_name: yup.string(),
-    personal_email: yup.string(),
     license_exp_date: yup.string(),
     license_no: yup.string(),
     account_number: yup.string(),
-    routing_number: yup.string()
+    routing_number: yup.string(),
+    np_number: yup.string()
 });
 
 const DoctorProfile = (props) => {
@@ -68,16 +83,18 @@ const DoctorProfile = (props) => {
                 office_tax_id:  user.user_profile[0].office_tax_id,
                 city:  user.user_profile[0].city,
                 state:  user.user_profile[0].state,
-                zipcode: '',
+                zipcode: user.zipcode.join(),
                 email: user.email,
+                personal_email: user.personal_email,
                 office_phone: '',
         
                 first_name: user.first_name,
                 last_name: user.last_name,
                 licence_no:  user.user_profile[0].license_no,
                 license_exp_date:  user.user_profile[0].license_exp_date,
-                routing_number: '',
-                account_number: '',
+                routing_number:  user.user_profile[0].routing_number,
+                np_number: user.user_profile[0].np_number,
+                account_number: user.user_profile[0].account_number,
                 media: [ {
                     media: licenceImage
                 } ]
@@ -139,11 +156,10 @@ const DoctorProfile = (props) => {
         const data = {
             first_name: values.first_name,
             last_name: values.first_name,
-            phone: 'string',
+            phone: '',
             email: values.email,
-            zipcode: [
-              '621001'
-            ],
+            personal_email: values.personal_email,
+            zipcode: values.zipcode.split(','),
             profile: {
               city: values.city,
               state: values.state,
@@ -154,8 +170,9 @@ const DoctorProfile = (props) => {
               office_tax_id: values.office_tax_id,
               license_exp_date: values.license_exp_date,
               license_no: values.licence_no,
-              routing_number: values.routing_routing_number,
-              account_number: values.account_number
+              routing_number: values.routing_number ? values.routing_number : '',
+              account_number: values.account_number ? values.account_number : '',
+              np_number: values.np_number ? values.np_number : ''
             }
         };
         updateDoctorProfile(data, () => {
@@ -282,6 +299,7 @@ const DoctorProfile = (props) => {
                                                 onBlur={ props.handleBlur('email') }
                                                 error={ props.touched.email && props.errors.email }
                                                 secureTextEntry={ false }
+                                                editable={ false }
                                             />
                                             <TextInputField
                                                 lable="Office Phone No"
@@ -333,6 +351,16 @@ const DoctorProfile = (props) => {
                                                 secureTextEntry={ false }
                                             />
                                             <TextInputField
+                                                lable="Personal Email"
+                                                placeholder="Enter Personal Email"
+                                                onChangeText={ props.handleChange('personal_email') }
+                                                value={ props.values.personal_email }
+                                                onBlur={ props.handleBlur('personal_email') }
+                                                error={ props.touched.personal_email && props.errors.personal_email }
+                                                secureTextEntry={ false }
+                                                editable={ false }
+                                            />
+                                            <TextInputField
                                                 lable="Licence No"
                                                 placeholder="Enter licence number"
                                                 onChangeText={ props.handleChange('licence_no') }
@@ -367,6 +395,15 @@ const DoctorProfile = (props) => {
                                                     )
                                                 }
                                             </ScrollView>
+                                            <TextInputField
+                                                lable="National Provider No"
+                                                placeholder="Enter National Provider Number"
+                                                onChangeText={ props.handleChange('np_number') }
+                                                value={ props.values.np_number }
+                                                onBlur={ props.handleBlur('np_number') }
+                                                error={ props.touched.np_number && props.errors.np_number }
+                                                secureTextEntry={ false }
+                                            />
                                         </View>
                                     }
                                 </View>
@@ -409,7 +446,7 @@ const DoctorProfile = (props) => {
                                             />
                                             <TextInputField
                                                 lable="Confirm Account No"
-                                                placeholder="Enter Confirm Account No"
+                                                placeholder="Re-enter Account No"
                                                 onChangeText={ props.handleChange('confirm_account_no') }
                                                 value={ props.values.confirm_account_no }
                                                 onBlur={ props.handleBlur('confirm_account_no') }

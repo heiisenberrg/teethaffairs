@@ -20,24 +20,22 @@ import View from '../global/View';
 import Text from '../global/Text';
 import Icon from '../global/Icon';
 import Toast from '../../components/Toast';
-import {
-	getDoctorsList,
-	getQuestion
-} from '../../state/actions/journal';
+import { getDoctorsList, getQuestion } from '../../state/actions/journal';
 
 import styles from './styles';
 import globalStyles from '../../globalStyles';
 import FlashMessage from '../global/FlashMessage';
 import { getCards } from '../../state/actions/payment';
+import { CommonActions } from '@react-navigation/native';
 
 /* eslint-disable no-mixed-spaces-and-tabs */
 
 var allergies_array = [];
 
 const userNoteSchema = yup.object({
-	height: yup.number(),
-	weight: yup.number(),
-	age: yup.number(),
+	height: yup.number().required('Required'),
+	weight: yup.number().required('Required'),
+	age: yup.number().required('Required'),
 	allergies: yup.array(),
 	medications: yup.array(),
 	medical_conditions: yup.array(),
@@ -66,10 +64,10 @@ const drugs = [
 ];
 
 const medicalConditions = [
-	'Diabetes', 
-	'Blood Pressure', 
-	'High Blood Pressure', 
-	'Respiratory Issues', 
+	'Diabetes',
+	'Blood Pressure',
+	'High Blood Pressure',
+	'Respiratory Issues',
 	'Digestive Issues',
 	'Thyroid Issues',
 	'Heart Issues'
@@ -88,7 +86,7 @@ function UserRemoteConsultation(props) {
 		navigation
 	} = props;
 
-	const [ showHistoryForm, setShowHistoryForm ] = useState(false);
+	const [ showHistoryForm, setShowHistoryForm ] = useState(true);
 	const [ isEnabled, setIsEnabled ] = useState(false);
 	const [ allergiesList, setAllergiesList ] = useState([]);
 	const [ textInputHolder, setTextInputHolder ] = useState('');
@@ -102,9 +100,9 @@ function UserRemoteConsultation(props) {
 	const [ filteredDrugs, setFilteredDrugs ] = useState([]);
 	const [ searchValue, setSearchValue ] = useState('');
 
-	const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+	const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
-	const handleSubmit = (data) => {
+	const handleSubmit = data => {
 		const updateNoteData = {
 			height: data.height,
 			weight: data.weight,
@@ -121,10 +119,10 @@ function UserRemoteConsultation(props) {
 		};
 		if (doctor && doctor.id && userZipCode) {
 			getQuestion(
-				{ 
+				{
 					data: updateNoteData,
 					question_data,
-					userNoteId 
+					userNoteId
 				},
 				onSuccess,
 				onFailure
@@ -170,6 +168,13 @@ function UserRemoteConsultation(props) {
 
 	const handleToastSuccess = () => {
 		setShowModal(false);
+		navigation.popToTop();
+		navigation.dispatch(
+			CommonActions.reset({
+				index: 0,
+				routes: [ { name: 'AppTabs', key: 'Home' } ]
+			})
+		);
 		navigation.navigate('Home');
 	};
 
@@ -181,8 +186,8 @@ function UserRemoteConsultation(props) {
 		alert('Somthing went wrong!');
 	};
 
-	useEffect(function () {
-		if(user && user.zipcodes && user.zipcodes.length > 0) {
+	useEffect(function() {
+		if (user && user.zipcodes && user.zipcodes.length > 0) {
 			setUserZipCode(user.zipcodes[0]);
 			getDoctorsList({ pincode: user.zipcodes[0] }, onFailure);
 		}
@@ -202,8 +207,8 @@ function UserRemoteConsultation(props) {
 		}
 	};
 
-	const onRemoveHandler = (remove_item) => {
-		allergies_array = allergies_array.filter((data) =>
+	const onRemoveHandler = remove_item => {
+		allergies_array = allergies_array.filter(data =>
 			(data !== remove_item ? data : '')
 		);
 		setAllergiesList(allergies_array);
@@ -237,18 +242,17 @@ function UserRemoteConsultation(props) {
 		return (
 			<TouchableOpacity
 				key={ `carditem-${index}` }
-				// onPress={ () => navigation.navigate('ChangeCard') }
 				style={ {
 					...styles.cardContainer,
 					...styles.card,
-					// ...(index === 0 && { marginLeft: 20 }),
 					...{
-						backgroundColor:
-							cardBrands[
-								item.brand !== '' ? item.brand.toLowerCase() : 'default'
-							] ? cardBrands[
-								item.brand !== '' ? item.brand.toLowerCase() : 'default'
-							] : cardBrands.default
+						backgroundColor: cardBrands[
+							item.brand !== '' ? item.brand.toLowerCase() : 'default'
+						]
+							? cardBrands[
+									item.brand !== '' ? item.brand.toLowerCase() : 'default'
+							  ]
+							: cardBrands.default
 					}
 				} }>
 				<View row jC={ 'flex-end' } style={ styles.m10 }>
@@ -286,10 +290,10 @@ function UserRemoteConsultation(props) {
 		);
 	};
 
-	const onViewRef = React.useRef(({ viewableItems })=> {
+	const onViewRef = React.useRef(({ viewableItems }) => {
 		setSelectedCardId(viewableItems[0].item.id);
 	});
-	const viewConfigRef = React.useRef({ viewAreaCoveragePercentThreshold: 50 }); 
+	const viewConfigRef = React.useRef({ viewAreaCoveragePercentThreshold: 50 });
 
 	return (
 		<View style={ styles.container }>
@@ -309,7 +313,7 @@ function UserRemoteConsultation(props) {
 							actions.resetForm();
 							handleSubmit(values);
 						} }>
-						{(props) => (
+						{props => (
 							<View>
 								<View style={ styles.healthHistoryContainer }>
 									<Text style={ styles.healthHistoryText }>health history</Text>
@@ -396,7 +400,7 @@ function UserRemoteConsultation(props) {
 													<TextInput
 														placeholder="Enter Value Here"
 														multiline
-														onChangeText={ (data) => setTextInputHolder(data) }
+														onChangeText={ data => setTextInputHolder(data) }
 														value={ textInputHolder }
 														style={ styles.textInputStyle }
 														underlineColorAndroid="transparent"
@@ -460,12 +464,16 @@ function UserRemoteConsultation(props) {
 																						...{
 																							borderColor: '#CAC7C7',
 																							backgroundColor:
-																								selectedMedicalConditions.indexOf(item) !== -1
+																								selectedMedicalConditions.indexOf(
+																									item
+																								) !== -1
 																									? '#00C57D'
 																									: 'white'
 																						}
 																					} }
-																					onPress={ () => selectMedicalCondition(item) }>
+																					onPress={ () =>
+																						selectMedicalCondition(item)
+																					}>
 																					<Icon
 																						type={ 'MaterialCommunityIcons' }
 																						name={ 'check' }
@@ -490,13 +498,11 @@ function UserRemoteConsultation(props) {
 														style={ styles.switchButton }
 														trackColor={ { false: 'green' } }
 														thumbColor={ isEnabled ? 'white' : 'white' }
-														ios_backgroundColor="white"
 														onValueChange={ toggleSwitch }
 														value={ isEnabled }
 													/>
 												</View>
-												{
-												isEnabled &&
+												{isEnabled && (
 													<View style={ styles.m10 }>
 														<View style={ styles.flex }>
 															<FlatList
@@ -538,7 +544,9 @@ function UserRemoteConsultation(props) {
 																	/>
 																	<TouchableOpacity
 																		style={ styles.m10 }
-																		onPress={ () => setShowDropDown(!showDropDown) }>
+																		onPress={ () =>
+																			setShowDropDown(!showDropDown)
+																		}>
 																		<Icon
 																			type={ 'Ionicons' }
 																			name={ 'ios-search' }
@@ -567,14 +575,20 @@ function UserRemoteConsultation(props) {
 																									...{
 																										borderColor: '#CAC7C7',
 																										backgroundColor:
-																											selectedDrugs.indexOf(item) !== -1
+																											selectedDrugs.indexOf(
+																												item
+																											) !== -1
 																												? '#00C57D'
 																												: 'white'
 																									}
 																								} }
-																								onPress={ () => selectDrug(item) }>
+																								onPress={ () =>
+																									selectDrug(item)
+																								}>
 																								<Icon
-																									type={ 'MaterialCommunityIcons' }
+																									type={
+																										'MaterialCommunityIcons'
+																									}
 																									name={ 'check' }
 																									color={ 'white' }
 																									size={ 15 }
@@ -589,7 +603,7 @@ function UserRemoteConsultation(props) {
 															</View>
 														</View>
 													</View>
-												}
+												)}
 											</View>
 										</View>
 									</ScrollView>
@@ -633,8 +647,11 @@ function mapStateToProps(state) {
 		cards: state.payment.cards
 	};
 }
-export default connect(mapStateToProps, {
-	getDoctorsList,
-	getQuestion,
-	getCards
-})(UserRemoteConsultation);
+export default connect(
+	mapStateToProps,
+	{
+		getDoctorsList,
+		getQuestion,
+		getCards
+	}
+)(UserRemoteConsultation);

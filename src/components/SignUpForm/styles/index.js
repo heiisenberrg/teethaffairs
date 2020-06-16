@@ -52,7 +52,8 @@ const styles = StyleSheet.create({
 	textInputContainer: {
 		height: 45,
 		width: '100%',
-		position: 'relative'
+		position: 'relative',
+		marginTop: 10
 	},
 	label: {
 		color: '#363636',
@@ -302,7 +303,8 @@ const styles = StyleSheet.create({
 	},
 	tooltipContainer: {
 		display: 'flex',
-		justifyContent: 'flex-start'
+		justifyContent: 'flex-start',
+		alignItems: 'flex-start'
 	},
 	popoverContainerText: {
 		display: 'flex'
@@ -313,11 +315,14 @@ const styles = StyleSheet.create({
 	},
 	popoverText: {
 		fontSize: 12,
-		marginVertical: 5
+		marginVertical: 10,
+    width: '85%',
+		flexWrap: 'wrap'
 	},
 	popoverLineItem: {
 		flexDirection: 'row',
-		alignItems: 'center'
+		alignItems: 'center',
+		justifyContent: 'flex-start'
 	},
 	bullet: {
 		width: 8,

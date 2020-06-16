@@ -77,7 +77,6 @@ const getRequest = errorResponse =>
 
 		addSubscriber(accessToken => {
 			response.config.headers.AUTHORIZATION = `Bearer ${accessToken}`;
-			// response.config.headers['Content-Type'] = 'multipart/form-data';
 			if (process.env.NODE_ENV === 'test') {
 				response.config.headers.afterRefresh = 'true';
 			}
@@ -85,11 +84,9 @@ const getRequest = errorResponse =>
 		});
 	});
 
-const onFailure = () => { };
-
 const getRefreshedTokens = async freshToken => {
 	await store.dispatch(
-		refreshTheToken(freshToken, onAccessTokenFetched, onFailure)
+		refreshTheToken(freshToken, onAccessTokenFetched)
 	);
 };
 
@@ -179,7 +176,7 @@ axiosInstance.interceptors.response.use(
 	error => errorHandler(error)
 );
 
-export function customNoteRequest(noteData, onSuccess, onFailure) {
+export function customNoteRequest(noteData, onSuccess) {
 	return fetch('http://test1.teethaffairs.com:8000/notes/patient-notes/', {
 		method: 'POST',
 		headers: new Headers({
@@ -191,8 +188,7 @@ export function customNoteRequest(noteData, onSuccess, onFailure) {
 	.then(response => {
 		onSuccess(response);
 	})
-	.catch(error => {
-		onFailure(error);
+	.catch(() => {
 	});
 
 }

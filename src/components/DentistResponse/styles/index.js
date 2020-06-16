@@ -54,7 +54,6 @@ const styles = StyleSheet.create({
 		},
 		elevation: 2,
 		borderRadius: 10
-		// padding: 20
 	},
 	container: {
 		width: 60,
@@ -150,8 +149,6 @@ const styles = StyleSheet.create({
 	},
 	dropdownContent: {
 		padding: 10
-		// justifyContent: 'space-between',
-		// alignItems: 'center'
 	},
 	searchContainer: {
 		borderRadius: 1,

@@ -21,6 +21,7 @@ function TextInputBoxField(props) {
 				secureTextEntry={ props.secureTextEntry }
 				multiline={ props.multiline }
 				autoCapitalize="none"
+				textAlignVertical="top"
 			/>
 			<Text style={ styles.errorText }>{props.error}</Text>
 		</View>

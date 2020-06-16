@@ -8,7 +8,8 @@ import {
 	KeyboardAvoidingView,
 	Image,
 	Modal,
-	TextInput
+	TextInput,
+	Dimensions
 } from 'react-native';
 import { connect } from 'react-redux';
 import ImagePicker from 'react-native-image-picker';
@@ -30,33 +31,41 @@ import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 
 import dropdownIcon from '../../../assets/drop-right.png';
 import FlashMessage from '../../global/FlashMessage';
+import Tooltip from '../../global/Tooltip/Tooltip';
+import Icon from '../../global/Icon';
+
+const { width } = Dimensions.get('screen');
 
 const addMemberSchema = yup.object({
-	first_name: yup.string().required(),
-	last_name: yup.string().required(),
-	username: yup.string().required(),
-
+	first_name: yup.string().required('Required'),
+	last_name: yup.string().required('Required'),
+	username: yup.string().required('User ID is a required field.'),
 	password: yup
 		.string()
-		.label('Password')
-		.required(),
+		.min(8, 'Too Short!')
+		.matches(
+			/^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/,
+			'Password Policy Violation'
+		)
+		.required('Required')
+		.label('Password'),
 	confirm_password: yup
 		.string()
-		.required()
+		.required('Required')
 		.test('passwords-match', 'Passwords does not match', function(value) {
 			return this.parent.password === value;
 		}),
 	id: yup.string(),
-	date_of_birth: yup.string(),
-	gender: yup.string().required(),
-	relation: yup.string().required(),
+	date_of_birth: yup.string().required('Required'),
+	gender: yup.string().required('Required'),
+	relation: yup.string().required('Required'),
 	zipcode: yup.string().required('Required')
 });
 
 const updateMemberSchema = yup.object({
-	first_name: yup.string(),
-	last_name: yup.string(),
-	username: yup.string(),
+	first_name: yup.string('Required'),
+	last_name: yup.string('Required'),
+	username: yup.string().required('User ID is a required field.'),
 	password: yup.string().label('Password'),
 	confirm_password: yup
 		.string()
@@ -145,7 +154,6 @@ function AddMembersForm(props) {
 		}
 		memberDetails.date_of_birth = birthDate;
 		getAddMember({ data: memberDetails, onSuccess: (response) => onGetAddMemberSuccess(response), onFailure: onGetAddMemberFailure });
-		// setBirthDate('');
 	};
 
 	const onGetAddMemberFailure = () => {
@@ -170,29 +178,28 @@ function AddMembersForm(props) {
 		}
 	}, []);
 
-	const onChange = (event, selectedDate) => {
+	const onChange = (event, selectedDate, setFieldValue) => {
 		setShow(Platform.OS === 'ios');
-
 		var currentDate = '';
-		if (selectedDate !== undefined && selectedDate !== '') {
-			var date = new Date(selectedDate).toISOString();
+		if (selectedDate && selectedDate !== '') {
+			const date = new Date(selectedDate).toISOString();
 			setBirthDate(date);
+			setFieldValue('date_of_birth', date);
 			currentDate = selectedDate;
 		} else {
 			setBirthDate('');
 			currentDate = new Date();
 		}
-
 		setDate(currentDate);
 	};
 
-	const showMode = currentMode => {
-		setShow(true);
+	const showMode = (currentMode, value) => {
+		setShow(value);
 		setMode(currentMode);
 	};
 
-	const showDatepicker = () => {
-		showMode('date');
+	const showDatepicker = value => {
+		showMode('date', value);
 	};
 
 	const passwordHandler = () => {
@@ -236,6 +243,31 @@ function AddMembersForm(props) {
 			}
 		});
 	};
+
+	const doesPasswordMatchSuccess = values =>
+	values.password &&
+	values.confirm_password &&
+	values.password === values.confirm_password;
+
+	const _renderPasswordInfo = () => (
+		<View style={ styles.popoverContainerText }>
+			<Text style={ styles.popoverTitle }>Password should be</Text>
+			<View style={ styles.popoverLineItem }>
+				<View style={ styles.bullet } />
+				<Text style={ styles.popoverText }>Minimum of 8 characters</Text>
+			</View>
+			<View style={ styles.popoverLineItem }>
+				<View style={ styles.bullet } />
+				<Text style={ styles.popoverText }>
+					At least one number and symbol(@$#!%*?)
+				</Text>
+			</View>
+			<View style={ styles.popoverLineItem }>
+				<View style={ styles.bullet } />
+				<Text style={ styles.popoverText }>Do not use space</Text>
+			</View>
+		</View>
+	);
 
 	return (
 		<SafeAreaView style={ styles.container }>
@@ -326,6 +358,7 @@ function AddMembersForm(props) {
 								<TextInputField
 									lable="User ID"
 									placeholder="Enter User ID"
+									editable={ addMember }
 									onChangeText={ props.handleChange('username') }
 									value={ props.values.username }
 									onBlur={ props.handleBlur('username') }
@@ -334,18 +367,19 @@ function AddMembersForm(props) {
 								/>
 								{addMember === true ? (
 									<View style={ passwordStyle.textInputContainer }>
-										<View style={ passwordStyle.labelContainer }>
-											<Text style={ passwordStyle.label }>Password</Text>
-										</View>
-										<TextInput
-											style={ passwordStyle.textInput }
-											placeholder="Enter Your Password"
-											onChangeText={ props.handleChange('password') }
-											value={ props.values.password }
-											onBlur={ props.handleBlur('password') }
-											secureTextEntry={ showEye ? true : false }
-										/>
-										<TouchableOpacity
+										<View style={ styles.passwordWrapper }>
+											<View style={ passwordStyle.labelContainer }>
+												<Text style={ passwordStyle.label }>Password</Text>
+											</View>
+												<TextInput
+												style={ passwordStyle.textInput }
+												placeholder="Enter Your Password"
+												onChangeText={ props.handleChange('password') }
+												value={ props.values.password }
+												onBlur={ props.handleBlur('password') }
+												secureTextEntry={ showEye ? true : false }
+											/>
+											<TouchableOpacity
 											onPress={ passwordHandler }
 											style={ styles.eyeIcon }>
 											{showEye ? (
@@ -354,6 +388,28 @@ function AddMembersForm(props) {
 												<AntDesignIcon name="eyeo" size={ 17 } color="#5C5C5C" />
 											)}
 										</TouchableOpacity>
+										<View style={ [ styles.icon, styles.infoIcon ] }>
+												<Tooltip
+													withOverlay={ true }
+													overlayColor={ 'rgba(0, 0, 0, 0.5)' }
+													highlightColor={ 'transparent' }
+													withPointer={ true }
+													height={ 140 }
+													toggleOnPress={ true }
+													width={ width / 1.3 }
+													containerStyle={ styles.tooltipContainer }
+													backgroundColor={ 'white' }
+													skipAndroidStatusBar={ true }
+													popover={ _renderPasswordInfo() }>
+													<Icon
+														type={ 'MaterialCommunityIcons' }
+														name={ 'exclamation' }
+														color={ 'white' }
+														size={ 20 }
+													/>
+												</Tooltip>
+											</View>
+										</View>
 										{props.touched.password && props.errors.password ? (
 											<Text style={ passwordStyle.errorText }>
 												{props.errors.password}
@@ -367,8 +423,11 @@ function AddMembersForm(props) {
 								)}
 								{addMember === true ? (
 									<View style={ passwordStyle.textInputContainer }>
+									<View style={ styles.passwordWrapper }>
 										<View style={ passwordStyle.labelContainer }>
-											<Text style={ passwordStyle.label }>Confirm Password</Text>
+											<Text style={ passwordStyle.label }>
+												Confirm Password
+											</Text>
 										</View>
 										<TextInput
 											style={ passwordStyle.textInput }
@@ -384,18 +443,40 @@ function AddMembersForm(props) {
 											{showConfirmEye ? (
 												<AntDesignIcon name="eye" size={ 17 } color="#5C5C5C" />
 											) : (
-												<AntDesignIcon name="eyeo" size={ 17 } color="#5C5C5C" />
+												<AntDesignIcon
+													name="eyeo"
+													size={ 17 }
+													color="#5C5C5C"
+												/>
 											)}
 										</TouchableOpacity>
-										{props.touched.confirm_password &&
-										props.errors.confirm_password ? (
-											<Text style={ passwordStyle.errorText }>
-												{props.errors.confirm_password}
-											</Text>
-										) : (
-											<Text style={ passwordStyle.errorText } />
-										)}
+										<View
+											style={
+												doesPasswordMatchSuccess(props.values)
+													? [ styles.icon, styles.activeTickIcon ]
+													: styles.icon
+											}>
+											<Icon
+												type={ 'FontAwesome' }
+												name={ 'check' }
+												color={
+													doesPasswordMatchSuccess(props.values)
+														? '#FFF'
+														: '#ACACAC'
+												}
+												size={ 15 }
+											/>
+										</View>
 									</View>
+									{props.touched.confirm_password &&
+									props.errors.confirm_password ? (
+										<Text style={ passwordStyle.errorText }>
+											{props.errors.confirm_password}
+										</Text>
+									) : (
+										<Text style={ passwordStyle.errorText } />
+									)}
+								</View>
 								) : (
 									<Text style={ styles.removeSpace } />
 								)}
@@ -405,7 +486,7 @@ function AddMembersForm(props) {
 									</View>
 									<TouchableOpacity
 										style={ styles.dataPicker }
-										onPress={ showDatepicker }>
+										onPress={ () => showDatepicker(!show) }>
 										{birthDate !== '' ? (
 											<Text style={ styles.calenderText }>{moment(birthDate).format('MMM/DD/YYYY')}</Text>
 										) : (
@@ -422,11 +503,11 @@ function AddMembersForm(props) {
 								{show && (
 									<DateTimePicker
 										testID="dateTimePicker"
-										timeZoneOffsetInMinutes={ 0 }
 										value={ date }
 										mode={ mode }
 										display="default"
-										onChange={ onChange }
+										maximumDate={ new Date() }
+										onChange={ (e, value) => onChange(e, value, props.setFieldValue) }
 										neutralButtonLabel="clear"
 									/>
 								)}

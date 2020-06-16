@@ -9,12 +9,23 @@ import {
   verifyPinSuccess,
   verifyPinFailure,
   updateDoctorProfileSuccess,
-  updateDoctorProfileFailure
+  updateDoctorProfileFailure,
+  getHistoryQuestionsSuccess,
+  getHistoryQuestionsFailure
 } from '../actions/doctor';
 
-import { view, respond, reject, pinVerify, profileUpdate } from '../services/doctor.service';
+import { view, respond, reject, pinVerify, profileUpdate, getDentalHistory } from '../services/doctor.service';
 
 import FlashMessage from '../../components/global/FlashMessage';
+
+export function* getDentalHistoryQuestions () {
+  try {
+    const response = yield call(getDentalHistory);
+    yield put(getHistoryQuestionsSuccess(response));
+  } catch (e) {
+    yield put(getHistoryQuestionsFailure(e));
+  }
+}
 
 export function* getDentalQuestions () {
   try {
@@ -29,7 +40,7 @@ export function* answerQuestions (action) {
   const { data } = action;
   try {
     const response = yield call(respond, data);
-    data.navigation.goBack();
+    data.onSuccess();
     yield put(answerQuestionSuccess(response));
   } catch (e) {
     FlashMessage.message('Alert', 'Something went wrong.Please try again later', '#ff4444');
@@ -53,7 +64,7 @@ export function* verifySecretPin (action) {
   const { data, onSuccess } = action;
   try {
     const response = yield call(pinVerify, data);
-    onSuccess();
+    onSuccess(response.data);
     yield put(verifyPinSuccess(response));
   } catch (e) {
     FlashMessage.message('Alert', 'Please enter a valid pin', '#ff4444');

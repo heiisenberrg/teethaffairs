@@ -6,14 +6,16 @@ import {
 	createReminder,
 	updateReminder,
 	deleteReminder,
-	fetchReminderListBasedOnFilter
+	fetchReminderListBasedOnFilter,
+	getReminder
 } from './reminder.saga';
 import {
 	getDentalQuestions,
 	answerQuestions,
 	rejectQuestions,
 	verifySecretPin,
-	updateDoctorProfile
+	updateDoctorProfile,
+	getDentalHistoryQuestions
 } from './doctor.saga';
 import {
 	fetchAddMember,
@@ -45,7 +47,8 @@ import {
 	getUsers,
 	getMyProfile,
 	submitContactUsQuery,
-	uploadProfilePicture
+	uploadProfilePicture,
+	getNotifications
 } from './user.saga';
 
 import {
@@ -63,6 +66,7 @@ export default function* saga() {
 	yield takeLatest(constants.UPDATE_REMINDER, updateReminder);
 	yield takeLatest(constants.DELETE_REMINDER, deleteReminder);
 	yield takeLatest(constants.GET_REMINDER_LIST_BASED_ON_FILTER, fetchReminderListBasedOnFilter);
+	yield takeLatest(constants.GET_REMINDER, getReminder);
 
 	//doctor
 	yield takeLatest(constants.GET_QUESTIONS, getDentalQuestions);
@@ -70,6 +74,7 @@ export default function* saga() {
 	yield takeLatest(constants.REJECT_QUESTION, rejectQuestions);
 	yield takeLatest(constants.VERIFY_PIN, verifySecretPin);
 	yield takeLatest(constants.UPDATE_DOCTOR_PROFILE, updateDoctorProfile);
+	yield takeLatest(constants.GET_HISTORY_QUESTIONS, getDentalHistoryQuestions);
 
 	//journal
 	yield takeLatest(constants.GET_ADD_MEMBER, fetchAddMember);
@@ -101,6 +106,7 @@ export default function* saga() {
 	yield takeLatest(constants.GET_MY_PROFILE, getMyProfile);
 	yield takeLatest(constants.SUBMIT_CONTACT_US, submitContactUsQuery);
 	yield takeLatest(constants.UPLOAD_PROFILE_PICTURE, uploadProfilePicture);
+	yield takeLatest(constants.GET_NOTIFICATIONS, getNotifications);
 
 	//payment
 	yield takeLatest(constants.GET_CARDS, getCards);

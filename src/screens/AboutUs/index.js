@@ -11,7 +11,7 @@ function AboutUs() {
 			<Text style={ styles.boldText }>
 				We charge a one time fee of $10 to 
 			</Text>
-				<Text style={ styles.listText }> a) Add custom bruising reminder times and more features as the application evolvess </Text>
+				<Text style={ styles.listText }> a) Add custom bruising reminder times and more features as the application evolves </Text>
 				<Text style={ styles.listText }> b) Save questions , answers, </Text>
 				<Text style={ styles.listText }> c) Dental notes, </Text>
 				<Text style={ styles.listText }> d) Dental visit details   </Text>

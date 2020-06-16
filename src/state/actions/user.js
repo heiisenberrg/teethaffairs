@@ -21,11 +21,10 @@ export const getLoginFailure = error => ({
 	error
 });
 
-export const getSignUp = (data, onSuccess, onFailure) => ({
+export const getSignUp = (data, onSuccess) => ({
 	type: constants.GET_SIGNUP,
 	data,
-	onSuccess,
-	onFailure
+	onSuccess
 });
 
 export const getSignUpSuccess = response => ({
@@ -186,5 +185,19 @@ export const uploadProfilePictureSuccess = response => ({
 
 export const uploadProfilePictureFailure = error => ({
 	type: constants.UPLOAD_PROFILE_PICTURE,
+	error
+});
+
+export const getNotifications = () => ({
+	type: constants.GET_NOTIFICATIONS
+});
+
+export const getNotificationsSuccess = response => ({
+	type: constants.GET_NOTIFICATIONS_SUCCESS,
+	response
+});
+
+export const getNotificationsFailure = error => ({
+	type: constants.GET_NOTIFICATIONS_FAILURE,
 	error
 });

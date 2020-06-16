@@ -76,6 +76,9 @@ const styles = StyleSheet.create({
         color: '#F22828'
     },
     emptyResult: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         fontSize: 18,
         fontWeight: 'bold',
         textTransform: 'uppercase',

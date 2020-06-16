@@ -41,10 +41,7 @@ const getTooltipCoordinate = (x, y, width, height, ScreenWidth, ScreenHeight, to
   const vThree = getPointDistance(center, pThree);
   const vFour = getPointDistance(center, pFour);
   // Quadrant areas.
-  // type Areas = {
-  //   area: number,
-  //   id: number,
-  // };
+
   const areas = [ getArea(vOne, vFour), getArea(vOne, vTwo), getArea(vTwo, vThree), getArea(vThree, vFour) ].map((each, index) => ({ area: each, id: index }));
   const sortedArea = areas.sort((a, b) => b.area - a.area);
   // deslocated points

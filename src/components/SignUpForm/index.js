@@ -54,10 +54,11 @@ const registerSchema = yup.object().shape({
 		),
 	first_name: yup.string().required('Required'),
 	last_name: yup.string().required('Required'),
-	username: yup.string().required('Required'),
+	username: yup.string().required('User ID is a required field.'),
 	password: yup
 		.string()
 		.min(8, 'Too Short!')
+		.matches(/^(?=.*[A-Za-z])(?=.*[0-9!@#$%^&*])(?=.{8,})/, 'Password Policy Violation')
 		.required('Required')
 		.label('Password'),
 	confirm_password: yup
@@ -68,7 +69,6 @@ const registerSchema = yup.object().shape({
 		}),
 	date_of_birth: yup.string().required('Required'),
 	zipcode: yup.string().required('Required'),
-	// pin: yup.string().required(),
 	gender: yup.string().required('Required')
 });
 
@@ -78,7 +78,6 @@ function SignUpForm(props) {
 	const [ date, setDate ] = useState(new Date());
 	const [ mode, setMode ] = useState('date');
 	const [ show, setShow ] = useState(false);
-	// const [ , setShowTooltip ] = useState(true);
 	const [ birthDate, setBirthDate ] = useState('');
 	const [ gender, selectGender ] = useState('');
 	const [ showEye, setShowEye ] = useState(true);
@@ -87,13 +86,8 @@ function SignUpForm(props) {
 	const onGetSignupSuccess = () => {
 		navigation.navigate('AccountSuccess');
 	};
-
-	const onGetSignupFailure = () => {
-		// navigation.navigate('AccountSuccess');
-	};
-
 	const handleSubmit = (data, actions) => {
-		if(isChecked) {
+		if (isChecked) {
 			data = {
 				...data,
 				zipcode: [ data.zipcode ],
@@ -102,12 +96,16 @@ function SignUpForm(props) {
 				device_id: deviceToken
 			};
 			if (birthDate && gender) {
-				getSignUp(data, onGetSignupSuccess, onGetSignupFailure);
+				getSignUp(data, onGetSignupSuccess);
 				setBirthDate('');
 				actions.resetForm();
 			}
 		} else {
-			FlashMessage.message('Alert', 'Please check the Terms and Conditions.', '#33b5e5');
+			FlashMessage.message(
+				'Alert',
+				'Please check the Terms and Conditions.',
+				'#33b5e5'
+			);
 		}
 	};
 
@@ -126,13 +124,13 @@ function SignUpForm(props) {
 		setDate(currentDate);
 	};
 
-	const showMode = currentMode => {
-		setShow(true);
+	const showMode = (currentMode, value) => {
+		setShow(value);
 		setMode(currentMode);
 	};
 
-	const showDatepicker = () => {
-		showMode('date');
+	const showDatepicker = value => {
+		showMode('date', value);
 	};
 
 	const passwordHandler = () => {
@@ -143,27 +141,28 @@ function SignUpForm(props) {
 		setShowConfirmEye(!showConfirmEye);
 	};
 
-	const doesPasswordMatchSuccess = (values) => values.password && values.confirm_password && values.password === values.confirm_password;
+	const doesPasswordMatchSuccess = values =>
+		values.password &&
+		values.confirm_password &&
+		values.password === values.confirm_password;
 
 	const _renderPasswordInfo = () => (
 		<View style={ styles.popoverContainerText }>
 			<Text style={ styles.popoverTitle }>Password should be</Text>
-				<View style={ styles.popoverLineItem }>
-					<View style={ styles.bullet }/>
-					<Text style={ styles.popoverText }>Minimum of 8 characters</Text>
-				</View>
-				<View style={ styles.popoverLineItem }>
-					<View style={ styles.bullet }/>
-					<Text style={ styles.popoverText }>At least one number or symbol(!@#$%^)</Text>
-				</View>
-				<View style={ styles.popoverLineItem }>
-					<View style={ styles.bullet }/>
-					<Text style={ styles.popoverText }>Do not use space</Text>
-				</View>
-				<View style={ styles.popoverLineItem }>
-					<View style={ styles.bullet }/>
-					<Text style={ styles.popoverText }>Do not use email address</Text>
-				</View>
+			<View style={ styles.popoverLineItem }>
+				<View style={ styles.bullet } />
+				<Text style={ styles.popoverText }>Minimum of 8 characters</Text>
+			</View>
+			<View style={ styles.popoverLineItem }>
+				<View style={ styles.bullet } />
+				<Text style={ styles.popoverText }>
+					At least one number and symbol(@$#!%*?)
+				</Text>
+			</View>
+			<View style={ styles.popoverLineItem }>
+				<View style={ styles.bullet } />
+				<Text style={ styles.popoverText }>Do not use space</Text>
+			</View>
 		</View>
 	);
 
@@ -247,10 +246,14 @@ function SignUpForm(props) {
 												{showEye ? (
 													<AntDesignIcon name="eye" size={ 17 } color="#5C5C5C" />
 												) : (
-													<AntDesignIcon name="eyeo" size={ 17 } color="#5C5C5C" />
+													<AntDesignIcon
+														name="eyeo"
+														size={ 17 }
+														color="#5C5C5C"
+													/>
 												)}
 											</TouchableOpacity>
-											<View style={ [ styles.icon,styles.infoIcon ] }>
+											<View style={ [ styles.icon, styles.infoIcon ] }>
 												<Tooltip
 													withOverlay={ true }
 													overlayColor={ 'rgba(0, 0, 0, 0.5)' }
@@ -258,15 +261,11 @@ function SignUpForm(props) {
 													withPointer={ true }
 													height={ 140 }
 													toggleOnPress={ true }
-													width={ width / 1.5 }
+													width={ width / 1.3 }
 													containerStyle={ styles.tooltipContainer }
-													// toggleOnPress={ showTooltip }
 													backgroundColor={ 'white' }
-													// onClose={ () => setShowTooltip(false) }
-													// onOpen={ () => setShowTooltip(true) }
 													skipAndroidStatusBar={ true }
-													popover={ _renderPasswordInfo() }
-												>
+													popover={ _renderPasswordInfo() }>
 													<Icon
 														type={ 'MaterialCommunityIcons' }
 														name={ 'exclamation' }
@@ -287,7 +286,9 @@ function SignUpForm(props) {
 									<View style={ passwordStyle.textInputContainer }>
 										<View style={ styles.passwordWrapper }>
 											<View style={ passwordStyle.labelContainer }>
-												<Text style={ passwordStyle.label }>Confirm Password</Text>
+												<Text style={ passwordStyle.label }>
+													Confirm Password
+												</Text>
 											</View>
 											<TextInput
 												style={ passwordStyle.textInput }
@@ -303,14 +304,27 @@ function SignUpForm(props) {
 												{showConfirmEye ? (
 													<AntDesignIcon name="eye" size={ 17 } color="#5C5C5C" />
 												) : (
-													<AntDesignIcon name="eyeo" size={ 17 } color="#5C5C5C" />
+													<AntDesignIcon
+														name="eyeo"
+														size={ 17 }
+														color="#5C5C5C"
+													/>
 												)}
 											</TouchableOpacity>
-											<View style={ doesPasswordMatchSuccess(props.values) ? [ styles.icon, styles.activeTickIcon ] : styles.icon }>
+											<View
+												style={
+													doesPasswordMatchSuccess(props.values)
+														? [ styles.icon, styles.activeTickIcon ]
+														: styles.icon
+												}>
 												<Icon
 													type={ 'FontAwesome' }
 													name={ 'check' }
-													color={ doesPasswordMatchSuccess(props.values) ? '#FFF' : '#ACACAC' }
+													color={
+														doesPasswordMatchSuccess(props.values)
+															? '#FFF'
+															: '#ACACAC'
+													}
 													size={ 15 }
 												/>
 											</View>
@@ -357,9 +371,11 @@ function SignUpForm(props) {
 										</View>
 										<TouchableOpacity
 											style={ styles.dataPicker }
-											onPress={ showDatepicker }>
+											onPress={ () => showDatepicker(!show) }>
 											{birthDate !== '' ? (
-												<Text style={ styles.calenderText }>{moment(birthDate).format('MMM/DD/YYYY')}</Text>
+												<Text style={ styles.calenderText }>
+													{moment(birthDate).format('MMM/DD/YYYY')}
+												</Text>
 											) : (
 												<Text style={ styles.calenderText }>
 													Month / Date / Year
@@ -372,12 +388,14 @@ function SignUpForm(props) {
 									{show && (
 										<DateTimePicker
 											testID="dateTimePicker"
-											timeZoneOffsetInMinutes={ 0 }
 											maxDate={ new Date() }
 											value={ date }
 											mode={ mode }
 											display="default"
-											onChange={ (e, value) => onChange(e, value, props.setFieldValue) }
+											maximumDate={ new Date() }
+											onChange={ (e, value) =>
+												onChange(e, value, props.setFieldValue)
+											}
 											neutralButtonLabel="clear"
 										/>
 									)}
@@ -395,7 +413,7 @@ function SignUpForm(props) {
 															onPress={ () => {
 																selectGender(item.key);
 																props.setFieldValue('gender', item.key);
-															} } >
+															} }>
 															{props.values.gender === item.key ? (
 																<View style={ styles.checkedCircle } />
 															) : (
@@ -433,9 +451,15 @@ function SignUpForm(props) {
 										/>
 										<View style={ styles.termsWrapper }>
 											<Text style={ styles.termsText1 }>I agree to the</Text>
-											<Text style={ styles.termsText2 }>
-												Terms and Conditions
-											</Text>
+											<TouchableOpacity
+												activeOpacity={ 0.9 }
+												onPress={ () =>
+													navigation.navigate('TermsAndConditions')
+												}>
+												<Text style={ styles.termsText2 }>
+													Terms and Conditions
+												</Text>
+											</TouchableOpacity>
 										</View>
 									</View>
 									<TouchableOpacity

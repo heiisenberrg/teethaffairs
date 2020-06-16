@@ -5,12 +5,12 @@ import {
 	USER_NOTES,
 	USER_DEACTIVATE,
 	NOTES,
+	GET_USERNOTES,
 	DOCTOR_LIST,
 	DENTAL_VISIT,
 	DENTAL_VISIT_BASE_URL,
-	HEALTH_HISTORY_UPDATE,
-	GET_REMOTE_CONSULTATION_FOR_PATIENTS
-	// USER_NOTE_ID
+	GET_REMOTE_CONSULTATION_FOR_PATIENTS,
+	NOTE_EDIT
 } from '../config';
 
 export const getMember = data =>
@@ -54,7 +54,7 @@ export const deactivateUser = data =>
 
 export const getNoteList = data =>
 	apiCall({
-		url: `${NOTES}`,
+		url: `${GET_USERNOTES}`,
 		method: 'GET',
 		data,
 		headers: {
@@ -88,9 +88,9 @@ export const updateNotes = data =>
 		withCredentials: true
 	});
 
-export const updateHealthHistory = data =>
+export const updateHealthHistory = data => 
 	apiCall({
-		url: `${HEALTH_HISTORY_UPDATE}${data.userNoteId}/note-edit/`,
+		url: `${NOTE_EDIT}${data.userNoteId}/note-edit/`,
 		method: 'PUT',
 		headers: {
 			Accept: 'application/json',

@@ -17,8 +17,10 @@ function TextInputField(props) {
 				onChangeText={ props.onChangeText }
 				value={ props.value }
 				onBlur={ props.onBlur }
+				editable={ props.editable }
 				secureTextEntry={ props.secureTextEntry }
 				keyboardType={ props.keyboardType }
+				textAlignVertical="top"
 			/>
 			<Image source={ passwordIcon } style={ styles.searchIcon } />
 			<Text style={ styles.errorText }>{props.error}</Text>
@@ -35,8 +37,11 @@ function TextInputField(props) {
 				onChangeText={ props.onChangeText }
 				value={ props.value }
 				onBlur={ props.onBlur }
+				editable={ props.editable }
 				secureTextEntry={ props.secureTextEntry }
 				keyboardType={ props.keyboardType }
+				textAlignVertical="top"
+				editable={ props.editable }
 			/>
 			<Text style={ styles.errorText }>{props.error}</Text>
 		</View>

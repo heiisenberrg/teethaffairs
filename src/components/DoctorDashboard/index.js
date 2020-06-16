@@ -106,7 +106,7 @@ const DoctorDashboard = props => {
                         data={ list }
                         renderItem={ ({ item }) => _renderDentalVisitCards(item) }
                         keyExtractor={ item => item.id }
-                        showsVerticalScrollIndicator={ false }
+						showsVerticalScrollIndicator={ false }
                     />
                     :
                     <View>

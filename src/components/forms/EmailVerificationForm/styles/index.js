@@ -40,8 +40,6 @@ const styles = StyleSheet.create({
 	errorText: {
 		color: '#CF0000',
 		fontSize: 12,
-		// marginBottom: 10,
-		// marginTop: 6,
 		textAlign: 'center'
 	},
 	forgetPassword: {

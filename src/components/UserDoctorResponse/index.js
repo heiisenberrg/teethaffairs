@@ -178,7 +178,6 @@ function UserRemoteConsultationRequest(props) {
 							<View style={ styles.remoteCloseButton }>
 								<TouchableOpacity
 									style={ globalStyles.secondaryButton }
-									// onPress={ () => navigation.navigate('DentalHistory') }
 									onPress={ () =>
 										setIsDeleteModalVisible(!isDeleteModalVisible)
 									}>

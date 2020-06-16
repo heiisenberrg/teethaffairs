@@ -2,7 +2,8 @@ import constants from '../constants/reminder.constant';
 
 const initialState = {
 	reminderList: [],
-	loading: false
+	loading: false,
+	reminder: {}
 };
 
 function reminderReducer(state = initialState, action) {
@@ -87,7 +88,24 @@ function reminderReducer(state = initialState, action) {
 		case constants.CLEAR_REMINDER:
 			return {
 				...state,
-				...initialState
+				reminderList: [],
+				loading: false
+			};
+		case constants.GET_REMINDER:
+			return {
+				...state,
+				loading: true
+			};
+		case constants.GET_REMINDER_SUCCESS:
+			return {
+				...state,
+				loading: false,
+				reminder: action.response
+			};
+		case constants.GET_REMINDER_FAILURE:
+			return {
+				...state,
+				loading: false
 			};
 		default:
 			return state;

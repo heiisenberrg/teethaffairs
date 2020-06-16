@@ -1,8 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import { TouchableOpacity, Modal, View, StatusBar, Dimensions, Platform } from 'react-native';
-// import {ViewPropTypes} from '../config';
-// import {ScreenWidth, ScreenHeight, isIOS} from '../helpers';
 import Triangle from './Triangle';
 import getTooltipCoordinate, { getElementVisibleWidth } from './getTooltipCoordinate';
 const Screen = Dimensions.get('window');
@@ -16,19 +14,6 @@ class Tooltip extends React.PureComponent {
     xOffset: 0,
     elementWidth: 0,
     elementHeight: 0
-    // withOverlay: true,
-    // overlayColor: 'rgba(250, 250, 250, 0.70)',
-    // highlightColor: 'transparent',
-    // withPointer: true,
-    // toggleOnPress: true,
-    // height: 40,
-    // width: 150,
-    // containerStyle: {},
-    // backgroundColor: '#617080',
-    // onClose: () => {},
-    // onOpen: () => {},
-    // skipAndroidStatusBar: false,
-    // ModalComponent: Modal,
   };
   renderedElement;
   toggleTooltip = () => {
@@ -62,7 +47,6 @@ class Tooltip extends React.PureComponent {
       width,
       height,
       backgroundColor,
-      // default styles
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -98,7 +82,6 @@ class Tooltip extends React.PureComponent {
       <View>
         <View
           style={ {
-            // position: 'absolute',
             top: yOffset,
             left: xOffset,
             backgroundColor: highlightColor,

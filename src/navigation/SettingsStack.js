@@ -14,7 +14,8 @@ function SettingStack() {
 	return (
 		<Stack.Navigator
 			screenOptions={ {
-				headerTintColor: 'white'
+				headerTintColor: 'white',
+				gestureEnabled: false
 			} }
 			initialRouteName="Settings"
 			>
@@ -22,6 +23,7 @@ function SettingStack() {
 				name="Settings"
 				component={ Settings }
 				options={ {
+					headerBackTitleVisible: false,
 					headerTitle: 'Settings',
 					headerTitleAlign: 'center',
 					headerTitleContainerStyle: {
@@ -39,35 +41,37 @@ function SettingStack() {
 				}  }
 			/>
 			<Stack.Screen name="Payment" component={ Payment } options={ {
-					headerTitle: 'My Cards',
-					headerTitleAlign: 'center',
-					headerTitleContainerStyle: {
-						alignItems: 'center'
-					},
-					headerStyle: {
-						backgroundColor: '#129079',
-						height: 80
-					},
-					headerTitleStyle: {
-						color: 'white',
-						fontSize: 20
-					}
-				} }/>
-				<Stack.Screen name="ChangeCard" component={ ChangeCard } options={ {
-					headerTitle: 'Payment',
-					headerTitleAlign: 'center',
-					headerTitleContainerStyle: {
-						alignItems: 'center'
-					},
-					headerStyle: {
-						backgroundColor: '#129079',
-						height: 80
-					},
-					headerTitleStyle: {
-						color: 'white',
-						fontSize: 20
-					}
-				} }/>
+				headerBackTitleVisible: false,
+				headerTitle: 'My Cards',
+				headerTitleAlign: 'center',
+				headerTitleContainerStyle: {
+					alignItems: 'center'
+				},
+				headerStyle: {
+					backgroundColor: '#129079',
+					height: 80
+				},
+				headerTitleStyle: {
+					color: 'white',
+					fontSize: 20
+				}
+			} }/>
+			<Stack.Screen name="ChangeCard" component={ ChangeCard } options={ {
+				headerBackTitleVisible: false,
+				headerTitle: 'Payment',
+				headerTitleAlign: 'center',
+				headerTitleContainerStyle: {
+					alignItems: 'center'
+				},
+				headerStyle: {
+					backgroundColor: '#129079',
+					height: 80
+				},
+				headerTitleStyle: {
+					color: 'white',
+					fontSize: 20
+				}
+			} }/>
 
 			<Stack.Screen
 				name="Profile"
@@ -94,6 +98,7 @@ function SettingStack() {
 				name="ContactUs"
 				component={ ContactUs }
 				options={ {
+					headerBackTitleVisible: false,
 					headerTitle: 'Contact Us',
 					headerTitleAlign: 'center',
 					headerTitleContainerStyle: {
@@ -113,6 +118,7 @@ function SettingStack() {
 				name="AboutUs"
 				component={ AboutUs }
 				options={ {
+					headerBackTitleVisible: false,
 					headerTitle: 'About Us',
 					headerTitleAlign: 'center',
 					headerTitleContainerStyle: {

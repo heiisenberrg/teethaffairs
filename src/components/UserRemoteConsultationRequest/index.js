@@ -138,153 +138,66 @@ function UserRemoteConsultationRequest(props) {
 							<Text style={ styles.queryDetailText }>attachments</Text>
 
 							<View style={ styles.imageContainer }>
-								{/* {previewNote.media && previewNote.media.length > 0 && previewNote.media.map((data, index) => {
-											return (
-												<View key={ index }
-												style={ styles.imagePreview1 }>
-													<Image source={ { uri: data.media }  } style={ styles.image } />
-												</View>
-											);
-										})} */}
 							</View>
 							<Text style={ styles.queryDetailText }>details</Text>
 
 							<View style={ styles.queryWrapper }>
 								<Text style={ styles.queryText }>Question</Text>
-								{/* {previewNote.place_of_issue !== '' ? (
-											<Text style={ styles.patientDetails }>
-												{previewNote.place_of_issue}
-											</Text>
-										) : ( */}
 								<Text style={ styles.patientDetails }>NA</Text>
-								{/* )} */}
 							</View>
 							<View style={ styles.queryWrapper }>
 								<Text style={ styles.queryText }>Description</Text>
-								{/* {previewNote.place_of_issue !== '' ? (
-											<Text style={ styles.patientDetails }>
-												{previewNote.place_of_issue}
-											</Text>
-										) : ( */}
 								<Text style={ styles.patientDetails }>NA</Text>
-								{/* )} */}
 							</View>
 							<View style={ styles.queryWrapper }>
 								<Text style={ styles.queryText }>Where is the issue ?</Text>
-								{/* {previewNote.place_of_issue !== '' ? (
-											<Text style={ styles.patientDetails }>
-												{previewNote.place_of_issue}
-											</Text>
-										) : ( */}
 								<Text style={ styles.patientDetails }>NA</Text>
-								{/* )} */}
 							</View>
 							<View style={ styles.queryWrapper }>
-								<Text style={ styles.queryText }>Where side ?</Text>
-								{/* <Text style={ styles.patientDetails } /> */}
-								{/* {previewNote.side_of_issue !== '' ? (
-											<Text style={ styles.patientDetails }>
-												{previewNote.side_of_issue}
-											</Text>
-										) : ( */}
+								<Text style={ styles.queryText }>Which side ?</Text>
 								<Text style={ styles.patientDetails }>NA</Text>
-								{/* )} */}
 							</View>
 							<View style={ styles.queryWrapper }>
 								<Text style={ styles.queryText }>Pain level</Text>
-								{/* {previewNote.pain_level !== 0 ? (
-											<Text style={ styles.patientDetails }>
-												{previewNote.pain_level}/ 10
-											</Text>
-										) : ( */}
 								<Text style={ styles.patientDetails }>NA</Text>
-								{/* )} */}
 							</View>
 							<View style={ styles.queryWrapper }>
 								<Text style={ styles.queryText }>Pain Type</Text>
-								{/* {previewNote.pain_level !== 0 ? (
-											<Text style={ styles.patientDetails }>
-												{previewNote.pain_level}/ 10
-											</Text>
-										) : ( */}
 								<Text style={ styles.patientDetails }>NA</Text>
-								{/* )} */}
 							</View>
 							<View style={ styles.queryWrapper }>
 								<Text style={ styles.queryText }>Sensitivity to temperature</Text>
-								{/* {previewNote.sensivity_temperature !== '' ? (
-											<Text style={ styles.patientDetails }>
-												{previewNote.sensivity_temperature}
-											</Text>
-										) : ( */}
 								<Text style={ styles.patientDetails }>NA</Text>
-								{/* )} */}
 							</View>
 							<View style={ styles.queryWrapper }>
 								<Text style={ styles.queryText }>
 									Are you able to identify the exact tooth that has the issue ?
 								</Text>
-								{/* {previewNote.tooth_issue_identified ? (
-											<Text style={ styles.patientDetails }>Yes</Text>
-										) : ( */}
 								<Text style={ styles.patientDetails }>No</Text>
-								{/* )} */}
 							</View>
 							<View style={ styles.queryWrapper }>
 								<Text style={ styles.queryText }>Onset</Text>
-								{/* {previewNote.onset !== '' ? (
-											<Text style={ styles.patientDetails }>
-												{previewNote.onset}
-											</Text>
-										) : ( */}
 								<Text style={ styles.patientDetails }>NA</Text>
-								{/* )} */}
 							</View>
 							<View style={ styles.queryWrapper }>
 								<Text style={ styles.queryText }>When did the issue start?</Text>
-								{/* {previewNote.issue_start_date !== '' ? (
-											<Text style={ styles.patientDetails }>
-												{previewNote.issue_start_date}
-											</Text>
-										) : ( */}
 								<Text style={ styles.patientDetails }>NA</Text>
-								{/* )} */}
 							</View>
 							<View style={ styles.queryWrapper }>
 								<Text style={ styles.queryText }>Swelling size </Text>
-								{/* {previewNote.swelling_size !== '' ? (
-											<Text style={ styles.patientDetails }>
-												{previewNote.swelling_size}
-											</Text>
-										) : ( */}
 								<Text style={ styles.patientDetails }>NA</Text>
-								{/* )} */}
 							</View>
 							<View style={ styles.queryWrapper }>
 								<Text style={ styles.queryText }>Bleeding </Text>
-								{/* {previewNote.bleeding ? (
-											<Text style={ styles.patientDetails }>Yes</Text>
-										) : ( */}
 								<Text style={ styles.patientDetails }>No</Text>
-								{/* )} */}
 							</View>
 							<View style={ styles.queryWrapper }>
 								<Text style={ styles.queryText }>Presence of pus ?</Text>
-								{/* {previewNote.pus_presence ? (
-											<Text style={ styles.patientDetails }>Yes</Text>
-										) : ( */}
 								<Text style={ styles.patientDetails }>No</Text>
-								{/* )} */}
 							</View>
 							<View style={ styles.queryWrapper }>
 								<Text style={ styles.queryText }>Loose tooth ?</Text>
-								{/* {previewNote.tooth_loss !== '' ? (
-											<Text style={ styles.patientDetails }>
-												{previewNote.tooth_loss}
-											</Text>
-										) : ( */}
 								<Text style={ styles.patientDetails }>NA</Text>
-								{/* )} */}
 							</View>
 							<View style={ styles.remoteCloseButton }>
 								<TouchableOpacity

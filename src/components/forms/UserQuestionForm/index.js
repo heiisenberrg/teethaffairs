@@ -4,9 +4,9 @@ import {
 	Text,
 	TouchableOpacity,
 	ScrollView,
-	SafeAreaView,
 	KeyboardAvoidingView,
 	Modal,
+	TextInput,
 	Image,
 	Platform
 } from 'react-native';
@@ -31,8 +31,6 @@ import stepIndicator1 from '../../../assets/stepIndicator1.png';
 import stepIndicator2 from '../../../assets/stepIndicator2.png';
 import stepIndicator3 from '../../../assets/stepIndicator3.png';
 import crossIcon from '../../../assets/cross-Icon.png';
-import moment from 'moment';
-import { TextInputMask } from 'react-native-masked-text';
 import ImagePicker from 'react-native-image-picker';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -43,8 +41,10 @@ import {
 	updateUserNote
 } from '../../../state/actions/journal';
 
+import FlashMessage from '../../../components/global/FlashMessage';
+
 /* eslint-disable no-undef */
-const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
+const keyboardVerticalOffset = Platform.OS === 'ios' ? 100 : 0;
 
 const userNoteSchema = yup.object({
 	description: yup.string().required('Required'),
@@ -61,11 +61,10 @@ const userNoteSchema = yup.object({
 	pus_presence: yup.string(),
 	tooth_loss: yup.string(),
 	prior_history: yup.string(),
-	// note_type: yup.string(),
 	question: yup.string(),
 	note: yup.string(),
 	pain_type: yup.string(),
-	reference_name: yup.string().required('Required'),
+	reference_name: yup.string(),
 	media: yup.array(),
 	title: yup.string().required('Required')
 });
@@ -79,13 +78,20 @@ const imageOptions = {
 	chooseFromLibraryButtonTitle: 'Choose from gallery',
 	takePhotoButtonTitle: null
 };
-var tempImage = [];
-var preview = [];
-var tempMedia = [];
 
 /* eslint-disable no-mixed-spaces-and-tabs */
 function AddQuestion(props) {
-	const { navigation, getDeleteNote, createUserNote, updateUserNote, route } = props;
+	var tempImage = [];
+	var preview = [];
+	var tempMedia = [];
+
+	const {
+		navigation,
+		getDeleteNote,
+		createUserNote,
+		updateUserNote,
+		route
+	} = props;
 	const [ showStep1, setShowStep1 ] = useState(true);
 	const [ showStep2, setShowStep2 ] = useState(false);
 	const [ showStep3, setShowStep3 ] = useState(false);
@@ -102,25 +108,28 @@ function AddQuestion(props) {
 
 	let initialValues = {};
 	const doesEditEnabled = route && route.params && route.params.data;
-	if(doesEditEnabled) {
+	if (doesEditEnabled) {
 		const { data } = route.params;
 		initialValues = {
 			pain_level: data.pain_level ? data.pain_level : 0,
 			description: data.description ? data.description : '',
 			place_of_issue: data.place_of_issue ? data.place_of_issue : '',
 			side_of_issue: data.side_of_issue ? data.side_of_issue : '',
-			sensivity_temperature: data.sensivity_temperature ? data.sensivity_temperature : '',
-			tender: data.tender ? data.tender: '',
-			tooth_issue_identified: data.tooth_issue_identified ? data.tooth_issue_identified : '',
+			sensivity_temperature: data.sensivity_temperature
+				? data.sensivity_temperature
+				: '',
+			tender: data.tender ? data.tender : '',
+			tooth_issue_identified: data.tooth_issue_identified
+				? data.tooth_issue_identified
+				: '',
 			onset: data.onset ? data.onset : '',
-			issue_start_date: data.issue_start_date ? data.issue_start_date: '',
-			swelling_size: data.swelling_size ? data.swelling_size: '',
-			bleeding: data.bleeding ? data.bleeding: '',
-			pus_presence: data.pus_presence ? data.pus_presence: '',
+			issue_start_date: data.issue_start_date ? data.issue_start_date : '',
+			swelling_size: data.swelling_size ? data.swelling_size : '',
+			bleeding: data.bleeding ? data.bleeding : '',
+			pus_presence: data.pus_presence ? data.pus_presence : '',
 			tooth_loss: data.tooth_loss ? data.tooth_loss : '',
 			prior_history: data.prior_history ? data.prior_history : '',
-			// note_type: data.note_type,
-			title: data.title ? data.title: '',
+			title: data.title ? data.title : '',
 			pain_type: data.pain_type ? data.pain_type : '',
 			reference_name: data.reference_name ? data.reference_name : '',
 			media: data.media && data.media.length > 0 ? data.media : []
@@ -135,13 +144,12 @@ function AddQuestion(props) {
 			tender: '',
 			tooth_issue_identified: '',
 			onset: '',
-			issue_start_date: moment().format('YYYY-MM-DD'),
+			issue_start_date: '',
 			swelling_size: '',
 			bleeding: '',
 			pus_presence: '',
 			tooth_loss: '',
 			prior_history: '',
-			// note_type: '',
 			title: '',
 			pain_type: '',
 			reference_name: '',
@@ -153,7 +161,7 @@ function AddQuestion(props) {
 		setReferenceName(userNotes.reference_name);
 		setIsModalVisible(false);
 		const painLevel = userNotes.pain_level;
-		const data = [
+		var data = [
 			{
 				name: 'description',
 				data: userNotes.description
@@ -192,7 +200,7 @@ function AddQuestion(props) {
 			},
 			{
 				name: 'issue_start_date',
-				data: userNotes.issue_start_date ? moment(userNotes.issue_start_date).format('YYYY-MM-DD') : ''
+				data: userNotes.issue_start_date ? userNotes.issue_start_date : ''
 			},
 			{
 				name: 'swelling_size',
@@ -223,20 +231,19 @@ function AddQuestion(props) {
 				data: userNotes.reference_name
 			}
 		];
-		tempMedia.map(item => {
+		imageSource.map((item) => {
 			data.push({
 				name: 'media',
 				filename: `note${Date.now()}`,
-				data: Platform.OS === 'android' ? RNFetchBlob.wrap(item.uri) :  RNFetchBlob.wrap(item.uri.replace('file://', '')),
-				type: item.type
+				data:
+					Platform.OS === 'android'
+						? RNFetchBlob.wrap(item[0].uri)
+						: RNFetchBlob.wrap(item[0].uri.replace('file://', '')),
+				type: item[0].type
 			});
 		});
 		if (updateNote === false) {
-			createUserNote(
-				data,
-				onGetUserNoteSuccess,
-				onGetUserNoteFailure
-			);
+			createUserNote(data, onGetUserNoteSuccess, onGetUserNoteFailure);
 		} else {
 			const updatedNote = {
 				description: userNotes.description,
@@ -258,10 +265,11 @@ function AddQuestion(props) {
 				reference_name: userNotes.reference_name
 			};
 			updateUserNote(
-				updatedNote, 
-				id = props.route.params.data.id,
-				onGetUserNoteSuccess, 
-				onGetUserNoteFailure );
+				updatedNote,
+				(id = props.route.params.data.id),
+				onGetUserNoteSuccess,
+				onGetUserNoteFailure
+			);
 		}
 	};
 
@@ -275,6 +283,7 @@ function AddQuestion(props) {
 		setTimeout(() => {
 			setIsSuccessModalVisible(false);
 			setShowStep1(true), setShowStep3(false);
+			navigation.pop(2);
 			navigation.navigate('Note Preview', { previewNote: preview_note });
 		}, 1000);
 	};
@@ -328,7 +337,8 @@ function AddQuestion(props) {
 								tempImage.push(source);
 								tempMedia.push(media);
 							}
-							setImageSource(tempImage);
+							setImageSource([ ...imageSource, tempImage ]);
+
 						} else {
 							if (enableVideo) {
 								media = {
@@ -340,7 +350,7 @@ function AddQuestion(props) {
 									tempImage.push(source);
 									tempMedia.push(media);
 								}
-								setImageSource(tempImage);
+								setImageSource([ ...imageSource, tempImage ]);
 							} else {
 								setIsVideoUpload(true);
 							}
@@ -359,7 +369,7 @@ function AddQuestion(props) {
 					tempImage.push(source);
 					tempMedia.push(media);
 				}
-				setImageSource(tempImage);
+				setImageSource([ ...imageSource, tempImage ]);
 			}
 		});
 	};
@@ -399,7 +409,6 @@ function AddQuestion(props) {
 	};
 
 	return (
-		<SafeAreaView>
 			<ScrollView
 				contentContainerStyle={ styles.container }
 				showsVerticalScrollIndicator={ false }>
@@ -418,8 +427,31 @@ function AddQuestion(props) {
 					initialValues={ { ...initialValues } }
 					validationSchema={ userNoteSchema }
 					onSubmit={ (values, actions) => {
-						actions.resetForm();
-						handleSubmit(values);
+						if (
+							values.bleeding !== '' &&
+							values.description !== '' &&
+							values.issue_start_date !== '' &&
+							values.onset !== '' &&
+							values.pain_level > 0 &&
+							values.pain_type !== '' &&
+							values.place_of_issue !== '' &&
+							values.prior_history !== '' &&
+							values.pus_presence !== '' &&
+							values.sensivity_temperature !== '' &&
+							values.side_of_issue !== '' &&
+							values.swelling_size !== '' &&
+							values.tender !== '' &&
+							values.title !== '' &&
+							values.tooth_issue_identified !== '' &&
+							values.tooth_loss !== ''
+						) {
+							actions.resetForm();
+							handleSubmit(values);
+						} else {
+							setShowStep1(true);
+							setIsModalVisible(false);
+							FlashMessage.message('Alert', 'Please fill up all fields', 'red');
+						}
 					} }>
 					{showStep1
 						? props => (
@@ -457,16 +489,13 @@ function AddQuestion(props) {
 									<View style={ styles.imageWrap }>
 										<Text style={ styles.addFiles }>Add Files</Text>
 										<View style={ styles.imageContainer }>
-											{imageSource.length < 7 ? (
+											{imageSource.length < 7 && (
 												<View style={ styles.imagePreview1 }>
 													<TouchableOpacity onPress={ takeImageHandler }>
 														<Image source={ plusIcon } />
 													</TouchableOpacity>
 												</View>
-											) : (
-												<Text style={ styles.hideText } />
 											)}
-
 											{imageSource.length > 0 ? (
 												imageSource.map((img, index) => {
 													return (
@@ -901,274 +930,283 @@ function AddQuestion(props) {
 								</View>
 						  )
 						: props => (
-							<KeyboardAvoidingView
-								behavior="absolute"
-								keyboardVerticalOffset={ keyboardVerticalOffset }>
-								{isSuccessModalVisible || isModalVisible ? (
-									<Modal transparent={ true } visible={ true }>
-										<View style={ styles.modalWrap }>
-											<View style={ styles.modalTextWrap }>
-												<TouchableOpacity onPress={ goHome }>
-													<Image
-														source={ crossIcon }
-														style={ styles.closeIcon }
+							<View style={ styles.keyboard }>
+								<KeyboardAvoidingView
+									behavior={ Platform.OS === 'ios' ? 'padding' : '' }
+									keyboardVerticalOffset={ keyboardVerticalOffset }
+									>
+									<ScrollView
+										showsHorizontalScrollIndicator={ false }
+										contentContainerStyle={ styles.keyboard1 }>
+									{isSuccessModalVisible || isModalVisible ? (
+										<Modal transparent={ true } visible={ true }>
+											<View style={ styles.modalWrap }>
+												<View style={ styles.modalTextWrap }>
+													<TouchableOpacity onPress={ goHome }>
+														<Image
+															source={ crossIcon }
+															style={ styles.closeIcon }
+														/>
+													</TouchableOpacity>
+													<Text style={ styles.modalText }>save as</Text>
+													<NormalTextInput
+														saveas="saveas"
+														lable="Give it a name for future reference"
+														onChangeText={ props.handleChange('reference_name') }
+														value={
+															props.values.reference_name === ''
+																? referenceName
+																: props.values.reference_name
+														}
+														onBlur={ props.handleBlur('reference_name') }
+														secureTextEntry={ false }
+														error={ props.errors.reference_name }
 													/>
-												</TouchableOpacity>
-												<Text style={ styles.modalText }>save as</Text>
-												<NormalTextInput
-													saveas="saveas"
-													lable="Give it a name for future reference"
-													onChangeText={ props.handleChange('reference_name') }
-													value={
-														props.values.reference_name === ''
-															? referenceName
-															: props.values.reference_name
-													}
-													onBlur={ props.handleBlur('reference_name') }
-													secureTextEntry={ false }
-													error={ props.errors.reference_name }
-												/>
 
-												{isSuccessModalVisible ? (
-													<TouchableOpacity style={ styles.savedButton }>
-														<Text style={ styles.savedButtonText }>saved!</Text>
-													</TouchableOpacity>
-												) : (
-													<TouchableOpacity
-														style={ styles.consultButton }
-														onPress={ props.handleSubmit }>
-														<Text style={ styles.loginText }>save</Text>
-													</TouchableOpacity>
-												)}
+													{isSuccessModalVisible ? (
+														<TouchableOpacity style={ styles.savedButton }>
+															<Text style={ styles.savedButtonText }>saved!</Text>
+														</TouchableOpacity>
+													) : (
+														<TouchableOpacity
+															style={ styles.consultButton }
+															onPress={ props.handleSubmit }>
+															<Text style={ styles.loginText }>save</Text>
+														</TouchableOpacity>
+													)}
+												</View>
+											</View>
+										</Modal>
+									) : (
+										<Text style={ styles.hideText } />
+									)}
+									<View style={ styles.symtamsContainer }>
+										<Text style={ styles.questionText }>
+											When did the issue start
+										</Text>
+										<TextInput
+											style={ styles.inputText }
+											onChangeText={ props.handleChange('issue_start_date') }
+											onBlur={ props.handleBlur('issue_start_date') }
+											value={ props.values.issue_start_date }
+											placeholder="2 days ago"
+											error={
+												props.touched.issue_start_date &&
+												props.errors.issue_start_date
+											}
+											underlineColorAndroid="transparent"
+											placeholderTextColor="grey"
+										/>
+									</View>
+
+									<View style={ styles.symtamsContainer }>
+										<Text style={ styles.questionText }>Swelling size</Text>
+										<View style={ styles.questionContainer }>
+											<CustomButton
+												button={
+													props.values.swelling_size === 'none'
+														? 'activeButton'
+														: 'issueButton'
+												}
+												place_of_issue="none"
+												onPress={ () =>
+													props.setFieldValue('swelling_size', 'none')
+												}
+												value={ props.values.swelling_size }
+												onBlur={ props.handleBlur('swelling_size') }
+												secureTextEntry={ false }
+											/>
+											<CustomButton
+												button={
+													props.values.swelling_size === 'small'
+														? 'activeButton'
+														: 'issueButton'
+												}
+												place_of_issue="small"
+												onPress={ () =>
+													props.setFieldValue('swelling_size', 'small')
+												}
+												value={ props.values.swelling_size }
+												onBlur={ props.handleBlur('swelling_size') }
+												secureTextEntry={ false }
+											/>
+											<CustomButton
+												button={
+													props.values.swelling_size === 'medium'
+														? 'activeButton'
+														: 'issueButton'
+												}
+												place_of_issue="medium"
+												onPress={ () =>
+													props.setFieldValue('swelling_size', 'medium')
+												}
+												value={ props.values.swelling_size }
+												onBlur={ props.handleBlur('swelling_size') }
+												secureTextEntry={ false }
+											/>
+											<CustomButton
+												button={
+													props.values.swelling_size === 'large'
+														? 'activeButton'
+														: 'issueButton'
+												}
+												place_of_issue="large"
+												onPress={ () =>
+													props.setFieldValue('swelling_size', 'large')
+												}
+												value={ props.values.swelling_size }
+												onBlur={ props.handleBlur('swelling_size') }
+												secureTextEntry={ false }
+											/>
+										</View>
+									</View>
+									<View style={ styles.symtamsContainer }>
+										<Text style={ styles.questionText }>Bleeding</Text>
+										<View style={ styles.questionContainer }>
+											<View style={ styles.radioContainer }>
+												<RadioButton
+													button={
+														props.values.bleeding === true
+															? 'activeButton'
+															: 'issueButton'
+													}
+													type="Yes"
+													onPress={ () => props.setFieldValue('bleeding', true) }
+													value={ props.values.bleeding }
+													onBlur={ props.handleBlur('bleeding') }
+													secureTextEntry={ false }
+												/>
+												<RadioButton
+													button={
+														props.values.bleeding === false
+															? 'activeButton'
+															: 'issueButton'
+													}
+													type="No"
+													onPress={ () => props.setFieldValue('bleeding', false) }
+													value={ props.values.bleeding }
+													onBlur={ props.handleBlur('bleeding') }
+													secureTextEntry={ false }
+												/>
 											</View>
 										</View>
-									</Modal>
-								) : (
-									<Text style={ styles.hideText } />
-								)}
-								<View style={ styles.symtamsContainer }>
-									<Text style={ styles.questionText }>
-										When did the issue start
-									</Text>
-									<TextInputMask
-										style={ styles.maskInput }
-										type={ 'datetime' }
-										options={ {
-											format: 'YYYY-MM-DD'
-										} }
-										placeholder={ 'YYYY-MM-DD' }
-										onChangeText={ props.handleChange('issue_start_date') }
-										value={ props.values.issue_start_date }
+									</View>
+									<View style={ styles.symtamsContainer }>
+										<Text style={ styles.questionText }>Presence of pus ?</Text>
+										<View style={ styles.questionContainer }>
+											<View style={ styles.radioContainer }>
+												<RadioButton
+													button={
+														props.values.pus_presence === true
+															? 'activeButton'
+															: 'issueButton'
+													}
+													type="Yes"
+													onPress={ () =>
+														props.setFieldValue('pus_presence', true)
+													}
+													value={ props.values.pus_presence }
+													onBlur={ props.handleBlur('pus_presence') }
+													secureTextEntry={ false }
+												/>
+												<RadioButton
+													button={
+														props.values.pus_presence === false
+															? 'activeButton'
+															: 'issueButton'
+													}
+													type="No"
+													onPress={ () =>
+														props.setFieldValue('pus_presence', false)
+													}
+													value={ props.values.pus_presence }
+													onBlur={ props.handleBlur('pus_presence') }
+													secureTextEntry={ false }
+												/>
+											</View>
+										</View>
+									</View>
+									<View style={ styles.symtamsContainer }>
+										<Text style={ styles.questionText }>Loose Tooth</Text>
+
+										<View style={ styles.questionContainer }>
+											<CustomButton
+												button={
+													props.values.tooth_loss === 'no'
+														? 'activeButton'
+														: 'issueButton'
+												}
+												place_of_issue="no"
+												onPress={ () => props.setFieldValue('tooth_loss', 'no') }
+												value={ props.values.tooth_loss }
+												onBlur={ props.handleBlur('tooth_loss') }
+												secureTextEntry={ false }
+											/>
+											<CustomButton
+												button={
+													props.values.tooth_loss === 'slight'
+														? 'activeButton'
+														: 'issueButton'
+												}
+												place_of_issue="slight"
+												onPress={ () =>
+													props.setFieldValue('tooth_loss', 'slight')
+												}
+												value={ props.values.tooth_loss }
+												onBlur={ props.handleBlur('tooth_loss') }
+												secureTextEntry={ false }
+											/>
+											<CustomButton
+												button={
+													props.values.tooth_loss === 'moderate'
+														? 'activeButton'
+														: 'issueButton'
+												}
+												place_of_issue="moderate"
+												onPress={ () =>
+													props.setFieldValue('tooth_loss', 'moderate')
+												}
+												value={ props.values.tooth_loss }
+												onBlur={ props.handleBlur('place_of_issue') }
+												secureTextEntry={ false }
+											/>
+											<CustomButton
+												button={
+													props.values.tooth_loss === 'veryloose'
+														? 'activeButton'
+														: 'issueButton'
+												}
+												place_of_issue="loose"
+												onPress={ () =>
+													props.setFieldValue('tooth_loss', 'veryloose')
+												}
+												value={ props.values.tooth_loss }
+												onBlur={ props.handleBlur('tooth_loss') }
+												secureTextEntry={ false }
+											/>
+										</View>
+									</View>
+									<NormalTextInput
+										multiline
+										lable="Prior history if any or other information"
+										onChangeText={ props.handleChange('prior_history') }
+										value={ props.values.prior_history }
+										onBlur={ props.handleBlur('prior_history') }
+										secureTextEntry={ false }
 									/>
-								</View>
-
-								<View style={ styles.symtamsContainer }>
-									<Text style={ styles.questionText }>Swelling size</Text>
-									<View style={ styles.questionContainer }>
-										<CustomButton
-											button={
-												props.values.swelling_size === 'none'
-													? 'activeButton'
-													: 'issueButton'
-											}
-											place_of_issue="none"
-											onPress={ () =>
-												props.setFieldValue('swelling_size', 'none')
-											}
-											value={ props.values.swelling_size }
-											onBlur={ props.handleBlur('swelling_size') }
-											secureTextEntry={ false }
-										/>
-										<CustomButton
-											button={
-												props.values.swelling_size === 'small'
-													? 'activeButton'
-													: 'issueButton'
-											}
-											place_of_issue="small"
-											onPress={ () =>
-												props.setFieldValue('swelling_size', 'small')
-											}
-											value={ props.values.swelling_size }
-											onBlur={ props.handleBlur('swelling_size') }
-											secureTextEntry={ false }
-										/>
-										<CustomButton
-											button={
-												props.values.swelling_size === 'medium'
-													? 'activeButton'
-													: 'issueButton'
-											}
-											place_of_issue="medium"
-											onPress={ () =>
-												props.setFieldValue('swelling_size', 'medium')
-											}
-											value={ props.values.swelling_size }
-											onBlur={ props.handleBlur('swelling_size') }
-											secureTextEntry={ false }
-										/>
-										<CustomButton
-											button={
-												props.values.swelling_size === 'large'
-													? 'activeButton'
-													: 'issueButton'
-											}
-											place_of_issue="large"
-											onPress={ () =>
-												props.setFieldValue('swelling_size', 'large')
-											}
-											value={ props.values.swelling_size }
-											onBlur={ props.handleBlur('swelling_size') }
-											secureTextEntry={ false }
-										/>
-									</View>
-								</View>
-								<View style={ styles.symtamsContainer }>
-									<Text style={ styles.questionText }>Bleeding</Text>
-									<View style={ styles.questionContainer }>
-										<View style={ styles.radioContainer }>
-											<RadioButton
-												button={
-													props.values.bleeding === true
-														? 'activeButton'
-														: 'issueButton'
-												}
-												type="Yes"
-												onPress={ () => props.setFieldValue('bleeding', true) }
-												value={ props.values.bleeding }
-												onBlur={ props.handleBlur('bleeding') }
-												secureTextEntry={ false }
-											/>
-											<RadioButton
-												button={
-													props.values.bleeding === false
-														? 'activeButton'
-														: 'issueButton'
-												}
-												type="No"
-												onPress={ () => props.setFieldValue('bleeding', false) }
-												value={ props.values.bleeding }
-												onBlur={ props.handleBlur('bleeding') }
-												secureTextEntry={ false }
-											/>
+									<TouchableOpacity
+										style={ styles.consultButton }
+										onPress={ () => setIsModalVisible(true) }>
+										<View style={ styles.arrowWrap }>
+											<Text style={ globalStyles.buttonText }>Next </Text>
+											<Image source={ arrow } style={ styles.arrow } />
 										</View>
-									</View>
-								</View>
-								<View style={ styles.symtamsContainer }>
-									<Text style={ styles.questionText }>Presence of pus ?</Text>
-									<View style={ styles.questionContainer }>
-										<View style={ styles.radioContainer }>
-											<RadioButton
-												button={
-													props.values.pus_presence === true
-														? 'activeButton'
-														: 'issueButton'
-												}
-												type="Yes"
-												onPress={ () =>
-													props.setFieldValue('pus_presence', true)
-												}
-												value={ props.values.pus_presence }
-												onBlur={ props.handleBlur('pus_presence') }
-												secureTextEntry={ false }
-											/>
-											<RadioButton
-												button={
-													props.values.pus_presence === false
-														? 'activeButton'
-														: 'issueButton'
-												}
-												type="No"
-												onPress={ () =>
-													props.setFieldValue('pus_presence', false)
-												}
-												value={ props.values.pus_presence }
-												onBlur={ props.handleBlur('pus_presence') }
-												secureTextEntry={ false }
-											/>
-										</View>
-									</View>
-								</View>
-								<View style={ styles.symtamsContainer }>
-									<Text style={ styles.questionText }>Loose Tooth</Text>
-
-									<View style={ styles.questionContainer }>
-										<CustomButton
-											button={
-												props.values.tooth_loss === 'no'
-													? 'activeButton'
-													: 'issueButton'
-											}
-											place_of_issue="no"
-											onPress={ () => props.setFieldValue('tooth_loss', 'no') }
-											value={ props.values.tooth_loss }
-											onBlur={ props.handleBlur('tooth_loss') }
-											secureTextEntry={ false }
-										/>
-										<CustomButton
-											button={
-												props.values.tooth_loss === 'slight'
-													? 'activeButton'
-													: 'issueButton'
-											}
-											place_of_issue="slight"
-											onPress={ () =>
-												props.setFieldValue('tooth_loss', 'slight')
-											}
-											value={ props.values.tooth_loss }
-											onBlur={ props.handleBlur('tooth_loss') }
-											secureTextEntry={ false }
-										/>
-										<CustomButton
-											button={
-												props.values.tooth_loss === 'moderate'
-													? 'activeButton'
-													: 'issueButton'
-											}
-											place_of_issue="moderate"
-											onPress={ () =>
-												props.setFieldValue('tooth_loss', 'moderate')
-											}
-											value={ props.values.tooth_loss }
-											onBlur={ props.handleBlur('place_of_issue') }
-											secureTextEntry={ false }
-										/>
-										<CustomButton
-											button={
-												props.values.tooth_loss === 'loose'
-													? 'activeButton'
-													: 'issueButton'
-											}
-											place_of_issue="loose"
-											onPress={ () =>
-												props.setFieldValue('tooth_loss', 'veryloose')
-											}
-											value={ props.values.tooth_loss }
-											onBlur={ props.handleBlur('tooth_loss') }
-											secureTextEntry={ false }
-										/>
-									</View>
-								</View>
-								<NormalTextInput
-									multiline
-									lable="Prior history if any or other information"
-									onChangeText={ props.handleChange('prior_history') }
-									value={ props.values.prior_history }
-									onBlur={ props.handleBlur('prior_history') }
-									secureTextEntry={ false }
-								/>
-								<TouchableOpacity
-									style={ styles.consultButton }
-									onPress={ () => setIsModalVisible(true) }>
-									<View style={ styles.arrowWrap }>
-										<Text style={ globalStyles.buttonText }>Next </Text>
-										<Image source={ arrow } style={ styles.arrow } />
-									</View>
-								</TouchableOpacity>
-							</KeyboardAvoidingView>
+									</TouchableOpacity>
+									</ScrollView>
+								</KeyboardAvoidingView>
+							</View>
 						  )}
 				</Formik>
-			</ScrollView>
 			<Modal transparent={ true } visible={ isDeleteModalVisible }>
 				<View style={ styles.modalWrap }>
 					<LinearGradient
@@ -1240,7 +1278,7 @@ function AddQuestion(props) {
 					</LinearGradient>
 				</View>
 			</Modal>
-		</SafeAreaView>
+		</ScrollView>
 	);
 }
 

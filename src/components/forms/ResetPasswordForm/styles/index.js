@@ -3,10 +3,10 @@ const {  height } = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
 	logoHeader: {
-		height: 60,//
-		backgroundColor: '#108E79',//
-		maxHeight: (height - 210),//
-		justifyContent:'center',//,
+		height: 60,
+		backgroundColor: '#108E79',
+		maxHeight: (height - 210),
+		justifyContent:'center',
 		zIndex: 1,
 		top: 0
 		},
@@ -86,11 +86,6 @@ filterArrow: {
 		borderWidth: 1,
 		borderColor: '#fff'
 	},
-	// buttonText: {
-	// 	color: '#fff',
-	// 	textAlign: 'center',
-	// 	textTransform: 'uppercase'
-	// },
 	inputContainer: { marginTop: 10 },
 	inputContainer1: { marginTop: 20 },
 	buttonStyle: {
@@ -99,8 +94,6 @@ filterArrow: {
 	errorText: {
 		color: '#CF0000',
 		fontSize: 12,
-		// marginBottom: 10,
-		// marginTop: 6,
 		textAlign: 'left'
 	},
 	forgetPassword: {
@@ -207,10 +200,7 @@ filterArrow: {
 		flex: 1
 	},
 	ImageStyle: {
-		// alignItems: 'center',
-		// alignContent: 'center',
 		alignSelf: 'center'
-		// justifyContent: 'center'
 	},
 	signupWrap: {
 		marginTop: -20

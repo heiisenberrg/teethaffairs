@@ -190,7 +190,8 @@ function JournalStack() {
 						fontSize: 20,
 						alignSelf: 'center',
 						alignItems: 'center'
-					}
+					},
+					headerBackTitleVisible: false
 				} }
 			/>
 			<Stack.Screen
@@ -211,7 +212,8 @@ function JournalStack() {
 						fontSize: 25,
 						fontWeight: 'bold',
 						alignSelf: 'center'
-					}
+					},
+					headerBackTitleVisible: false
 				} }
 			/>
 		</Stack.Navigator>

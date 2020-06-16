@@ -116,7 +116,9 @@ const styles = StyleSheet.create({
 	deleteContainer: {
 		flexDirection: 'row',
 		justifyContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
+		position:'relative',
+		left: 5
 	},
 	deleteText: {
 		color: '#FA5050',

@@ -12,7 +12,8 @@ import {
 	GET_MY_PROFILE,
 	UPDATE_DEVICE_TOKEN,
 	SUBMIT_QUERY,
-	UPLOAD_PROFILE_PIC
+	UPLOAD_PROFILE_PIC,
+	FETCH_NOTIFICATIONS
 } from '../config';
 
 export const login = data =>
@@ -126,6 +127,16 @@ export const uploadMyProfilePicture = data => uploadFile({
 	headers: {
 		Accept: 'application/json',
 		'Content-Type': 'multipart/form-data'
+	},
+	withCredentials: true
+});
+
+export const fetchNotifications = () => apiCall({
+	url: `${FETCH_NOTIFICATIONS}`,
+	method: 'GET',
+	headers: {
+		Accept: 'application/json',
+		'Content-Type': 'application/json'
 	},
 	withCredentials: true
 });

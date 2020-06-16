@@ -24,7 +24,9 @@ import {
 	submitContactUsSuccess,
 	submitContactUsFailure,
 	uploadProfilePictureSuccess,
-	uploadProfilePictureFailure
+	uploadProfilePictureFailure,
+	getNotificationsSuccess,
+	getNotificationsFailure
 } from '../actions/user';
 
 import { clearDoctor } from '../actions/doctor';
@@ -45,7 +47,8 @@ import {
 	getProfile,
 	updateDeviceToken,
 	submitQuery,
-	uploadMyProfilePicture
+	uploadMyProfilePicture,
+	fetchNotifications
 } from '../services/user.service';
 import FlashMessage from '../../components/global/FlashMessage';
 import localStorage from '../localstorage';
@@ -58,9 +61,7 @@ export function* fetchLogin(action) {
 		localStorage.setItem('accessToken', response.data.access);
 		localStorage.storeJsonValues('user', response.data);
 		yield put(getLoginSuccess(response.data));
-		if(token !== response.data.device_id) {
-			yield call(updateDeviceToken, { device_id: token });
-		}
+		yield call(updateDeviceToken, { device_id: token });
 	} catch (e) {
 		FlashMessage.message('Failure', 'Please check your password or username', '#ff4444');
 		yield put(getLoginFailure(e));
@@ -68,14 +69,13 @@ export function* fetchLogin(action) {
 }
 
 export function* fetchSignup(action) {
-	const { data,onSuccess, onFailure } = action;
+	const { data,onSuccess } = action;
 	try {
 		const response = yield call(signup, data);
 		onSuccess();
 		yield put(getSignUpSuccess(response.data));
 	} catch (e) {
 		FlashMessage.message('Failure', 'Something went wrong.Please try again later', '#ff4444');
-		onFailure();
 		yield put(getSignUpFailure(e));
 	}
 }
@@ -118,25 +118,30 @@ export function* fetchLogOut(action) {
 	const { data: { navigation, onSuccess } } = action;
 	try {
 		const response = yield call(logout);
+		yield localStorage.clearAll();
+		yield put(clearUser());
+		yield put(clearDoctor());
+		yield put(clearHistory());
+		yield put(clearJournal());
+		yield put(clearReminder());
 		navigation.dispatch(
 			CommonActions.reset({
-				index: 0,
+				index: 2,
 				routes: [
 					{ name: 'OnBoarding', key: 'Login' }
 				]
 			})
 		);
-		yield localStorage.clearAll();
+		onSuccess();
 		yield put(getLogOutSuccess(response));
 		FlashMessage.message('', 'Logged out successfully!', '#00C851');
-		onSuccess();
-		clearUser();
-		clearDoctor();
-		clearHistory();
-		clearJournal();
-		clearReminder();
 	} catch (e) {
-		yield put(getLogOutFailure(e));
+		yield localStorage.clearAll();
+		yield put(clearUser());
+		yield put(clearDoctor());
+		yield put(clearHistory());
+		yield put(clearJournal());
+		yield put(clearReminder());
 		navigation.dispatch(
 			CommonActions.reset({
 				index: 0,
@@ -145,13 +150,9 @@ export function* fetchLogOut(action) {
 				]
 			})
 		);
-		FlashMessage.message('', 'Logged out successfully!', '#00C851');
 		onSuccess();
-		clearUser();
-		clearDoctor();
-		clearHistory();
-		clearJournal();
-		clearReminder();
+		yield put(getLogOutFailure(e));
+		FlashMessage.message('', 'Logged out successfully!', '#00C851');
 	}
 }
 
@@ -170,6 +171,7 @@ export function* updateUser(action) {
 	const { data } = action;
 	try {
 		const response = yield call(editUser, data);
+		localStorage.storeJsonValues('user', response.data);
 		FlashMessage.message('Success', 'Profile saved successfully.', '#00C851');
 		yield put(editUserSuccess(response));
 	} catch (e) {
@@ -218,4 +220,13 @@ export function* uploadProfilePicture(action) {
 		FlashMessage.message('Failure', 'Upload failed. Please try after sometime.', '#ff4444');
 		yield put(uploadProfilePictureFailure(e));
 	}
+}
+
+export function* getNotifications () {
+    try {
+        const response = yield call(fetchNotifications);
+        yield put(getNotificationsSuccess(response.data));
+    } catch (e) {
+        yield put(getNotificationsFailure(e));
+    }
 }

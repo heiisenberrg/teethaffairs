@@ -28,13 +28,12 @@ const loginSchema = yup.object({
 	username: yup
 		.string()
 		.required('Required')
-		.min(4)
 		.test('Email', 'Provide a valid email ID', function(value) {
 			const emailPattern = /[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$/;
 			if (!this.parent.isPatient) return emailPattern.test(value);
 			return true;
 		}),
-	password: yup.string().required(),
+	password: yup.string().required('Required'),
 	isPatient: yup.boolean()
 });
 
@@ -108,7 +107,7 @@ function LoginForm(props) {
 										</View>
 										<TextInput
 											style={ loginStyles.textInput }
-											placeholder={ `Enter Your User ${isPatient ? 'User' : 'Email'} ID` }
+											placeholder={ `Enter Your ${isPatient ? 'User' : 'Email'} ID` }
 											onChangeText={ props.handleChange('username') }
 											value={ props.values.username }
 											onBlur={ props.handleBlur('username') }

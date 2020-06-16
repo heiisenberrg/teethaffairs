@@ -137,8 +137,6 @@ const styles = StyleSheet.create({
 		borderRadius: 50,
 		width: width - 200,
 		marginHorizontal: 10
-		// position: 'relative',
-		// top: 15
 	},
 	rangeText: {
 		marginTop: 10,
@@ -299,9 +297,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignContent: 'center',
 		alignItems: 'center',
-		marginTop: 2,
-		marginRight: 10,
-		marginLeft: -50
+		marginTop: 2
 	},
 	miniProfileImageWrap2: {
 		flexDirection: 'row',
@@ -344,8 +340,7 @@ const styles = StyleSheet.create({
 		color: '#363636',
 		fontSize: 13,
 		fontWeight: 'bold',
-		marginTop: 8,
-		lineHeight: 20
+		marginTop: 8
 	},
 	patientDetails: {
 		textTransform: 'capitalize',

@@ -28,7 +28,7 @@ function FamilyMembers(props) {
 
 	useEffect(
 		function storeResponse() {
-			getUserList(onGetUserListFailure);
+			getUserList();
 		},
 		[ refresh ]
 	);
@@ -38,18 +38,6 @@ function FamilyMembers(props) {
 			getUserList();
 		}
 	}, [ route.params ]);
-
-	const deactivateUserSuccess = () => {
-
-	};
-
-	const deactivateUserFailure = () => {
-
-	};
-
-	const onGetUserListFailure = () => {
-		// alert('Network error');
-	};
 
 	useEffect(function storeResponse() {}, [ usersList ]);
 
@@ -61,7 +49,7 @@ function FamilyMembers(props) {
 		let data = {
 			user_id: userDeactivateId
 		};
-		getDeactivateUserId(data, deactivateUserSuccess, deactivateUserFailure);
+		getDeactivateUserId(data);
 		setRefresh(!refresh);
 		setShowModal(false);
 	};
@@ -95,7 +83,9 @@ function FamilyMembers(props) {
 					<View jC={ 'flex-start' }>
 						<Image
 							style={ styles.profileImage }
-							source={ require('../../assets/profile.png') }
+							source={ item && item.profile_pic
+								? { uri: item.profile_pic }
+								: require('../../assets/profile.png') }
 						/>
 					</View>
 					<View row center jC={ 'space-between' } style={ styles.titleContainer }>
@@ -112,7 +102,7 @@ function FamilyMembers(props) {
 						</View>
 					</View>
 				</View>
-				{expandedCards && expandedCards.indexOf(index) !== -1 && (
+				{user && (user.user_type === 'PRIMARY_PATIENT' || user.user_type === 'PRIMARY-PATIENT') && expandedCards && expandedCards.indexOf(index) !== -1 && (
 					<View
 						row
 						center
@@ -207,7 +197,7 @@ function FamilyMembers(props) {
 				</View>
 			</Modal>
 			{
-				user && (user.user_type === 'PRIMARY_PATIENT' || user.user_type === 'PRIMARY-PATIENT') &&
+				user && (user.user_type === 'PRIMARY_PATIENT' || user.user_type === 'PRIMARY-PATIENT') && usersList &&  usersList.length < 9 &&
 				<TouchableOpacity
 					style={ styles.fabButton }
 					activeOpacity={ 0.8 }

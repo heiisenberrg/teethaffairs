@@ -1,6 +1,10 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
+    wrapper: {
+        flex: 1,
+        display: 'flex'
+    },
     card: {
         backgroundColor: '#ffffff',
         width: '100%',
@@ -195,7 +199,9 @@ const styles = StyleSheet.create({
     },
     doctorNotesContainer: {
         paddingTop: 30,
-        padding: 10
+        padding: 10,
+        display: 'flex',
+        flex: 1
     }
 });
 

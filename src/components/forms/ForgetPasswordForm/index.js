@@ -37,9 +37,7 @@ function ForgetPasswordForm(props) {
 	const onGetForgetPasswordSuccess = () => {
 		navigation.navigate('PasswordResetVerify');
 	};
-	// const onGetForgetPasswordFailure = () => {
-	// 	return alert('Something went wrong!');
-	// };
+
 	const handleSubmit = data => {
 		getForgetEmail({ data, onSuccess: onGetForgetPasswordSuccess });
 	};

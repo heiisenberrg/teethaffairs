@@ -32,6 +32,7 @@ function UserReminder(props) {
 							placeholderTextColor="grey"
 							numberOfLines={ 10 }
 							multiline={ true }
+							textAlignVertical="top"
 						/>
 					</View>
 				</View>
