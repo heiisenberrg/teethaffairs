@@ -12,12 +12,13 @@ const initialState = {
 var answered;
 var rejected;
 
-const parseHistoryQuestions = (data) => {
+const parseHistoryQuestions = data => {
 	answered = [];
 	rejected = [];
 
 	answered = data.filter(datum => datum.answered === true);
 	rejected = data.filter(datum => datum.rejected === true);
+
 	return {
 		answered: answered,
 		rejected: rejected

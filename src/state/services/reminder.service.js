@@ -51,3 +51,14 @@ export const get = data =>
         method: 'GET',
         withCredentials: true
     });
+
+	export const notificationUpdate = data =>
+	apiCall({
+		url: `${REMINDER_BASE_URL}${data.id}/reminder-data-create/`,
+		method: 'PUT',
+		headers: {
+				Accept: 'application/json'
+		},
+		data: data.data,
+		withCredentials: true
+  });

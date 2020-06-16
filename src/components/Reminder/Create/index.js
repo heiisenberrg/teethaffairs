@@ -9,13 +9,13 @@ import {
 import styles from './styles';
 import Icon from '../../global/Icon';
 import View from '../../global/View';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 import momentTimezone from 'moment-timezone';
 import { connect } from 'react-redux';
 import { createReminder, updateReminder } from '../../../state/actions/reminder';
 import { getUsers } from '../../../state/actions/user';
 import FlashMessage from '../../global/FlashMessage';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 /* eslint-disable no-mixed-spaces-and-tabs */
 
@@ -82,8 +82,10 @@ function CreateReminder(props) {
 		}
 	};
 
-	const doesUserAuthorizedToAcess = () => user && (user.user_type === 'PRIMARY_PATIENT' ||
-	user.user_type === 'PRIMARY-PATIENT');
+	const doesUserAuthorizedToAcess = () =>
+		user &&
+		(user.user_type === 'PRIMARY_PATIENT' ||
+			user.user_type === 'PRIMARY-PATIENT');
 
 	useEffect(function getUsersResponse() {
 		if (route && route.params && Object.keys(route.params).length > 0) {
@@ -107,7 +109,7 @@ function CreateReminder(props) {
 			setIsCreate(false);
 			setId(data.id);
 		}
-		if(doesUserAuthorizedToAcess()) {
+		if (doesUserAuthorizedToAcess()) {
 			getUsers();
 		}
 		if (
@@ -123,20 +125,6 @@ function CreateReminder(props) {
 
 	const showDatePicker = () => {
 		setDatePickerVisibility(true);
-	};
-
-	const hideDatePicker = () => {
-		setDatePickerVisibility(false);
-	};
-
-	const handleConfirm = date => {
-		hideDatePicker();
-		let time = moment(date).format('LT');
-		setSelectedTime({
-			hours: time.split(':')[0],
-			min: time.split(':')[1].split(' ')[0],
-			day: time.split(' ')[1]
-		});
 	};
 
 	const submit = () => {
@@ -171,11 +159,11 @@ function CreateReminder(props) {
 				reminder_day: selectedDays,
 				reminder_time:
 					selectedTime.day === 'AM'
-						? `${selectedTime.hours === 12 ? '00' : selectedTime.hours}:${
+						? `${selectedTime.hours === '12' ? '00' : selectedTime.hours}:${
 								selectedTime.min
 						  }:00`
 						: `${
-								selectedTime.hours === 12
+								selectedTime.hours === '12'
 									? 12
 									: parseInt(selectedTime.hours, 10) + 12
 						  }:${selectedTime.min}:00`,
@@ -224,7 +212,7 @@ function CreateReminder(props) {
 						type={ 'MaterialCommunityIcons' }
 						name={ 'check' }
 						color={ 'white' }
-						size={ 16 }
+						size={ 20 }
 					/>
 				</TouchableOpacity>
 				<View center style={ styles.accountIcon }>
@@ -263,25 +251,33 @@ function CreateReminder(props) {
 		}
 	};
 
+	const handleConfirm = date => {
+		hideDatePicker();
+		let time = moment(date).format('LT');
+		setSelectedTime({
+			hours: time.split(':')[0],
+			min: time.split(':')[1].split(' ')[0],
+			day: time.split(' ')[1]
+		});
+	};
+	const hideDatePicker = () => {
+		setDatePickerVisibility(false);
+	};
+
 	return (
 		<ScrollView style={ styles.container } showsVerticalScrollIndicator={ false }>
 			<View style={ styles.timeContainer }>
 				<Text style={ styles.timeText }>Set Time</Text>
 				<View row jC={ 'flex-start' }>
-					<TouchableOpacity
-						style={ styles.hourContent }
-						onPress={ showDatePicker }>
+					<TouchableOpacity style={ styles.hourContent } onPress={ showDatePicker }>
 						<Text style={ styles.hourText }>{selectedTime.hours}</Text>
 					</TouchableOpacity>
 					<TouchableOpacity
 						style={ styles.minuteContent }
-						onPress={ showDatePicker }
-					>
+						onPress={ showDatePicker }>
 						<Text style={ styles.minuteText }>{selectedTime.min}</Text>
 					</TouchableOpacity>
-					<TouchableOpacity
-						style={ styles.timeZone }
-						onPress={ showDatePicker }>
+					<TouchableOpacity style={ styles.timeZone } onPress={ showDatePicker }>
 						<Text style={ styles.timeZoneText }>{selectedTime.day}</Text>
 					</TouchableOpacity>
 				</View>
@@ -319,7 +315,7 @@ function CreateReminder(props) {
 									type={ 'MaterialCommunityIcons' }
 									name={ 'check' }
 									color={ 'white' }
-									size={ 15 }
+									size={ 21 }
 								/>
 							</TouchableOpacity>
 							<Text>Select All</Text>
@@ -392,7 +388,7 @@ function CreateReminder(props) {
 									type={ 'MaterialCommunityIcons' }
 									name={ 'check' }
 									color={ 'white' }
-									size={ 15 }
+									size={ 21 }
 								/>
 							</TouchableOpacity>
 							<Text>Select All</Text>

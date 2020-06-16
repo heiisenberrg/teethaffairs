@@ -36,9 +36,7 @@ function EmailVerificationForm(props) {
 	const { navigation, getOneTimePassword, is_verified } = props;
 
 	const handleSubmit = data => {
-		getOneTimePassword(
-			data
-		);
+		getOneTimePassword(data);
 	};
 
 	useEffect(
@@ -109,7 +107,10 @@ function mapStateToProps(state) {
 	};
 }
 
-export default connect(mapStateToProps, {
-	getOneTimePassword,
-	setOneTimePassword
-})(EmailVerificationForm);
+export default connect(
+	mapStateToProps,
+	{
+		getOneTimePassword,
+		setOneTimePassword
+	}
+)(EmailVerificationForm);

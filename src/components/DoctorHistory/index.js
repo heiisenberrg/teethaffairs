@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Text, TouchableOpacity, Image, ScrollView, FlatList
+	Text,
+	TouchableOpacity,
+	Image,
+	ScrollView,
+	FlatList
 } from 'react-native';
 import { connect } from 'react-redux';
 import moment from 'moment';
@@ -10,6 +14,8 @@ import Icon from '../global/Icon';
 
 import styles from './styles';
 import { getHistoryQuestions } from '../../state/actions/doctor';
+import { useIsFocused } from '@react-navigation/native';
+import Video from 'react-native-video';
 
 var answered = 0;
 var rejected = 0;
@@ -18,47 +24,46 @@ const DoctorHistory = props => {
 	const { questions, getHistoryQuestions, navigation } = props;
 	const [ list, setList ] = useState([]);
 	const [ filterBy, setFilterBy ] = useState('answered');
-	const [ length, setLength ] = useState( { answered: '', rejected: '' } );
+	const [ length, setLength ] = useState({ answered: '', rejected: '' });
+	const isFocused = useIsFocused();
 
 	useEffect(() => {
-		getHistoryQuestions(() => { }, () => {});
-	}, [ filterBy ]);
+		getHistoryQuestions(() => {}, () => {});
+	}, [ filterBy, isFocused ]);
 
 	useEffect(() => {
 		filterList(filterBy);
 	}, [ questions ]);
-	
+
 	const filterList = type => {
-		if(questions) {
+		if (questions) {
 			let arrayLength = { ...length };
-			arrayLength[type] = (type === 'answered') ? questions.answered.length : questions.rejected.length;
+			arrayLength[type] =
+				type === 'answered'
+					? questions.answered.length
+					: questions.rejected.length;
 			setLength(arrayLength);
-			setList((type === 'answered') ? [ ...questions.answered ] : [ ...questions.rejected ]);
-			rejected = (questions.rejected).length;
-			answered = (questions.answered).length;
-		}	
+			setList(
+				type === 'answered' ? [ ...questions.answered ] : [ ...questions.rejected ]
+			);
+			rejected = questions.rejected.length;
+			answered = questions.answered.length;
+		}
 	};
 
 	const enableDentalQuestionView = data => {
 		navigation.navigate('DentistResponse', { data: data });
-  };
+	};
 
-    const _renderDentalVisitCards = ({ item: question, index }) => (
+	const _renderDentalVisitCards = ({ item: question, index }) => (
 		<TouchableOpacity
 			key={ `cards-${index}` }
 			style={ styles.card }
 			activeOpacity={ 0.8 }
-			onPress={ () => enableDentalQuestionView(question) }
-		>
-			<View
-				style={ styles.cardHeader }
-			>
+			onPress={ () => enableDentalQuestionView(question) }>
+			<View style={ styles.cardHeader }>
 				<View style={ styles.circleWrapper }>
-					<Icon
-						type={ 'Ionicons' }
-						name={ 'ios-chatbubbles' }
-						size={ 24 }
-					/>
+					<Icon type={ 'Ionicons' } name={ 'ios-chatbubbles' } size={ 24 } />
 				</View>
 				<View style={ styles.content }>
 					<View style={ styles.noteTitle }>
@@ -67,10 +72,18 @@ const DoctorHistory = props => {
 					<View style={ styles.avatarContent }>
 						<Image
 							style={ styles.avatar }
-							source={ question?.patient_pic?.profile_pic ? { uri: question.patient_pic.profile_pic } : require('../../assets/profile.png') }
+							source={
+								question?.patient_pic?.profile_pic
+									? { uri: question.patient_pic.profile_pic }
+									: require('../../assets/profile.png')
+							}
 						/>
-						<Text style={ [ styles.normalText, styles.person ] }>{question.patient_name}</Text>
-						<Text style={ styles.normalText }>{moment(question.question_asked_on).format('DD MMM YYYY')}</Text>
+						<Text style={ [ styles.normalText, styles.person ] }>
+							{question.patient_name}
+						</Text>
+						<Text style={ styles.normalText }>
+							{moment(question.question_asked_on).format('DD MMM YYYY')}
+						</Text>
 					</View>
 				</View>
 			</View>
@@ -80,62 +93,90 @@ const DoctorHistory = props => {
 			<ScrollView
 				contentContainerStyle={ styles.reportContainer }
 				horizontal={ true }
-				showsHorizontalScrollIndicator={ false }
-			>
-				{
-					question.media && question.media.length > 0 && question.media.map((item, index) =>
-						<Image
-							key={ `index_${index}` }
-							style={ styles.imageReport }
-							source={ {
-								uri: item.media
-							} }
-						/>
-					)
-				}
+				showsHorizontalScrollIndicator={ false }>
+				{question.media &&
+					question.media.length > 0 &&
+					question.media.map((item, index) =>
+						(item.mime_type === 'application/octet-stream' ? (
+							<Video
+								key={ `index_${index}` }
+								style={ styles.imageReport }
+								source={ {
+									uri: item.media
+								} }
+							/>
+						) : (
+							<Image
+								key={ `index_${index}` }
+								style={ styles.imageReport }
+								source={ {
+									uri: item.media
+								} }
+							/>
+						))
+					)}
 			</ScrollView>
 		</TouchableOpacity>
-    );
-    
-    return (
-        <View style={ styles.container }>
-			<View row  style={ styles.filterContainer }>
+	);
+
+	return (
+		<View style={ styles.container }>
+			<View row style={ styles.filterContainer }>
 				<TouchableOpacity
-					style={ [ styles.buttonWrapper, (filterBy === 'answered' ? styles.answeredButton : styles.answeredInactive) ] }
+					style={ [
+						styles.buttonWrapper,
+						filterBy === 'answered'
+							? styles.answeredButton
+							: styles.answeredInactive
+					] }
 					activeOpacity={ 0.8 }
-					onPress={ () => [ setFilterBy('answered'), filterList('answered') ] }
-				>
-					<Text style={ [ styles.buttonText, (filterBy === 'rejected' && styles.inactiveAnswer) ] }>Answered({answered})</Text>
+					onPress={ () => [ setFilterBy('answered'), filterList('answered') ] }>
+					<Text
+						style={ [
+							styles.buttonText,
+							filterBy === 'rejected' && styles.inactiveAnswer
+						] }>
+						Answered({answered})
+					</Text>
 				</TouchableOpacity>
 				<TouchableOpacity
-					style={ [ styles.buttonWrapper, (filterBy === 'rejected' ? styles.rejectedButton : styles.rejectedInactive) ] }
+					style={ [
+						styles.buttonWrapper,
+						filterBy === 'rejected'
+							? styles.rejectedButton
+							: styles.rejectedInactive
+					] }
 					activeOpacity={ 0.8 }
-					onPress={ () => [ setFilterBy('rejected'), filterList('rejected') ] }
-				>
-					<Text style={ [ styles.buttonText, (filterBy === 'answered' && styles.inactiveReject ) ] }>Rejected({rejected})</Text>
+					onPress={ () => [ setFilterBy('rejected'), filterList('rejected') ] }>
+					<Text
+						style={ [
+							styles.buttonText,
+							filterBy === 'answered' && styles.inactiveReject
+						] }>
+						Rejected({rejected})
+					</Text>
 				</TouchableOpacity>
 			</View>
-            {
-                list && list.length > 0 ?
-                    <FlatList
-                        style={ styles.questionContainer }
-						data={ list }
-						extraData = { list }
-                        renderItem={ _renderDentalVisitCards }
-                        keyExtractor={ item => item.id }
-                        showsVerticalScrollIndicator={ false }
-                    />
-                    :
-                    <View style={ styles.emptyResult }>
-                        <Text>No Teledental Questions.</Text>
-                    </View>
-            }
-        </View>
-    );
+			{list && list.length > 0 ? (
+				<FlatList
+					style={ styles.questionContainer }
+					data={ list }
+					extraData={ list }
+					renderItem={ _renderDentalVisitCards }
+					keyExtractor={ item => item.id }
+					showsVerticalScrollIndicator={ false }
+				/>
+			) : (
+				<View style={ styles.emptyResult }>
+					<Text>No Teledental Questions.</Text>
+				</View>
+			)}
+		</View>
+	);
 };
 
-const mapStateToProps = (state) => ({
-    questions: state.doctor.historyQuestions
+const mapStateToProps = state => ({
+	questions: state.doctor.historyQuestions
 });
 
 export default connect(

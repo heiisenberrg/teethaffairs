@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
         height: 20
     },
     time: {
-        marginTop: 3,
+        marginTop: 1,
         width:23,
         height: 23,
         marginLeft: 10

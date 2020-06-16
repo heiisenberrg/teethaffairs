@@ -16,12 +16,20 @@ import Icon from '../global/Icon';
 import styles from './style';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { answerQuestion, rejectQuestion, verifyPin } from '../../state/actions/doctor';
+import {
+	answerQuestion,
+	rejectQuestion,
+	verifyPin
+} from '../../state/actions/doctor';
 import ImagePreviewer from '../../components/global/ImagePreviewer';
 import { CommonActions } from '@react-navigation/native';
+import Video from 'react-native-video';
+import VideoPreviewer from '../../components/global/VideoPreviewer';
 
 /* eslint-disable no-undef */
-const keyboardVerticalOffset = Platform.OS === 'ios' ? 0: 0;
+const keyboardVerticalOffset = Platform.OS === 'ios' ? 0 : 0;
+
+import remoteStyles from '../UserRemoteConsultation/styles';
 
 const detail = [
 	{
@@ -98,6 +106,11 @@ const detail = [
 		question: 'Loose tooth',
 		answer: 'tooth_loss',
 		type: 'string'
+	},
+	{
+		question: 'Prior History',
+		answer: 'prior_history',
+		type: 'string'
 	}
 ];
 
@@ -108,33 +121,17 @@ const followUp = [
 	'Schedule an office when convenient within 2-3 months, do not wait till issue gets worse.'
 ];
 
-const drugs = [
-	'Amoxicilin 500',
-	'Amoxicilin 250',
-	'Amoxicilin 250 liq',
-	'Amoxicilin prophy',
-	'Augumentin 800',
-	'Clindamycin 150',
-	'Ibuprofen 800',
-	'Motrin 800',
-	'Paracetamol 650',
-	'Stemitil MD',
-	'Zintac'
-];
-
 const rejectReasons = [
 	'Unclear questions',
 	'Too complex/Beyond scope for Remote Consultation'
 ];
 
+var medications_array = [];
+
 function RemoteConsultationRequest(props) {
 	const { route, navigation, answerQuestion, rejectQuestion, verifyPin } = props;
 	const [ isResponse, setIsResponse ] = useState(false);
 	const [ isQuestionVisible, setIsQuestionVisible ] = useState(true);
-	const [ showDropDown, setShowDropDown ] = useState(false);
-	const [ selectedDrugs, setSelectedDrugs ] = useState([]);
-	const [ filteredDrugs, setFilteredDrugs ] = useState([]);
-	const [ searchValue, setSearchValue ] = useState('');
 	const [ showModal, setShowModal ] = useState(false);
 	const [ modalContent, setModalContent ] = useState('pin');
 	const [ pinValue, setPinValue ] = useState('');
@@ -147,8 +144,12 @@ function RemoteConsultationRequest(props) {
 	const [ uri, setUri ] = useState('');
 	const [ enablePreview, setEnablePreview ] = useState(false);
 	const [ showToast, setShowToast ] = useState(false);
+	const [ medicationsList, setMedicationsList ] = useState([]);
+	const [ textInputHolder1, setTextInputHolder1 ] = useState('');
+	const [ isImage, setIsImage ] = useState(true);
+
 	let scrollView;
-	
+
 	useEffect(() => {
 		setShowModal(!showModal);
 		if (route && route.params && Object.keys(route.params).length > 0) {
@@ -156,43 +157,23 @@ function RemoteConsultationRequest(props) {
 		}
 	}, []);
 
-	const filterDrugs = value => {
-		let filteredDrugs = drugs;
-		if (value !== '') {
-			filteredDrugs = [];
-			drugs.map(x => {
-				if (x.includes(value)) {
-					filteredDrugs.push(x);
-				}
-			});
-		}
-		setFilteredDrugs(filteredDrugs);
-		setShowDropDown(true);
-	};
-
-	const selectDrug = item => {
-		let data = [ ...selectedDrugs ];
-		if (data.indexOf(item) !== -1) {
-			data.splice(data.indexOf(item), 1);
-		} else {
-			data.push(item);
-		}
-		setSelectedDrugs(data);
-	};
-
 	const submitPin = () => {
 		if (pinValue !== '') {
-			verifyPin( { 
-				secret_pin: pinValue, 
-				question_id: data.id 
-			}, verifyPinSuccess, () => setShowError(!showError) );
+			verifyPin(
+				{
+					secret_pin: pinValue,
+					question_id: data.id
+				},
+				verifyPinSuccess,
+				() => setShowError(!showError)
+			);
 		} else {
 			FlashMessage.message('Alert', 'Please enter the pin to continue', 'red');
 		}
 	};
 
 	function verifyPinSuccess(response) {
-		if(response && response.error_code === 2001) {
+		if (response && response.error_code === 2001) {
 			FlashMessage.message('Alert', 'Invalid PIN', 'red');
 			navigation.goBack();
 		} else {
@@ -202,41 +183,53 @@ function RemoteConsultationRequest(props) {
 	}
 
 	const submit = type => {
-			if (!isResponse) {
+		if (!isResponse) {
+			if (type === 'answer') {
+				setIsResponse(!isResponse);
+				setIsQuestionVisible(!isQuestionVisible);
+				scrollView.scrollTo({ x: 0, y: 0, animated: true });
+			} else if (type === 'reject') {
+				setShowModal(!showModal);
+			} else if (type === 'confirm') {
+				let rejectData = {
+					resp_status: false,
+					response_text: rejectReasons[rejectReason]
+				};
+				if (rejectReason === '') {
+					FlashMessage.message(
+						'Alert',
+						'Please choose any one of the options.',
+						'#ff4444'
+					);
+				} else {
+					rejectQuestion({ data: rejectData, id: data.id, navigation });
+				}
+			}
+		} else {
+			if (
+				selectedFollowup !== '' &&
+				opinion &&
+				treatment &&
+				medicationsList.length > 0
+			) {
 				if (type === 'answer') {
-					setIsResponse(!isResponse);
-					setIsQuestionVisible(!isQuestionVisible);
-					scrollView.scrollTo({ x: 0, y: 0, animated: true });
-				} else if (type === 'reject') {
-					setShowModal(!showModal);
-				} else if (type === 'confirm') {
-					let rejectData = {
-						resp_status: false,
-						response_text: rejectReasons[rejectReason]
+					let answerData = {
+						resp_status: true,
+						response_text: 'Follow the treatment',
+						doctor_opinion: opinion,
+						recommended_treatment: treatment,
+						recommended_followup: followUp[selectedFollowup],
+						recommended_medications: medicationsList.join(' ')
 					};
-					if(rejectReason === '') {
-						FlashMessage.message('Alert', 'Please choose any one of the options.', '#ff4444');
-					}
-					else {
-						rejectQuestion({ data: rejectData, id: data.id, navigation });
-					}
+					answerQuestion({
+						data: answerData,
+						id: data.id,
+						onSuccess: () => onAnswerSuccess()
+					});
 				}
 			} else {
-				if(selectedFollowup !== '' && opinion && treatment && selectedDrugs.length > 0) {
-					if (type === 'answer') {
-						let answerData = {
-							resp_status: true,
-							response_text: 'Follow the treatment',
-							doctor_opinion: opinion,
-							recommended_treatment: treatment,
-							recommended_followup: followUp[selectedFollowup],
-							recommended_medications: selectedDrugs.join(' ')
-						};
-						answerQuestion({ data: answerData, id: data.id, onSuccess: () => onAnswerSuccess() });
-					}
-				} else {
-					FlashMessage.message('Alert', 'Please fill up all fields', 'red');
-				}
+				FlashMessage.message('Alert', 'Please fill up all fields', 'red');
+			}
 		}
 	};
 
@@ -256,8 +249,29 @@ function RemoteConsultationRequest(props) {
 		navigation.navigate('Home');
 	};
 
-	const handlePreview = () => {
+	const handlePreview = data => {
+		if (data === 'image') {
+			setIsImage(true);
+		} else {
+			setIsImage(false);
+		}
 		setEnablePreview(!enablePreview);
+	};
+
+	const medicationHandler = () => {
+		if (textInputHolder1 !== '') {
+			medications_array.push(textInputHolder1);
+			setMedicationsList(medications_array);
+			setTextInputHolder1('');
+		}
+	};
+
+	const onRemoveMedicationsHandler = remove_item => {
+		medications_array = medications_array.filter(data =>
+			(data !== remove_item ? data : '')
+		);
+		setMedicationsList(medications_array);
+		setTextInputHolder1('');
 	};
 
 	const patientQuestions = () => {
@@ -306,178 +320,135 @@ function RemoteConsultationRequest(props) {
 	const doctorResponse = () => {
 		return (
 			<View style={ styles.mv10 }>
-				
-			<KeyboardAvoidingView
-				behavior={ `${Platform.OS === 'ios' ? 'padding' : 'absolute'}` }
-				keyboardVerticalOffset={ keyboardVerticalOffset }>
-				<Text
-					s={ 14 }
-					lh={ 16 }
-					w={ 'bold' }
-					c={ '#108F79' }
-					style={ { ...styles.mv5, ...styles.upperCase } }>
-					Response from doctor
-				</Text>
-				<View style={ styles.mv10 }>
-					<Text s={ 14 } lh={ 20 } w={ 'bold' } style={ styles.mv5 }>
-						Differential diagnosis/ Opinion/ Issue
-					</Text>
-					<View style={ styles.textInputContainer }>
-						<TextInput
-							numberOfLines={ 4 }
-							multiline={ true }
-							textAlignVertical="top"
-							value={ opinion }
-							style={ [ styles.p10, styles.flex ] }
-							onChangeText={ value => setOpinion(value) }
-						/>
-					</View>
-				</View>
-				<View style={ styles.mv10 }>
-					<Text s={ 14 } lh={ 20 } w={ 'bold' } style={ styles.mv5 }>
-						Recommended treatment / Temporary home care
-					</Text>
-					<View style={ styles.textInputContainer }>
-						<TextInput
-							numberOfLines={ 4 }
-							multiline={ true }
-							textAlignVertical="top"
-							value={ treatment }
-							style={ [ styles.p10, styles.flex ] }
-							onChangeText={ value => setTreatment(value) }
-						/>
-					</View>
-				</View>
-				<View style={ styles.mv10 }>
-					<Text s={ 14 } lh={ 16 } w={ 'bold' } style={ styles.mv5 }>
-						Recommended follow up
-					</Text>
-					<View style={ styles.mv10 }>
-						{followUp &&
-							followUp.map((data, index) => {
-								return (
-									<View row key={ `followup-${index}` } style={ styles.mv10 }>
-										<TouchableOpacity
-											style={ {
-												...styles.followUpContainer,
-												...{
-													borderColor: '#CAC7C7',
-													backgroundColor:
-														selectedFollowup === index ? '#00C57D' : 'white'
-												}
-											} }
-											onPress={ () => setSelectedFollowup(index) }>
-											<Icon
-												type={ 'MaterialCommunityIcons' }
-												name={ 'check' }
-												color={ 'white' }
-												size={ 15 }
-											/>
-										</TouchableOpacity>
-										<Text s={ 13 } lh={ 18 } style={ styles.flex }>
-											{data}
-										</Text>
-									</View>
-								);
-							})}
-					</View>
-				</View>
-				<View style={ styles.mv10 }>
-					<Text s={ 14 } lh={ 16 } w={ 'bold' } style={ styles.mv5 }>
-						Recommended medications
-					</Text>
-					<View style={ styles.flex }>
-						<FlatList
-							numColumns={ 2 }
-							data={ selectedDrugs }
-							renderItem={ ({ item, index }) => {
-								return (
-									<View
-										key={ `drugs-${index}` }
-										row
-										aI={ 'center' }
-										style={ styles.selectedDrugContent }>
-										<TouchableOpacity
-											style={ styles.m5 }
-											onPress={ () => selectDrug(item) }>
-											<Icon
-												type={ 'MaterialCommunityIcons' }
-												name={ 'close' }
-												color={ 'red' }
-												size={ 18 }
-											/>
-										</TouchableOpacity>
-										<Text>{item}</Text>
-									</View>
-								);
-							} }
-						/>
-					</View>
-					<View row style={ styles.mv10 }>
-						<View style={ styles.flex }>
-							<View row center style={ styles.searchContent }>
+				<ScrollView>
+					<KeyboardAvoidingView
+						behavior={ `${Platform.OS === 'ios' ? 'padding' : 'absolute'}` }
+						keyboardVerticalOffset={ keyboardVerticalOffset }>
+						<Text
+							s={ 14 }
+							lh={ 16 }
+							w={ 'bold' }
+							c={ '#108F79' }
+							style={ { ...styles.mv5, ...styles.upperCase } }>
+							Response from doctor
+						</Text>
+						<View style={ styles.mv10 }>
+							<Text s={ 14 } lh={ 20 } w={ 'bold' } style={ styles.mv5 }>
+								Differential diagnosis/ Opinion/ Issue
+							</Text>
+							<View style={ styles.textInputContainer }>
 								<TextInput
+									numberOfLines={ 4 }
+									multiline={ true }
+									textAlignVertical="top"
+									value={ opinion }
 									style={ [ styles.p10, styles.flex ] }
-									value={ searchValue }
-									onChangeText={ value => [
-										setSearchValue(value),
-										filterDrugs(value)
-									] }
+									onChangeText={ value => setOpinion(value) }
 								/>
-								<TouchableOpacity
-									style={ styles.m10 }
-									onPress={ () => setShowDropDown(!showDropDown) }>
-									<Icon
-										type={ 'Ionicons' }
-										name={ 'ios-search' }
-										size={ 18 }
-										color={ 'grey' }
-									/>
-								</TouchableOpacity>
 							</View>
-							{showDropDown && (
-								<View style={ styles.dropdownContainer }>
-									<ScrollView
-										automaticallyAdjustContentInsets={ false }
-										contentContainerStyle={ styles.flexGrow }
-										showsVerticalScrollIndicator={ false }>
-										{filteredDrugs &&
-											filteredDrugs.map((item, index) => {
-												return (
-													<View
-														row
-														key={ `index-${index}` }
-														style={ styles.dropdownContent }>
-														<Text>{item}</Text>
-														<TouchableOpacity
-															style={ {
-																...styles.searchContainer,
-																...{
-																	borderColor: '#CAC7C7',
-																	backgroundColor:
-																		selectedDrugs.indexOf(item) !== -1
-																			? '#00C57D'
-																			: 'white'
-																}
-															} }
-															onPress={ () => selectDrug(item) }>
-															<Icon
-																type={ 'MaterialCommunityIcons' }
-																name={ 'check' }
-																color={ 'white' }
-																size={ 15 }
-															/>
-														</TouchableOpacity>
-													</View>
-												);
-											})}
-									</ScrollView>
-								</View>
-							)}
 						</View>
-					</View>
-				</View>
-				</KeyboardAvoidingView>
+						<View style={ styles.mv10 }>
+							<Text s={ 14 } lh={ 20 } w={ 'bold' } style={ styles.mv5 }>
+								Recommended treatment / Temporary home care
+							</Text>
+							<View style={ styles.textInputContainer }>
+								<TextInput
+									numberOfLines={ 4 }
+									multiline={ true }
+									textAlignVertical="top"
+									value={ treatment }
+									style={ [ styles.p10, styles.flex ] }
+									onChangeText={ value => setTreatment(value) }
+								/>
+							</View>
+						</View>
+						<View style={ styles.mv10 }>
+							<Text s={ 14 } lh={ 16 } w={ 'bold' } style={ styles.mv5 }>
+								Recommended follow up
+							</Text>
+							<View style={ styles.mv10 }>
+								{followUp &&
+									followUp.map((data, index) => {
+										return (
+											<View row key={ `followup-${index}` } style={ styles.mv10 }>
+												<TouchableOpacity
+													style={ {
+														...styles.followUpContainer,
+														...{
+															borderColor: '#CAC7C7',
+															backgroundColor:
+																selectedFollowup === index ? '#00C57D' : 'white'
+														}
+													} }
+													onPress={ () => setSelectedFollowup(index) }>
+													<Icon
+														type={ 'MaterialCommunityIcons' }
+														name={ 'check' }
+														color={ 'white' }
+														size={ 21 }
+													/>
+												</TouchableOpacity>
+												<Text s={ 13 } lh={ 18 } style={ styles.flex }>
+													{data}
+												</Text>
+											</View>
+										);
+									})}
+							</View>
+						</View>
+						<View style={ styles.mv10 }>
+							<Text s={ 14 } lh={ 16 } w={ 'bold' } style={ styles.mv5 }>
+								Recommended medications
+							</Text>
+							<View style={ remoteStyles.allergiesBox }>
+								<View style={ remoteStyles.switchWrapper } />
+
+								<View style={ remoteStyles.MainContainer }>
+									<TextInput
+										placeholder="Enter Value Here"
+										multiline
+										onChangeText={ data => setTextInputHolder1(data) }
+										value={ textInputHolder1 }
+										style={ remoteStyles.textInputStyle }
+										underlineColorAndroid="transparent"
+									/>
+									<TouchableOpacity
+										onPress={ medicationHandler }
+										activeOpacity={ 0.7 }
+										style={ remoteStyles.button }>
+										<Image
+											style={ remoteStyles.roundButton }
+											source={ require('../../assets/round-plus.png') }
+										/>
+									</TouchableOpacity>
+								</View>
+								<View style={ remoteStyles.dummy1 }>
+									{medicationsList.map((data, index) => {
+										return (
+											<View
+												style={ remoteStyles.enteredAllergiesBox }
+												key={ index }>
+												<Text key={ index } style={ remoteStyles.enteredAllergies }>
+													{data}
+												</Text>
+												<TouchableOpacity
+													onPress={ () => onRemoveMedicationsHandler(data) }>
+													<Text style={ remoteStyles.crossText1 }>X</Text>
+												</TouchableOpacity>
+											</View>
+										);
+									})}
+								</View>
+								<Text style={ remoteStyles.infoText }>
+									Type none if no medications
+								</Text>
+							</View>
+							<View row style={ styles.mv10 }>
+								<View style={ styles.flex } />
+							</View>
+						</View>
+					</KeyboardAvoidingView>
+				</ScrollView>
 			</View>
 		);
 	};
@@ -541,7 +512,9 @@ function RemoteConsultationRequest(props) {
 							Medical Conditions:
 						</Text>
 						<Text s={ 14 } lh={ 16 } style={ styles.mv5 }>
-							{data.medical_conditions ? data.medical_conditions.join(', ') : 'N/A'}
+							{data.medical_conditions
+								? data.medical_conditions.join(', ')
+								: 'N/A'}
 						</Text>
 					</View>
 					<View style={ styles.flexColumn }>
@@ -568,19 +541,34 @@ function RemoteConsultationRequest(props) {
 					data={ data.media }
 					renderItem={ ({ item, index }) => {
 						return (
-							<TouchableOpacity
-								activeOpacity={ 0.9 }
-								onPress={ () => [ setUri(item.media), handlePreview() ] }
-								key={ `${item}-${index}` }
-							>
-								<Image
-									key={ `${item}-${index}` }
-									style={ styles.attachmentImage }
-									source={ {
-										uri: item.media
-									} }
-								/>
-							</TouchableOpacity>
+							<View>
+								{item.mime_type === 'application/octet-stream' ? (
+									<TouchableOpacity
+										activeOpacity={ 0.9 }
+										onPress={ () => [ setUri(item.media), handlePreview('video') ] }
+										key={ `${item}-${index}` }>
+										<Video
+											source={ {
+												uri: item.media
+											} }
+											style={ styles.attachmentImage }
+										/>
+									</TouchableOpacity>
+								) : (
+									<TouchableOpacity
+										activeOpacity={ 0.9 }
+										onPress={ () => [ setUri(item.media), handlePreview('image') ] }
+										key={ `${item}-${index}` }>
+										<Image
+											key={ `${item}-${index}` }
+											style={ styles.attachmentImage }
+											source={ {
+												uri: item.media
+											} }
+										/>
+									</TouchableOpacity>
+								)}
+							</View>
 						);
 					} }
 				/>
@@ -661,7 +649,11 @@ function RemoteConsultationRequest(props) {
 					<View style={ styles.modalContent }>
 						<TouchableOpacity
 							style={ styles.crossButton }
-							onPress={ () => (modalContent === 'pin' ? [ setShowModal(!showModal), navigation.goBack() ] : setShowModal(!showModal)) }>
+							onPress={ () =>
+								(modalContent === 'pin'
+									? [ setShowModal(!showModal), navigation.goBack() ]
+									: setShowModal(!showModal))
+							}>
 							<Icon
 								type={ 'MaterialCommunityIcons' }
 								name={ 'close' }
@@ -689,7 +681,14 @@ function RemoteConsultationRequest(props) {
 										onChangeText={ value => setPinValue(value) }
 									/>
 								</View>
-								{showError && <Text center c={ 'red' } style={ [ styles.upperCase, styles.mv10 ] }>Enter a valid pin</Text>}
+								{showError && (
+									<Text
+										center
+										c={ 'red' }
+										style={ [ styles.upperCase, styles.mv10 ] }>
+										Enter a valid pin
+									</Text>
+								)}
 								<TouchableOpacity
 									style={ styles.okButton }
 									onPress={ () => submitPin() }>
@@ -721,7 +720,10 @@ function RemoteConsultationRequest(props) {
 									{rejectReasons &&
 										rejectReasons.map((data, index) => {
 											return (
-												<View key={ `rejectedreasons-${index}` } row style={ styles.mv10 }>
+												<View
+													key={ `rejectedreasons-${index}` }
+													row
+													style={ styles.mv10 }>
 													<TouchableOpacity
 														style={ styles.radioContainer }
 														onPress={ () => setRejectReason(index) }>
@@ -764,14 +766,16 @@ function RemoteConsultationRequest(props) {
 	};
 
 	const toast = () => {
-		return (<Toast
-			title="Success"
-			message="Successfully submitted the answer"
-			showModal={ showToast }
-			handleSubmit={ navigateToListScreen }
-			showClose={ false }
-			successButtontext="Continue"
-		/>);
+		return (
+			<Toast
+				title="Success"
+				message="Successfully submitted the answer"
+				showModal={ showToast }
+				handleSubmit={ navigateToListScreen }
+				showClose={ false }
+				successButtontext="Continue"
+			/>
+		);
 	};
 
 	return (
@@ -780,8 +784,7 @@ function RemoteConsultationRequest(props) {
 			style={ styles.scrollViewContainer }
 			ref={ ref => {
 				scrollView = ref;
-			} }
-			>
+			} }>
 			{!isResponse && (
 				<View row jC={ 'center' }>
 					<View center style={ styles.container }>
@@ -813,20 +816,34 @@ function RemoteConsultationRequest(props) {
 			{patientQuestions()}
 			{isResponse && doctorResponse()}
 			{actionButtons()}
-			<ImagePreviewer
-				uri={ uri }
-				enablePreview={ enablePreview }
-				handlePreview={ handlePreview }
-			/>
+			{isImage ? (
+				<ImagePreviewer
+					uri={ uri }
+					enablePreview={ enablePreview }
+					handlePreview={ handlePreview }
+				/>
+			) : (
+				<VideoPreviewer
+					uri={ uri }
+					enablePreview={ enablePreview }
+					handlePreview={ handlePreview }
+				/>
+			)}
 			{toast()}
 		</ScrollView>
 	);
 }
 
-const mapDispatchToProps = (dispatch) => ({
-	answerQuestion: (data, onSuccess, onFailure) => dispatch(answerQuestion(data, onSuccess, onFailure)),
-	rejectQuestion: (data, onSuccess, onFailure) => dispatch(rejectQuestion(data, onSuccess, onFailure)),
-	verifyPin: (data, onSuccess, onFailure) => dispatch(verifyPin(data, onSuccess, onFailure))
+const mapDispatchToProps = dispatch => ({
+	answerQuestion: (data, onSuccess, onFailure) =>
+		dispatch(answerQuestion(data, onSuccess, onFailure)),
+	rejectQuestion: (data, onSuccess, onFailure) =>
+		dispatch(rejectQuestion(data, onSuccess, onFailure)),
+	verifyPin: (data, onSuccess, onFailure) =>
+		dispatch(verifyPin(data, onSuccess, onFailure))
 });
 
-export default connect(null, mapDispatchToProps)(RemoteConsultationRequest);
+export default connect(
+	null,
+	mapDispatchToProps
+)(RemoteConsultationRequest);

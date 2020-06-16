@@ -88,7 +88,7 @@ export const updateNotes = data =>
 		withCredentials: true
 	});
 
-export const updateHealthHistory = data => 
+export const updateHealthHistory = data =>
 	apiCall({
 		url: `${NOTE_EDIT}${data.userNoteId}/note-edit/`,
 		method: 'PUT',
@@ -111,7 +111,8 @@ export const sendQuestions = data =>
 		withCredentials: true
 	});
 
-export const dentalVisit = data => apiCall({
+export const dentalVisit = data =>
+	apiCall({
 		url: `${DENTAL_VISIT}`,
 		method: 'GET',
 		data,
@@ -122,7 +123,8 @@ export const dentalVisit = data => apiCall({
 		withCredentials: true
 	});
 
-export const getRemoteConsultationsForPatient = data => apiCall({
+export const getRemoteConsultationsForPatient = data =>
+	apiCall({
 		url: `${GET_REMOTE_CONSULTATION_FOR_PATIENTS}`,
 		method: 'GET',
 		data,
@@ -186,7 +188,7 @@ export const removeDentalVisit = data =>
 	});
 
 export const updateNote = (data, id) =>
-    apiCall({
+	apiCall({
 		url: `${USER_NOTES}${id}/`,
 		method: 'PUT',
 		headers: {

@@ -21,6 +21,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import TextInputField from '../../textInputs/TextInputField';
 import passwordStyle from '../../textInputs/style';
 import { getAddMember, setAddMember } from '../../../state/actions/journal';
+import { uploadProfilePicture } from '../../../state/actions/user';
 
 import styles from './styles';
 import globalStyles from '../../../globalStyles';
@@ -29,17 +30,18 @@ import calender from '../../../assets/calender.png';
 import { Dropdown } from 'react-native-material-dropdown';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 
-import dropdownIcon from '../../../assets/drop-right.png';
 import FlashMessage from '../../global/FlashMessage';
 import Tooltip from '../../global/Tooltip/Tooltip';
 import Icon from '../../global/Icon';
+import Config from 'react-native-config';
+import RNFetchBlob from 'rn-fetch-blob';
 
 const { width } = Dimensions.get('screen');
 
 const addMemberSchema = yup.object({
 	first_name: yup.string().required('Required'),
 	last_name: yup.string().required('Required'),
-	username: yup.string().required('User ID is a required field.'),
+	username: yup.string(),
 	password: yup
 		.string()
 		.min(8, 'Too Short!')
@@ -91,7 +93,7 @@ const imageOptions = {
 };
 
 /* eslint-disable no-undef */
-const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
+const keyboardVerticalOffset = Platform.OS === 'ios' ? 0 : 0;
 
 let relation_options = [
 	{
@@ -130,7 +132,15 @@ const options = [
 var addedMember;
 
 function AddMembersForm(props) {
-	const { navigation, getAddMember, route: { params: { userdata } }, user } = props;
+	const {
+		navigation,
+		getAddMember,
+		route: {
+			params: { userdata }
+		},
+		user,
+		uploadProfilePicture
+	} = props;
 	const [ isModalVisible, setIsModalVisible ] = useState(false);
 	const [ addMember, setAddMember ] = useState(false);
 	const [ imageSource, setImageSource ] = useState(null);
@@ -142,18 +152,27 @@ function AddMembersForm(props) {
 	const [ birthDate, setBirthDate ] = useState(userdata.date_of_birth);
 	const [ showEye, setShowEye ] = useState(true);
 	const [ showConfirmEye, setShowConfirmEye ] = useState(true);
+	const [ userName, setUserName ] = useState(userdata.username);
+	const [ checkExist, setCheckExist ] = useState(true);
 
 	const handleSubmit = memberDetails => {
-		memberDetails.zipcode = memberDetails.zipcode && memberDetails.zipcode.length > 0 ? [ memberDetails.zipcode ]: user.zipcodes;
+		memberDetails.zipcode =
+			memberDetails.zipcode && memberDetails.zipcode.length > 0
+				? [ memberDetails.zipcode ]
+				: user.zipcodes;
 		memberDetails.email = memberDetails.username + '@teethaffais.com';
-		
+
 		memberDetails.profile.relationship = memberDetails.relation;
 
 		if (updateMember) {
 			memberDetails.id = userId;
 		}
 		memberDetails.date_of_birth = birthDate;
-		getAddMember({ data: memberDetails, onSuccess: (response) => onGetAddMemberSuccess(response), onFailure: onGetAddMemberFailure });
+		getAddMember({
+			data: memberDetails,
+			onSuccess: response => onGetAddMemberSuccess(response),
+			onFailure: onGetAddMemberFailure
+		});
 	};
 
 	const onGetAddMemberFailure = () => {
@@ -162,7 +181,11 @@ function AddMembersForm(props) {
 	};
 
 	const onGetAddMemberSuccess = data => {
-		addedMember =  data.username ? data.username : data[0].username ? data[0].username : '';
+		addedMember = data.username
+			? data.username
+			: data[0].username
+			? data[0].username
+			: '';
 		setIsModalVisible(true);
 	};
 
@@ -228,7 +251,6 @@ function AddMembersForm(props) {
 		});
 	};
 
-
 	const takeImageHandler = () => {
 		ImagePicker.showImagePicker(imageOptions, response => {
 			if (response.didCancel) {
@@ -240,14 +262,30 @@ function AddMembersForm(props) {
 					...response
 				};
 				setImageSource(source);
+				saveProfilePhoto(source);
 			}
 		});
 	};
 
+	const saveProfilePhoto = item => {
+		const data = [
+			{
+				name: 'profile_pic',
+				filename: `profile${Date.now()}`,
+				data:
+					Platform.OS === 'android'
+						? RNFetchBlob.wrap(item.uri)
+						: RNFetchBlob.wrap(item.uri.replace('file://', '')),
+				type: item.type
+			}
+		];
+		uploadProfilePicture(data);
+	};
+
 	const doesPasswordMatchSuccess = values =>
-	values.password &&
-	values.confirm_password &&
-	values.password === values.confirm_password;
+		values.password &&
+		values.confirm_password &&
+		values.password === values.confirm_password;
 
 	const _renderPasswordInfo = () => (
 		<View style={ styles.popoverContainerText }>
@@ -269,6 +307,40 @@ function AddMembersForm(props) {
 		</View>
 	);
 
+	const onChange1 = name => {
+		setUserName(name);
+		let data = {
+			username: name
+		};
+		fetch(Config.PROTOCOL + Config.HOST_NAME + '/users/check-username/', {
+			method: 'POST',
+			body: JSON.stringify(data),
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json'
+			}
+		})
+			.then(response => response.json())
+			.then(response => {
+				if (response.availability === true) {
+					onSuccess(true);
+				} else {
+					onFailure(false);
+				}
+			})
+			.catch(() => {
+				onFailure(false);
+			}); //need to modify this api call
+	};
+
+	const onSuccess = () => {
+		setCheckExist(true);
+	};
+
+	const onFailure = () => {
+		setCheckExist(false);
+	};
+
 	return (
 		<SafeAreaView style={ styles.container }>
 			<ScrollView showsVerticalScrollIndicator={ false }>
@@ -277,40 +349,28 @@ function AddMembersForm(props) {
 					onPress={ takeImageHandler }
 					style={ styles.profileImageContainer }>
 					<Image
-						source={ imageSource ? { uri: imageSource.uri } : require('../../../assets/profile.png') }
+						source={
+							imageSource
+								? { uri: imageSource.uri }
+								: require('../../../assets/profile.png')
+						}
 						style={ styles.profileImage }
 					/>
 				</TouchableOpacity>
 				<Formik
 					initialValues={ {
-						email:
-							userdata !== undefined
-								? userdata.email
-								: '',
-						first_name:
-							userdata !== undefined
-								? userdata.first_name
-								: '',
-						last_name:
-							userdata !== undefined
-								? userdata.last_name
-								: '',
+						email: userdata !== undefined ? userdata.email : '',
+						first_name: userdata !== undefined ? userdata.first_name : '',
+						last_name: userdata !== undefined ? userdata.last_name : '',
 						password: '',
 						confirm_password: '',
 						date_of_birth: '',
 						zipcode:
-							userdata && userdata.zipcode &&
-							userdata !== ''
+							userdata && userdata.zipcode && userdata !== ''
 								? userdata.zipcode.toString()
 								: '',
-						gender:
-							userdata !== undefined
-								? userdata.gender
-								: '',
-						username:
-							userdata !== undefined
-								? userdata.username
-								: '',
+						gender: userdata !== undefined ? userdata.gender : '',
+						username: userdata !== undefined ? userdata.username : '',
 						user_type: 'MEMBER_PATIENT',
 						profile: {
 							relationship:
@@ -320,8 +380,8 @@ function AddMembersForm(props) {
 						},
 						id: '',
 						relation:
-						userdata && userdata.user_profile.length > 0
-								? userdata.user_profile[0].relationship	
+							userdata && userdata.user_profile.length > 0
+								? userdata.user_profile[0].relationship
 								: ''
 					} }
 					validationSchema={
@@ -329,13 +389,16 @@ function AddMembersForm(props) {
 					}
 					enableReinitialize
 					onSubmit={ (values, actions) => {
-						actions.resetForm();
-						handleSubmit(values);
+						values.username = userName;
+						if (values.username !== '' && checkExist === true) {
+							handleSubmit(values, actions);
+							actions.resetForm();
+						}
 					} }>
 					{props => (
 						<View style={ styles.signupContainer }>
 							<KeyboardAvoidingView
-								behavior="absolute"
+								behavior={ Platform.OS === 'ios' ? 'padding' : 'absolute' }
 								keyboardVerticalOffset={ keyboardVerticalOffset }>
 								<TextInputField
 									lable="First Name"
@@ -359,10 +422,18 @@ function AddMembersForm(props) {
 									lable="User ID"
 									placeholder="Enter User ID"
 									editable={ addMember }
-									onChangeText={ props.handleChange('username') }
-									value={ props.values.username }
+									onChangeText={ text => onChange1(text) }
+									value={ userName }
 									onBlur={ props.handleBlur('username') }
-									error={ props.touched.username && props.errors.username }
+									error={
+										props.touched.username
+											? userName === ''
+												? 'User ID is a required field.'
+												: userName !== '' && checkExist === false
+												? 'The username already exists'
+												: ''
+											: ''
+									}
 									secureTextEntry={ false }
 								/>
 								{addMember === true ? (
@@ -371,7 +442,7 @@ function AddMembersForm(props) {
 											<View style={ passwordStyle.labelContainer }>
 												<Text style={ passwordStyle.label }>Password</Text>
 											</View>
-												<TextInput
+											<TextInput
 												style={ passwordStyle.textInput }
 												placeholder="Enter Your Password"
 												onChangeText={ props.handleChange('password') }
@@ -380,15 +451,19 @@ function AddMembersForm(props) {
 												secureTextEntry={ showEye ? true : false }
 											/>
 											<TouchableOpacity
-											onPress={ passwordHandler }
-											style={ styles.eyeIcon }>
-											{showEye ? (
-												<AntDesignIcon name="eye" size={ 17 } color="#5C5C5C" />
-											) : (
-												<AntDesignIcon name="eyeo" size={ 17 } color="#5C5C5C" />
-											)}
-										</TouchableOpacity>
-										<View style={ [ styles.icon, styles.infoIcon ] }>
+												onPress={ passwordHandler }
+												style={ styles.eyeIcon }>
+												{showEye ? (
+													<AntDesignIcon name="eye" size={ 17 } color="#5C5C5C" />
+												) : (
+													<AntDesignIcon
+														name="eyeo"
+														size={ 17 }
+														color="#5C5C5C"
+													/>
+												)}
+											</TouchableOpacity>
+											<View style={ [ styles.icon, styles.infoIcon ] }>
 												<Tooltip
 													withOverlay={ true }
 													overlayColor={ 'rgba(0, 0, 0, 0.5)' }
@@ -423,60 +498,60 @@ function AddMembersForm(props) {
 								)}
 								{addMember === true ? (
 									<View style={ passwordStyle.textInputContainer }>
-									<View style={ styles.passwordWrapper }>
-										<View style={ passwordStyle.labelContainer }>
-											<Text style={ passwordStyle.label }>
-												Confirm Password
-											</Text>
-										</View>
-										<TextInput
-											style={ passwordStyle.textInput }
-											placeholder="Retype Password"
-											onChangeText={ props.handleChange('confirm_password') }
-											value={ props.values.confirm_password }
-											onBlur={ props.handleBlur('confirm_password') }
-											secureTextEntry={ showConfirmEye ? true : false }
-										/>
-										<TouchableOpacity
-											onPress={ confirmPasswordHandler }
-											style={ styles.eyeIcon }>
-											{showConfirmEye ? (
-												<AntDesignIcon name="eye" size={ 17 } color="#5C5C5C" />
-											) : (
-												<AntDesignIcon
-													name="eyeo"
-													size={ 17 }
-													color="#5C5C5C"
-												/>
-											)}
-										</TouchableOpacity>
-										<View
-											style={
-												doesPasswordMatchSuccess(props.values)
-													? [ styles.icon, styles.activeTickIcon ]
-													: styles.icon
-											}>
-											<Icon
-												type={ 'FontAwesome' }
-												name={ 'check' }
-												color={
-													doesPasswordMatchSuccess(props.values)
-														? '#FFF'
-														: '#ACACAC'
-												}
-												size={ 15 }
+										<View style={ styles.passwordWrapper }>
+											<View style={ passwordStyle.labelContainer }>
+												<Text style={ passwordStyle.label }>
+													Confirm Password
+												</Text>
+											</View>
+											<TextInput
+												style={ passwordStyle.textInput }
+												placeholder="Retype Password"
+												onChangeText={ props.handleChange('confirm_password') }
+												value={ props.values.confirm_password }
+												onBlur={ props.handleBlur('confirm_password') }
+												secureTextEntry={ showConfirmEye ? true : false }
 											/>
+											<TouchableOpacity
+												onPress={ confirmPasswordHandler }
+												style={ styles.eyeIcon }>
+												{showConfirmEye ? (
+													<AntDesignIcon name="eye" size={ 17 } color="#5C5C5C" />
+												) : (
+													<AntDesignIcon
+														name="eyeo"
+														size={ 17 }
+														color="#5C5C5C"
+													/>
+												)}
+											</TouchableOpacity>
+											<View
+												style={
+													doesPasswordMatchSuccess(props.values)
+														? [ styles.icon, styles.activeTickIcon ]
+														: styles.icon
+												}>
+												<Icon
+													type={ 'FontAwesome' }
+													name={ 'check' }
+													color={
+														doesPasswordMatchSuccess(props.values)
+															? '#FFF'
+															: '#ACACAC'
+													}
+													size={ 15 }
+												/>
+											</View>
 										</View>
+										{props.touched.confirm_password &&
+										props.errors.confirm_password ? (
+											<Text style={ passwordStyle.errorText }>
+												{props.errors.confirm_password}
+											</Text>
+										) : (
+											<Text style={ passwordStyle.errorText } />
+										)}
 									</View>
-									{props.touched.confirm_password &&
-									props.errors.confirm_password ? (
-										<Text style={ passwordStyle.errorText }>
-											{props.errors.confirm_password}
-										</Text>
-									) : (
-										<Text style={ passwordStyle.errorText } />
-									)}
-								</View>
 								) : (
 									<Text style={ styles.removeSpace } />
 								)}
@@ -488,7 +563,9 @@ function AddMembersForm(props) {
 										style={ styles.dataPicker }
 										onPress={ () => showDatepicker(!show) }>
 										{birthDate !== '' ? (
-											<Text style={ styles.calenderText }>{moment(birthDate).format('MMM/DD/YYYY')}</Text>
+											<Text style={ styles.calenderText }>
+												{moment(birthDate).format('MMM/DD/YYYY')}
+											</Text>
 										) : (
 											<Text style={ styles.calenderText }>
 												Month / Date / Year
@@ -507,7 +584,9 @@ function AddMembersForm(props) {
 										mode={ mode }
 										display="default"
 										maximumDate={ new Date() }
-										onChange={ (e, value) => onChange(e, value, props.setFieldValue) }
+										onChange={ (e, value) =>
+											onChange(e, value, props.setFieldValue)
+										}
 										neutralButtonLabel="clear"
 									/>
 								)}
@@ -525,7 +604,7 @@ function AddMembersForm(props) {
 											props.setFieldValue('relation', value.toUpperCase())
 										}
 									/>
-									<Image source={ dropdownIcon } style={ styles.searchIcon } />
+									<View style={ styles.searchIcon } />
 								</View>
 								{props.touched.relation && props.errors.relation ? (
 									<Text style={ styles.errorText }>{props.errors.relation}</Text>
@@ -584,7 +663,9 @@ function AddMembersForm(props) {
 								<TouchableOpacity
 									style={ globalStyles.secondaryButton }
 									onPress={ props.handleSubmit }>
-									<Text style={ globalStyles.buttonText }>{addMember === true ? 'Add' : 'Update'}</Text>
+									<Text style={ globalStyles.buttonText }>
+										{addMember === true ? 'Add' : 'Update'}
+									</Text>
 								</TouchableOpacity>
 							</KeyboardAvoidingView>
 						</View>
@@ -601,10 +682,11 @@ function AddMembersForm(props) {
 						<View style={ styles.successTextWrap }>
 							<TouchableOpacity onPress={ () => setIsModalVisible(false) }>
 								<AntDesignIcon
-								name="close"
-								size={ 20 }
-								color="#ffffff"
-								style={ styles.closeIcon }/>
+									name="close"
+									size={ 20 }
+									color="#ffffff"
+									style={ styles.closeIcon }
+								/>
 							</TouchableOpacity>
 							<Image
 								source={ require('../../../assets/success.png') }
@@ -627,7 +709,7 @@ function AddMembersForm(props) {
 	);
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
 	resp: state.journal,
 	user: state.user.user
 });
@@ -636,6 +718,7 @@ export default connect(
 	mapStateToProps,
 	{
 		getAddMember,
-		setAddMember
+		setAddMember,
+		uploadProfilePicture
 	}
 )(AddMembersForm);

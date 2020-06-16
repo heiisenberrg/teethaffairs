@@ -130,7 +130,8 @@ function userReducer(state = initialState, action) {
 			return {
 				...state,
 				loading: false,
-				user: null
+				user: null,
+				access: ''
 			};
 		case constants.GET_LOGOUT_FAILURE:
 			return {
@@ -251,6 +252,18 @@ function userReducer(state = initialState, action) {
 			return {
 				...state,
 				loading: false
+			};
+		case constants.GET_CHECK_NAME:
+			return {
+				...state
+			};
+		case constants.GET_CHECK_NAME_SUCCESS:
+			return {
+				...state
+			};
+		case constants.GET_CHECK_NAME_FAILURE:
+			return {
+				...state
 			};
 		default:
 			return state;

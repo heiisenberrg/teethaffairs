@@ -4,8 +4,12 @@ import styles from './styles';
 import { connect } from 'react-redux';
 import Icon from '../../global/Icon';
 import View from '../../global/View';
-import { getReminder, updateReminder } from '../../../state/actions/reminder';
+import {
+	getReminder,
+	updateNotificationReminder
+} from '../../../state/actions/reminder';
 import moment from 'moment';
+import FlashMessage from '../../global/FlashMessage';
 
 const editContent = [
 	{ icon: 'check', content: 'I already brushed and flossed' },
@@ -17,25 +21,52 @@ const editContent = [
 	}
 ];
 
-function ReminderNotification(props) {
-  const { route, navigation, getReminder, reminder } = props;
-  const [ selectedContent, setSelectedContent ] = useState('');
-  
-  useEffect(() => {
-    getReminder({ id: route.id });
-  }, [ route ]);
+const reminderResponse = [ 'BF', 'NBF', 'OB', 'SNOOZE' ];
 
-  useEffect(() => {
-    if (selectedContent !== '') {
-      updateReminder();
-    }
-  }, [ selectedContent ]);
+var d = new Date();
+var weekday = new Array(7);
+weekday[0] = 'Sun';
+weekday[1] = 'Mon';
+weekday[2] = 'Tue';
+weekday[3] = 'Wed';
+weekday[4] = 'Thu';
+weekday[5] = 'Fri';
+weekday[6] = 'Sat';
+
+function ReminderNotification(props) {
+	const {
+		route,
+		navigation,
+		getReminder,
+		reminder,
+		updateNotificationReminder
+	} = props;
+	const [ selectedContent, setSelectedContent ] = useState('');
+
+	useEffect(() => {
+		getReminder({ id: props.route.params.id });
+	}, [ route ]);
+
+	const handleSubmit = () => {
+		let data = {
+			data: {
+				reminder_response: reminderResponse[selectedContent],
+				reminder_day: weekday[d.getDay()]
+			},
+			id: props.route.params.id
+		};
+		if (selectedContent !== '') {
+			updateNotificationReminder(data, navigation);
+		} else {
+			FlashMessage.message('Alert', 'Select task to continue', '#ff4444');
+		}
+	};
 
 	return (
 		<View style={ styles.container }>
-      <View center style={ styles.mv25 }>
-      <Text style={ styles.titleText }>Brushing and Flossing Reminder</Text>
-      </View>
+			<View center style={ styles.mv25 }>
+				<Text style={ styles.titleText }>Brushing and Flossing Reminder</Text>
+			</View>
 			<Modal transparent={ true } visible={ true }>
 				<View style={ styles.modalContainer }>
 					<View style={ styles.modalContent }>
@@ -53,7 +84,11 @@ function ReminderNotification(props) {
 							<View jC={ 'flex-start' }>
 								<Image
 									style={ styles.profileImage }
-									source={ require('../../../assets/profile.png') }
+									source={
+										reminder && reminder.data.profile_pic !== null
+											? { uri: reminder.data.profile_pic }
+											: require('../../../assets/profile.png')
+									}
 								/>
 							</View>
 							<View
@@ -62,12 +97,16 @@ function ReminderNotification(props) {
 								jC={ 'space-between' }
 								style={ styles.titleContainer }>
 								<View>
-                  <Text style={ styles.expandedTitle }>{reminder?.reminder_text}</Text>
+									<Text style={ styles.expandedTitle }>
+										{reminder.reminder_text}
+									</Text>
 									{/* <Text style={ styles.expandedSubTitle }>You and 4 others</Text> */}
 								</View>
 								<View row center>
 									<View center style={ styles.timeContainer }>
-										<Text style={ styles.mediumText }>{moment(reminder.reminder_time, 'HHmm').format('LT')}</Text>
+										<Text style={ styles.mediumText }>
+											{moment(reminder.data.reminder_time, 'HHmm').format('LT')}
+										</Text>
 									</View>
 								</View>
 							</View>
@@ -140,9 +179,11 @@ function ReminderNotification(props) {
 									);
 								})}
 						</View>
-            <TouchableOpacity style={ styles.buttonContainer } onPress={ () => navigation.replace('AppTabs') }>
-              <Text style={ styles.buttonText }>Home</Text>
-            </TouchableOpacity>
+						<TouchableOpacity
+							style={ styles.buttonContainer }
+							onPress={ handleSubmit }>
+							<Text style={ styles.buttonText }>Submit</Text>
+						</TouchableOpacity>
 					</View>
 				</View>
 			</Modal>
@@ -152,14 +193,14 @@ function ReminderNotification(props) {
 
 const mapStateToProps = state => {
 	return {
-    reminder: state.reminder.reminder
-  };
+		reminder: state.reminder.reminder
+	};
 };
 
 export default connect(
 	mapStateToProps,
 	{
-    getReminder,
-    updateReminder
-  }
+		getReminder,
+		updateNotificationReminder
+	}
 )(ReminderNotification);

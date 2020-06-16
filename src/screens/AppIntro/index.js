@@ -37,40 +37,43 @@ function AppIntro(props) {
 	const { navigation } = props;
 	const renderItem = ({ item }) => {
 		return (
-			<View style={ styles.container } >
+			<View style={ styles.container }>
 				<View style={ styles.subContainer }>
-				<View style={ styles.logoWrapper }>
-					<Image
-						source={ require('../../assets/logo.png') }
-						style={ styles.logo }
-					/>
-					<View style={ styles.companyTextWrapper }>
-						<Text style={ styles.companyText1 }>teeth</Text>
-						<Text style={ styles.companyText2 }>affairs</Text>
+					<View style={ styles.logoWrapper }>
+						<Image
+							source={ require('../../assets/logo.png') }
+							style={ styles.logo }
+						/>
+						<View style={ styles.companyTextWrapper }>
+							<Text style={ styles.companyText1 }>teeth</Text>
+							<Text style={ styles.companyText2 }>affairs</Text>
+						</View>
+					</View>
+					{item.key === 'one' ? (
+						<View style={ styles.slidesHome }>
+							<Image source={ item.title } style={ styles.slideImage1 } />
+						</View>
+					) : item.key === 'two' ? (
+						<View style={ styles.slidesHome }>
+							<Image source={ item.title } style={ styles.slideImage2 } />
+						</View>
+					) : (
+						<View style={ styles.slidesHome }>
+							<Image source={ item.title } style={ styles.slideImage3 } />
+						</View>
+					)}
+
+					<View style={ styles.contentWrap }>
+						<Text style={ styles.decription }>{item.text}</Text>
+						<Text style={ styles.decription1 }>{item.subText}</Text>
 					</View>
 				</View>
-				{item.key === 'one' ? 
-				<View style={ styles.slidesHome }>
-					<Image source={ item.title } style={ styles.slideImage1 }/>
-				</View>: item.key === 'two' ?
-				<View style={ styles.slidesHome }>
-					<Image source={ item.title } style={ styles.slideImage2 }/>
-				</View> : <View style={ styles.slidesHome }>
-					<Image source={ item.title } style={ styles.slideImage3 } />
-				</View>}
-
-				<View style={ styles.contentWrap }>
-					<Text style={ styles.decription }>{item.text}</Text>
-					<Text style={ styles.decription1 }>{item.subText}</Text>
-				</View>
-				</View>
-
 			</View>
 		);
 	};
 
 	const handleSkipIntro = () => {
-			navigation.navigate('Login');
+		navigation.navigate('Login');
 	};
 
 	const renderNextButton = () => {

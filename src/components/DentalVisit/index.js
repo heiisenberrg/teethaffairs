@@ -19,6 +19,8 @@ import styles from './styles/index';
 import { getDentalVisits, deleteDentalVisit } from '../../state/actions/journal';
 import { getUsers } from '../../state/actions/user';
 import ImagePreviewer from '../global/ImagePreviewer';
+import VideoPreviewer from '..//global/VideoPreviewer';
+import Video from 'react-native-video';
 
 /* eslint-disable no-mixed-spaces-and-tabs */
 
@@ -56,18 +58,24 @@ function DentalVisit(props) {
 	const [ slideLeftValue ] = useState(new Animated.Value(0));
 	const [ uri, setUri ] = useState('');
 	const [ enablePreview, setEnablePreview ] = useState(false);
+	const [ isImage, setIsImage ] = useState(true);
 
-	const doesUserAuthorizedToAcess = () => userDetails && (userDetails.user_type === 'PRIMARY_PATIENT' ||
-	userDetails.user_type === 'PRIMARY-PATIENT');
+	const doesUserAuthorizedToAcess = () =>
+		userDetails &&
+		(userDetails.user_type === 'PRIMARY_PATIENT' ||
+			userDetails.user_type === 'PRIMARY-PATIENT');
 
-	const [ user, setUser ] = useState(doesUserAuthorizedToAcess()
+	const [ user, setUser ] = useState(
+		userDetails &&
+			(userDetails.user_type !== 'PRIMARY_PATIENT' ||
+				userDetails.user_type !== 'PRIMARY-PATIENT')
 			? {
 					id: userDetails.id,
 					name: `${userDetails.first_name}`,
 					avatar: userDetails.profile_pic
 			  }
 			: {
-					id: 'all-users',	
+					id: 'all-users',
 					name: 'All Users',
 					avatar: null
 			  }
@@ -144,7 +152,7 @@ function DentalVisit(props) {
 			onPress={ () => enableDentalVisitView(visit) }>
 			<View style={ styles.cardHeader } activeOpacity={ 0.8 }>
 				<View style={ styles.circleWrapper }>
-					<Icon type={ 'FontAwesome5' } name={ 'notes-medical' } size={ 24 } />
+					<Icon type={ 'FontAwesome5' } name={ 'user-md' } size={ 24 } />
 				</View>
 				<View style={ styles.content }>
 					<View style={ styles.noteTitle }>
@@ -177,20 +185,35 @@ function DentalVisit(props) {
 				showsHorizontalScrollIndicator={ false }>
 				{visit.media &&
 					visit.media.length > 0 &&
-					visit.media.map((item, index) => (
-						<Image
-							key={ `index_${index}` }
-							style={ styles.imageReport }
-							source={ {
-								uri: item.media
-							} }
-						/>
-					))}
+					visit.media.map((item, index) =>
+						(item.mime_type === 'application/octet-stream' ? (
+							<Video
+								key={ `index_${index}` }
+								style={ styles.imageReport }
+								source={ {
+									uri: item.media
+								} }
+							/>
+						) : (
+							<Image
+								key={ `index_${index}` }
+								style={ styles.imageReport }
+								source={ {
+									uri: item.media
+								} }
+							/>
+						))
+					)}
 			</ScrollView>
 		</TouchableOpacity>
 	);
 
-	const handlePreview = () => {
+	const handlePreview = data => {
+		if (data === 'image') {
+			setIsImage(true);
+		} else {
+			setIsImage(false);
+		}
 		setEnablePreview(!enablePreview);
 	};
 
@@ -215,7 +238,7 @@ function DentalVisit(props) {
 				contentContainerStyle={ styles.visitWrapper }>
 				<View row style={ styles.visitHeader }>
 					<View style={ styles.circleWrapper }>
-						<Icon type={ 'FontAwesome5' } name={ 'notes-medical' } size={ 24 } />
+						<Icon type={ 'FontAwesome5' } name={ 'user-md' } size={ 24 } />
 					</View>
 					<View column style={ styles.titleWrapper }>
 						<Text style={ styles.visitTitle }>{currentVisit.visit_reason}</Text>
@@ -276,19 +299,33 @@ function DentalVisit(props) {
 					showsHorizontalScrollIndicator={ false }>
 					{currentVisit.media &&
 						currentVisit.media.length > 0 &&
-						currentVisit.media.map((item, index) => (
-							<TouchableOpacity
-								activeOpacity={ 0.8 }
-								key={ `index_${index}` }
-								onPress={ () => [ setUri(item.media), handlePreview() ] }>
-								<Image
-									style={ styles.imageReport }
-									source={ {
-										uri: item.media
-									} }
-								/>
-							</TouchableOpacity>
-						))}
+						currentVisit.media.map((item, index) =>
+							(item.mime_type === 'application/octet-stream' ? (
+								<TouchableOpacity
+									activeOpacity={ 0.8 }
+									key={ `index_${index}` }
+									onPress={ () => [ setUri(item.media), handlePreview('video') ] }>
+									<Video
+										style={ styles.imageReport }
+										source={ {
+											uri: item.media
+										} }
+									/>
+								</TouchableOpacity>
+							) : (
+								<TouchableOpacity
+									activeOpacity={ 0.8 }
+									key={ `index_${index}` }
+									onPress={ () => [ setUri(item.media), handlePreview('image') ] }>
+									<Image
+										style={ styles.imageReport }
+										source={ {
+											uri: item.media
+										} }
+									/>
+								</TouchableOpacity>
+							))
+						)}
 				</ScrollView>
 			</ScrollView>
 			<Toast
@@ -300,11 +337,20 @@ function DentalVisit(props) {
 				showClose={ true }
 				successButtontext="Yes"
 			/>
-			<ImagePreviewer
-				uri={ uri }
-				enablePreview={ enablePreview }
-				handlePreview={ handlePreview }
-			/>
+
+			{isImage ? (
+				<ImagePreviewer
+					uri={ uri }
+					enablePreview={ enablePreview }
+					handlePreview={ handlePreview }
+				/>
+			) : (
+				<VideoPreviewer
+					uri={ uri }
+					enablePreview={ enablePreview }
+					handlePreview={ handlePreview }
+				/>
+			)}
 		</Animated.View>
 	) : (
 		<View>

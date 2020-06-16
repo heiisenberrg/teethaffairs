@@ -41,7 +41,7 @@ export const getHostName = () => {
 	return hostname;
 };
 
-const hostName = getHostName();
+export const hostName = getHostName();
 
 function isPropertyInObject(obj, property) {
 	return Object.prototype.hasOwnProperty.call(obj, property);
@@ -50,8 +50,8 @@ function isPropertyInObject(obj, property) {
 function isPrivateRoute(config = {}) {
 	return Boolean(
 		config.data &&
-		isPropertyInObject(config.data, 'publicRoute') &&
-		!config.data.publicRoute
+			isPropertyInObject(config.data, 'publicRoute') &&
+			!config.data.publicRoute
 	);
 }
 
@@ -85,9 +85,7 @@ const getRequest = errorResponse =>
 	});
 
 const getRefreshedTokens = async freshToken => {
-	await store.dispatch(
-		refreshTheToken(freshToken, onAccessTokenFetched)
-	);
+	await store.dispatch(refreshTheToken(freshToken, onAccessTokenFetched));
 };
 
 const refreshTokenAndReattemptRequest = async error => {
@@ -184,15 +182,13 @@ export function customNoteRequest(noteData, onSuccess) {
 		}),
 		body: noteData
 	})
-	.then(response => response.json())
-	.then(response => {
-		onSuccess(response);
-	})
-	.catch(() => {
-	});
-
+		.then(response => response.json())
+		.then(response => {
+			onSuccess(response);
+		})
+		.catch(() => {});
 }
-	
+
 export function customRequest(endpoint, payload, onSuccess, onFailure) {
 	const requestUrl = `http://${hostName}/${endpoint}`;
 	return fetch(requestUrl, {
@@ -202,25 +198,25 @@ export function customRequest(endpoint, payload, onSuccess, onFailure) {
 		}),
 		body: payload
 	})
-	.then(response => response.json())
-	.then(response => {
-		onSuccess(response);
-	})
-	.catch(error => {
-		onFailure(error);
-	});
+		.then(response => response.json())
+		.then(response => {
+			onSuccess(response);
+		})
+		.catch(error => {
+			onFailure(error);
+		});
 }
 
 export const uploadFile = (params, onSuccess, onFailure) => {
 	const { method, path, headerConfig, data } = params;
 	const requestUrl = `http://${hostName}/${path}`;
-	const headers =  {
+	const headers = {
 		Authorization: `Bearer ${store.getState().user.access}`,
 		...headerConfig
 	};
 	RNFetchBlob.fetch(method, requestUrl, headers, data)
-	.then(response => response.json())
-	.then(response => {
+		.then(response => response.json())
+		.then(response => {
 			onSuccess(response);
 		})
 		.catch(error => {
@@ -228,23 +224,27 @@ export const uploadFile = (params, onSuccess, onFailure) => {
 		});
 };
 
-export function customNoteUpdateRequest(noteID, noteData, onSuccess, onFailure) {
-	return fetch('http://test1.teethaffairs.com:8000/notes/patient-notes/'+ noteID + '/', {
-		method: 'PUT',
-		headers: new Headers({
-			Authorization: `Bearer ${store.getState().user.access}`
-		}),
-		body: noteData
-	})
-
-	.then(response => response.json())
-	.then(response => {
-		onSuccess(response);
-	})
-	.catch(error => {
-		onFailure(error);
-	});
-
+export function customNoteUpdateRequest(
+	noteID,
+	noteData,
+	onSuccess,
+	onFailure
+) {
+	return fetch(
+		'http://test1.teethaffairs.com:8000/notes/patient-notes/' + noteID + '/',
+		{
+			method: 'PUT',
+			headers: new Headers({
+				Authorization: `Bearer ${store.getState().user.access}`
+			}),
+			body: noteData
+		}
+	)
+		.then(response => response.json())
+		.then(response => {
+			onSuccess(response);
+		})
+		.catch(error => {
+			onFailure(error);
+		});
 }
-
-	

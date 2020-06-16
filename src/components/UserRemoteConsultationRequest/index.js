@@ -137,8 +137,7 @@ function UserRemoteConsultationRequest(props) {
 
 							<Text style={ styles.queryDetailText }>attachments</Text>
 
-							<View style={ styles.imageContainer }>
-							</View>
+							<View style={ styles.imageContainer } />
 							<Text style={ styles.queryDetailText }>details</Text>
 
 							<View style={ styles.queryWrapper }>

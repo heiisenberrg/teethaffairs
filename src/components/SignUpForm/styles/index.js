@@ -127,7 +127,8 @@ const styles = StyleSheet.create({
 	termsWrapper: {
 		flexDirection: 'row',
 		justifyContent: 'center',
-		marginLeft: 40
+		marginLeft: 40,
+		marginTop: 5
 	},
 	loginTermsWrapper: {
 		flexDirection: 'row',
@@ -261,8 +262,8 @@ const styles = StyleSheet.create({
 		fontSize: 12
 	},
 	customCheckbox: {
-		width: 15,
-		height: 15,
+		width: 23,
+		height: 23,
 		borderWidth: 1,
 		borderColor: '#2E2E2E',
 		position: 'relative',
@@ -316,7 +317,7 @@ const styles = StyleSheet.create({
 	popoverText: {
 		fontSize: 12,
 		marginVertical: 10,
-    width: '85%',
+		width: '85%',
 		flexWrap: 'wrap'
 	},
 	popoverLineItem: {

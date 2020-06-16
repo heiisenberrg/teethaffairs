@@ -67,9 +67,9 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 		color: '#6A6A6A',
 		textAlign: 'center',
-		width: width-100,
+		width: width - 100,
 		position: 'absolute',
-		left:0,
+		left: 0,
 		lineHeight: 20
 	},
 	symtamsContainer: {
@@ -225,11 +225,11 @@ const styles = StyleSheet.create({
 		color: '#4A4A4A',
 		textAlign: 'center'
 	},
-	buttonContainer:{
+	buttonContainer: {
 		marginBottom: 18
 	},
 	hideText: {
-		display:'none'
+		display: 'none'
 	},
 	profileContainer: {
 		flex: 1,
@@ -317,7 +317,8 @@ const styles = StyleSheet.create({
 		width: 23,
 		height: 23,
 		marginRight: 1,
-		top: 4
+		top: 4,
+		marginLeft: 10
 	},
 	deleteEditLogoContainer: {
 		flexDirection: 'column',

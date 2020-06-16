@@ -3,7 +3,6 @@ import {
 	KeyboardAvoidingView,
 	Image,
 	TextInput,
-	Switch,
 	TouchableOpacity,
 	ScrollView,
 	Dimensions,
@@ -31,11 +30,21 @@ import { CommonActions } from '@react-navigation/native';
 /* eslint-disable no-mixed-spaces-and-tabs */
 
 var allergies_array = [];
+var medications_array = [];
 
 const userNoteSchema = yup.object({
-	height: yup.number().required('Required'),
-	weight: yup.number().required('Required'),
-	age: yup.number().required('Required'),
+	height: yup
+		.number()
+		.required('Required')
+		.typeError('height must be a number'),
+	weight: yup
+		.number()
+		.required('Required')
+		.typeError('weight must be a number'),
+	age: yup
+		.number()
+		.required('Required')
+		.typeError('age must be a number'),
 	allergies: yup.array(),
 	medications: yup.array(),
 	medical_conditions: yup.array(),
@@ -48,20 +57,6 @@ const cardBrands = {
 	mastercard: '#119989',
 	default: '#0BE3DF'
 };
-
-const drugs = [
-	'Amoxicilin 500',
-	'Amoxicilin 250',
-	'Amoxicilin 250 liq',
-	'Amoxicilin prophy',
-	'Augumentin 800',
-	'Clindamycin 150',
-	'Ibuprofen 800',
-	'Motrin 800',
-	'Paracetamol 650',
-	'Stemitil MD',
-	'Zintac'
-];
 
 const medicalConditions = [
 	'Diabetes',
@@ -87,29 +82,28 @@ function UserRemoteConsultation(props) {
 	} = props;
 
 	const [ showHistoryForm, setShowHistoryForm ] = useState(true);
-	const [ isEnabled, setIsEnabled ] = useState(false);
 	const [ allergiesList, setAllergiesList ] = useState([]);
+	const [ medicationsList, setMedicationsList ] = useState([]);
+
 	const [ textInputHolder, setTextInputHolder ] = useState('');
+	const [ textInputHolder1, setTextInputHolder1 ] = useState('');
+
 	const [ userNoteId, setUserNoteId ] = useState('');
 	const [ userZipCode, setUserZipCode ] = useState('');
 	const [ selectedCardId, setSelectedCardId ] = useState('');
 	const [ showModal, setShowModal ] = useState(false);
-	const [ showDropDown, setShowDropDown ] = useState(false);
-	const [ selectedDrugs, setSelectedDrugs ] = useState([]);
 	const [ selectedMedicalConditions, setMedicalConditionsList ] = useState([]);
-	const [ filteredDrugs, setFilteredDrugs ] = useState([]);
-	const [ searchValue, setSearchValue ] = useState('');
-
-	const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+	const [ disable, setDisable ] = useState(false);
 
 	const handleSubmit = data => {
+		setDisable(true);
 		const updateNoteData = {
 			height: data.height,
 			weight: data.weight,
 			allergies: allergiesList,
 			age: data.age,
 			medical_conditions: selectedMedicalConditions,
-			medications: selectedDrugs
+			medications: medicationsList
 		};
 		const question_data = {
 			patient_zipcode: userZipCode,
@@ -117,7 +111,7 @@ function UserRemoteConsultation(props) {
 			doctor: doctor.id,
 			card_id: selectedCardId
 		};
-		if (doctor && doctor.id && userZipCode) {
+		if (doctor && doctor.id && userZipCode && cards.length > 0) {
 			getQuestion(
 				{
 					data: updateNoteData,
@@ -127,33 +121,17 @@ function UserRemoteConsultation(props) {
 				onSuccess,
 				onFailure
 			);
-		} else {
+		} else if (doctor && doctor.id && cards.length === 0) {
+			FlashMessage.message(
+				'Alert',
+				'Please add your debit card / credit card details',
+				'#33b5e5'
+			);
+			setDisable(false);
+		} else if (doctor && doctor.id === undefined) {
 			FlashMessage.message('Alert', 'Please select a dentist', '#33b5e5');
+			setDisable(false);
 		}
-	};
-
-	const filterDrugs = value => {
-		let filteredDrugs = drugs;
-		if (value !== '') {
-			filteredDrugs = [];
-			drugs.map(x => {
-				if (x.includes(value)) {
-					filteredDrugs.push(x);
-				}
-			});
-		}
-		setFilteredDrugs(filteredDrugs);
-		setShowDropDown(true);
-	};
-
-	const selectDrug = item => {
-		let data = [ ...selectedDrugs ];
-		if (data.indexOf(item) !== -1) {
-			data.splice(data.indexOf(item), 1);
-		} else {
-			data.push(item);
-		}
-		setSelectedDrugs(data);
 	};
 
 	const selectMedicalCondition = item => {
@@ -213,6 +191,22 @@ function UserRemoteConsultation(props) {
 		);
 		setAllergiesList(allergies_array);
 		setTextInputHolder('');
+	};
+
+	const medicationHandler = () => {
+		if (textInputHolder1 !== '') {
+			medications_array.push(textInputHolder1);
+			setMedicationsList(medications_array);
+			setTextInputHolder1('');
+		}
+	};
+
+	const onRemoveMedicationsHandler = remove_item => {
+		medications_array = medications_array.filter(data =>
+			(data !== remove_item ? data : '')
+		);
+		setMedicationsList(medications_array);
+		setTextInputHolder1('');
 	};
 
 	const renderPaymentCard = () => {
@@ -295,6 +289,10 @@ function UserRemoteConsultation(props) {
 	});
 	const viewConfigRef = React.useRef({ viewAreaCoveragePercentThreshold: 50 });
 
+	const handleCreateCards = () => {
+		navigation.navigate('Payment', { from: 'remote' });
+	};
+
 	return (
 		<View style={ styles.container }>
 			<ScrollView>
@@ -321,13 +319,15 @@ function UserRemoteConsultation(props) {
 										<TouchableOpacity
 											onPress={ () => setShowHistoryForm(!showHistoryForm) }>
 											<View style={ styles.dropdownIconWrapper }>
-												<Image
-													source={
-														showHistoryForm
-															? require('../../assets/drop-down.png')
-															: require('../../assets/drop-right.png')
-													}
-													style={ styles.dropdown }
+												{showHistoryForm ? (
+													<View style={ styles.dropdown } />
+												) : (
+													<View style={ styles.dropright } />
+												)}
+												<View
+													style={ `${
+														showHistoryForm ? styles.dropdown : styles.dropdown
+													}` }
 												/>
 											</View>
 										</TouchableOpacity>
@@ -426,11 +426,10 @@ function UserRemoteConsultation(props) {
 																	style={ styles.enteredAllergies }>
 																	{data}
 																</Text>
-																<Text
-																	style={ styles.crossText1 }
+																<TouchableOpacity
 																	onPress={ () => onRemoveHandler(data) }>
-																	X
-																</Text>
+																	<Text style={ styles.crossText1 }>X</Text>
+																</TouchableOpacity>
 															</View>
 														);
 													})}
@@ -478,7 +477,7 @@ function UserRemoteConsultation(props) {
 																						type={ 'MaterialCommunityIcons' }
 																						name={ 'check' }
 																						color={ 'white' }
-																						size={ 15 }
+																						size={ 21 }
 																					/>
 																				</TouchableOpacity>
 																			</View>
@@ -494,116 +493,50 @@ function UserRemoteConsultation(props) {
 													<Text style={ styles.switchText }>
 														Taking any medications
 													</Text>
-													<Switch
-														style={ styles.switchButton }
-														trackColor={ { false: 'green' } }
-														thumbColor={ isEnabled ? 'white' : 'white' }
-														onValueChange={ toggleSwitch }
-														value={ isEnabled }
-													/>
 												</View>
-												{isEnabled && (
-													<View style={ styles.m10 }>
-														<View style={ styles.flex }>
-															<FlatList
-																numColumns={ 2 }
-																data={ selectedDrugs }
-																renderItem={ ({ item, index }) => {
-																	return (
-																		<View
-																			key={ `drugs-${index}` }
-																			row
-																			aI={ 'center' }
-																			style={ styles.selectedDrugContent }>
-																			<TouchableOpacity
-																				style={ styles.m5 }
-																				onPress={ () => selectDrug(item) }>
-																				<Icon
-																					type={ 'MaterialCommunityIcons' }
-																					name={ 'close' }
-																					color={ 'red' }
-																					size={ 18 }
-																				/>
-																			</TouchableOpacity>
-																			<Text>{item}</Text>
-																		</View>
-																	);
-																} }
-															/>
-														</View>
-														<View row style={ styles.mv10 }>
-															<View style={ styles.flex }>
-																<View row center style={ styles.searchContent }>
-																	<TextInput
-																		style={ [ styles.p10, styles.flex ] }
-																		value={ searchValue }
-																		onChangeText={ value => [
-																			setSearchValue(value),
-																			filterDrugs(value)
-																		] }
-																	/>
-																	<TouchableOpacity
-																		style={ styles.m10 }
-																		onPress={ () =>
-																			setShowDropDown(!showDropDown)
-																		}>
-																		<Icon
-																			type={ 'Ionicons' }
-																			name={ 'ios-search' }
-																			size={ 18 }
-																			color={ 'grey' }
-																		/>
-																	</TouchableOpacity>
-																</View>
-																{showDropDown && (
-																	<View style={ styles.dropdownContainer }>
-																		<ScrollView
-																			automaticallyAdjustContentInsets={ false }
-																			contentContainerStyle={ styles.flexGrow }
-																			showsVerticalScrollIndicator={ false }>
-																			{filteredDrugs &&
-																				filteredDrugs.map((item, index) => {
-																					return (
-																						<View
-																							row
-																							key={ `index-${index}` }
-																							style={ styles.dropdownContent }>
-																							<Text>{item}</Text>
-																							<TouchableOpacity
-																								style={ {
-																									...styles.searchContainer,
-																									...{
-																										borderColor: '#CAC7C7',
-																										backgroundColor:
-																											selectedDrugs.indexOf(
-																												item
-																											) !== -1
-																												? '#00C57D'
-																												: 'white'
-																									}
-																								} }
-																								onPress={ () =>
-																									selectDrug(item)
-																								}>
-																								<Icon
-																									type={
-																										'MaterialCommunityIcons'
-																									}
-																									name={ 'check' }
-																									color={ 'white' }
-																									size={ 15 }
-																								/>
-																							</TouchableOpacity>
-																						</View>
-																					);
-																				})}
-																		</ScrollView>
-																	</View>
-																)}
+												<View style={ styles.MainContainer }>
+													<TextInput
+														placeholder="Enter Value Here"
+														multiline
+														onChangeText={ data => setTextInputHolder1(data) }
+														value={ textInputHolder1 }
+														style={ styles.textInputStyle }
+														underlineColorAndroid="transparent"
+													/>
+													<TouchableOpacity
+														onPress={ medicationHandler }
+														activeOpacity={ 0.7 }
+														style={ styles.button }>
+														<Image
+															style={ styles.roundButton }
+															source={ require('../../assets/round-plus.png') }
+														/>
+													</TouchableOpacity>
+												</View>
+												<View style={ styles.dummy1 }>
+													{medicationsList.map((data, index) => {
+														return (
+															<View
+																style={ styles.enteredAllergiesBox }
+																key={ index }>
+																<Text
+																	key={ index }
+																	style={ styles.enteredAllergies }>
+																	{data}
+																</Text>
+																<TouchableOpacity
+																	onPress={ () =>
+																		onRemoveMedicationsHandler(data)
+																	}>
+																	<Text style={ styles.crossText1 }>X</Text>
+																</TouchableOpacity>
 															</View>
-														</View>
-													</View>
-												)}
+														);
+													})}
+												</View>
+												<Text style={ styles.infoText }>
+													Type none if no medications
+												</Text>
 											</View>
 										</View>
 									</ScrollView>
@@ -612,13 +545,33 @@ function UserRemoteConsultation(props) {
 								)}
 								<View style={ styles.dentistContainer }>
 									<Text style={ styles.dentistText }>choose a dentist</Text>
-									<TextBoxRadioButton options={ doctors_list } onSuccess />
+									{doctors_list.length > 0 ? (
+										<TextBoxRadioButton options={ doctors_list } onSuccess />
+									) : (
+										<Text style={ styles.noDentist }>
+											Currently no dentist available.
+										</Text>
+									)}
 								</View>
 								{renderPaymentCard()}
+								{cards !== null && cards.length === 0 ? (
+									<View style={ styles.sendButtonWrapper }>
+										<TouchableOpacity
+											style={ globalStyles.secondaryButton }
+											onPress={ handleCreateCards }>
+											<Text style={ globalStyles.buttonText }>
+												Add Debit Card Details
+											</Text>
+										</TouchableOpacity>
+									</View>
+								) : (
+									<Text />
+								)}
 								<View style={ styles.sendButtonWrapper }>
 									<TouchableOpacity
 										style={ globalStyles.secondaryButton }
-										onPress={ props.handleSubmit }>
+										onPress={ props.handleSubmit }
+										disabled={ disable }>
 										<Text style={ globalStyles.buttonText }>Send Question</Text>
 									</TouchableOpacity>
 								</View>

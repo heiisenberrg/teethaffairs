@@ -442,6 +442,10 @@ const styles = StyleSheet.create({
 	},
 	keyboard1: {
 		flex: 1
+	},
+	backButton: {
+		position: 'relative',
+		left: 10
 	}
 });
 

@@ -1,4 +1,4 @@
-import { takeLatest } from 'redux-saga/effects';
+import { takeLatest, takeEvery } from 'redux-saga/effects';
 
 import { constants } from '../constants';
 import {
@@ -7,7 +7,8 @@ import {
 	updateReminder,
 	deleteReminder,
 	fetchReminderListBasedOnFilter,
-	getReminder
+	getReminder,
+	updateNotificationReminder
 } from './reminder.saga';
 import {
 	getDentalQuestions,
@@ -48,14 +49,11 @@ import {
 	getMyProfile,
 	submitContactUsQuery,
 	uploadProfilePicture,
-	getNotifications
+	getNotifications,
+	fetchCheckName
 } from './user.saga';
 
-import {
-	getCards,
-	createCard,
-	upgradeApp
-} from './payment.saga';
+import { getCards, createCard, upgradeApp } from './payment.saga';
 
 import { getPatientHistory } from './history.saga';
 
@@ -65,8 +63,15 @@ export default function* saga() {
 	yield takeLatest(constants.CREATE_REMINDER, createReminder);
 	yield takeLatest(constants.UPDATE_REMINDER, updateReminder);
 	yield takeLatest(constants.DELETE_REMINDER, deleteReminder);
-	yield takeLatest(constants.GET_REMINDER_LIST_BASED_ON_FILTER, fetchReminderListBasedOnFilter);
+	yield takeLatest(
+		constants.GET_REMINDER_LIST_BASED_ON_FILTER,
+		fetchReminderListBasedOnFilter
+	);
 	yield takeLatest(constants.GET_REMINDER, getReminder);
+	yield takeLatest(
+		constants.UPDATE_NOTIFICATION_REMINDER,
+		updateNotificationReminder
+	);
 
 	//doctor
 	yield takeLatest(constants.GET_QUESTIONS, getDentalQuestions);
@@ -85,7 +90,10 @@ export default function* saga() {
 	yield takeLatest(constants.GET_DOCTORS_LIST, fetchDoctorList);
 	yield takeLatest(constants.GET_QUESTION, fetchSendQuestion);
 	yield takeLatest(constants.GET_DENTAL_VISITS, getDentalVisits);
-	yield takeLatest(constants.GET_REMOTE_CONSULTATION_FOR_PATIENTS, getRemoteConsultationsForPatients);
+	yield takeLatest(
+		constants.GET_REMOTE_CONSULTATION_FOR_PATIENTS,
+		getRemoteConsultationsForPatients
+	);
 	yield takeLatest(constants.CREATE_DENTAL_VISIT, createDentalVisit);
 	yield takeLatest(constants.GET_DELETE_NOTE, fetchDeleteNotes);
 	yield takeLatest(constants.SAVE_EDITED_DENTAL_VISIT, editDentalVisit);
@@ -107,12 +115,13 @@ export default function* saga() {
 	yield takeLatest(constants.SUBMIT_CONTACT_US, submitContactUsQuery);
 	yield takeLatest(constants.UPLOAD_PROFILE_PICTURE, uploadProfilePicture);
 	yield takeLatest(constants.GET_NOTIFICATIONS, getNotifications);
+	yield takeEvery(constants.GET_CHECK_NAME, fetchCheckName);
 
 	//payment
 	yield takeLatest(constants.GET_CARDS, getCards);
 	yield takeLatest(constants.CREATE_CARD, createCard);
 	yield takeLatest(constants.UPGRADE_APP, upgradeApp);
-	
+
 	//history
 	yield takeLatest(constants.GET_HISTORY, getPatientHistory);
 }

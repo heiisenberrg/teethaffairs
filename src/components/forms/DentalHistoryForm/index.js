@@ -81,10 +81,10 @@ function DentalHistoryForm(props) {
 						<Text style={ { ...styles.normalText, ...styles.person } }>
 							{question.patient_name}
 						</Text>
-						<Image
-							style={ styles.time }
-							source={ require('../../../assets/time.png') }
-						/>
+						<View style={ styles.time }>
+						<Icon type={ 'FontAwesome5' } name={ 'clock' } size={ 15 } color={ '#b8b8b8' } />
+
+						</View>
 						<Text style={ styles.normalText }>
 							{question?.question_asked_on.split('T')[0].split('-')[2]}&nbsp;
 							{

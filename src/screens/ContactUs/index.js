@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import {
+	View,
+	Text,
+	TouchableOpacity,
+	ScrollView,
+	KeyboardAvoidingView
+} from 'react-native';
 import { Formik } from 'formik';
 import { connect } from 'react-redux';
 import * as yup from 'yup';
@@ -7,6 +13,9 @@ import styles from './styles';
 import TextInputField from '../../components/textInputs/TextInputField';
 import { submitContactUs } from '../../state/actions/user';
 import globalStyles from '../../globalStyles';
+
+/* eslint-disable no-undef */
+const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
 
 const contactSchema = yup.object({
 	name: yup
@@ -60,53 +69,57 @@ function ContactUs(props) {
 						handleSubmit(values, actions);
 					} }>
 					{props => (
-						<View style={ styles.formContainer }>
-							<TextInputField
-								lable="Name"
-								placeholder="Enter Name"
-								onChangeText={ props.handleChange('name') }
-								value={ props.values.name }
-								onBlur={ props.handleBlur('name') }
-								error={ props.touched.name && props.errors.name }
-								secureTextEntry={ false }
-							/>
-							<TextInputField
-								lable="Description"
-								placeholder="Enter Description"
-								onChangeText={ props.handleChange('description') }
-								value={ props.values.description }
-								onBlur={ props.handleBlur('description') }
-								error={ props.touched.description && props.errors.description }
-								secureTextEntry={ false }
-							/>
-							<TextInputField
-								lable="Phone"
-								placeholder="Enter Phone"
-								onChangeText={ props.handleChange('phone') }
-								value={ props.values.phone }
-								onBlur={ props.handleBlur('phone') }
-								error={ props.touched.phone && props.errors.phone }
-								secureTextEntry={ false }
-								keyboardType="numeric"
-							/>
-							<TextInputField
-								lable="Email"
-								placeholder="Enter Email"
-								onChangeText={ props.handleChange('email') }
-								value={ props.values.email }
-								onBlur={ props.handleBlur('email') }
-								error={ props.touched.email && props.errors.email }
-								keyboardType="email-address"
-								secureTextEntry={ false }
-							/>
-							<View>
-								<TouchableOpacity
-									style={ globalStyles.secondaryButton }
-									onPress={ props.handleSubmit }>
-									<Text style={ globalStyles.buttonText }>Submit</Text>
-								</TouchableOpacity>
+						<KeyboardAvoidingView
+							behavior="position"
+							keyboardVerticalOffset={ keyboardVerticalOffset }>
+							<View style={ styles.formContainer }>
+								<TextInputField
+									lable="Name"
+									placeholder="Enter Name"
+									onChangeText={ props.handleChange('name') }
+									value={ props.values.name }
+									onBlur={ props.handleBlur('name') }
+									error={ props.touched.name && props.errors.name }
+									secureTextEntry={ false }
+								/>
+								<TextInputField
+									lable="Description"
+									placeholder="Enter Description"
+									onChangeText={ props.handleChange('description') }
+									value={ props.values.description }
+									onBlur={ props.handleBlur('description') }
+									error={ props.touched.description && props.errors.description }
+									secureTextEntry={ false }
+								/>
+								<TextInputField
+									lable="Phone"
+									placeholder="Enter Phone"
+									onChangeText={ props.handleChange('phone') }
+									value={ props.values.phone }
+									onBlur={ props.handleBlur('phone') }
+									error={ props.touched.phone && props.errors.phone }
+									secureTextEntry={ false }
+									keyboardType="numeric"
+								/>
+								<TextInputField
+									lable="Email"
+									placeholder="Enter Email"
+									onChangeText={ props.handleChange('email') }
+									value={ props.values.email }
+									onBlur={ props.handleBlur('email') }
+									error={ props.touched.email && props.errors.email }
+									keyboardType="email-address"
+									secureTextEntry={ false }
+								/>
+								<View>
+									<TouchableOpacity
+										style={ globalStyles.secondaryButton }
+										onPress={ props.handleSubmit }>
+										<Text style={ globalStyles.buttonText }>Submit</Text>
+									</TouchableOpacity>
+								</View>
 							</View>
-						</View>
+						</KeyboardAvoidingView>
 					)}
 				</Formik>
 			</ScrollView>

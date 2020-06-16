@@ -18,20 +18,20 @@ export const client = axios.create({
 });
 
 export const apiCall = async (params = {}) => {
-    const data = await formData(params);
+	const data = await formData(params);
 	switch (params.method) {
 		case 'GET':
-           return client.get(data.url, data.headers);
+			return client.get(data.url, data.headers);
 		case 'POST':
-           return client.post(data.url, data.data, data.headers);
+			return client.post(data.url, data.data, data.headers);
 		case 'PUT':
-           return client.put(data.url, data.data, data.headers);
+			return client.put(data.url, data.data, data.headers);
 		case 'DELETE':
-           return client.delete(data.url, data.headers);
+			return client.delete(data.url, data.headers);
 		case 'PATCH':
-           return client.patch(data.url, data.data, data.headers);
-        default:
-          return;
+			return client.patch(data.url, data.data, data.headers);
+		default:
+			return;
 	}
 };
 
@@ -55,7 +55,9 @@ const formData = async (data = {}) => {
 					let count = 0;
 					for (let key in data.data) {
 						if (typeof data.data[key] === 'string') {
-							queryParams += `${key}=${data.data[key]}${Object.keys(data.data).length - 1 > count ? '&' : ''}`;
+							queryParams += `${key}=${data.data[key]}${
+								Object.keys(data.data).length - 1 > count ? '&' : ''
+							}`;
 						} else if (typeof data.data[key] === 'object') {
 							queryParams += `${key}=${encodeURIComponent(
 								JSON.stringify(data.data[key])
@@ -83,16 +85,14 @@ const formData = async (data = {}) => {
 	}
 	const accessToken = await checkAuth();
 	const token =
-		process.env.NODE_ENV === 'test'
-			? '123456'
-			: 'Bearer ' + accessToken;
+		process.env.NODE_ENV === 'test' ? '123456' : 'Bearer ' + accessToken;
 	if (data.withCredentials) {
 		client.defaults.headers.common['Authorization'] = token;
 	}
 	return data;
 };
 
-client.interceptors.request.use((request) => {
+client.interceptors.request.use(request => {
 	return request;
 });
 
@@ -153,7 +153,7 @@ export const uploadFile = params => {
 		headers.Authorization = `Bearer ${store.getState().user.user.access}`;
 	}
 	return RNFetchBlob.fetch(method, requestUrl, headers, data)
-	.then(response => response.json())
-	.then(response => response)
-	.catch(error => error);
+		.then(response => response.json())
+		.then(response => response)
+		.catch(error => error);
 };

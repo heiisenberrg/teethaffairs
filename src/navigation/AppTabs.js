@@ -11,10 +11,7 @@ import Settings from './SettingsStack';
 import Notification from './NotificationStack';
 
 import HomeIcon from '../assets/logo-color.png';
-import HistoryIcon from '../assets/history.png';
-import JournalIcon from '../assets/journal.png';
-import SettingsIcon from '../assets/settings.png';
-import NotificationIcon from '../assets/notification.png';
+import Icon from '../components/global/Icon';
 
 import styles from './styles';
 const Tab = createBottomTabNavigator();
@@ -39,8 +36,24 @@ function AppTabs(props) {
 				component={ History }
 				options={ {
 					tabBarLabel: 'History',
-					tabBarIcon: ({ color }) => {
-						return <Image source={ HistoryIcon } color={ color } />;
+					tabBarIcon: () => {
+						return<Icon
+						type={ 'FontAwesome5' }
+						name={ 'clock' }
+						size={ 22 }
+						color={ '#b8b8b8' }
+					/>;
+					}
+				} }
+				listeners={ {
+					tabPress: () => {
+						navigation.dispatch(
+							CommonActions.reset({
+								index: 0,
+								routes: [ { name: 'AppTabs', key: 'History' } ]
+							})
+						);
+						navigation.navigate('History');
 					}
 				} }
 				listeners={ {
@@ -60,8 +73,24 @@ function AppTabs(props) {
 				component={ doesLoggedInUserDoctor ? Dashboard : Journal }
 				options={ {
 					tabBarLabel: doesLoggedInUserDoctor ? 'Teledental' : 'Journal',
-					tabBarIcon: ({ color }) => {
-						return <Image source={ JournalIcon } color={ color } />;
+					tabBarIcon: () => {
+						return<Icon
+						type={ 'FontAwesome' }
+						name={ 'folder' }
+						size={ 22 }
+						color={ '#b8b8b8' }
+					/>;
+					}
+				} }
+				listeners={ {
+					tabPress: () => {
+						navigation.dispatch(
+							CommonActions.reset({
+								index: 0,
+								routes: [ { name: 'AppTabs', key: doesLoggedInUserDoctor ? 'Teledental' : 'Journal' } ]
+							})
+						);
+						navigation.navigate(doesLoggedInUserDoctor ? 'Teledental' : 'Journal');
 					}
 				} }
 				listeners={ {
@@ -104,8 +133,24 @@ function AppTabs(props) {
 				component={ Notification }
 				options={ {
 					tabBarLabel: 'Notification',
-					tabBarIcon: ({ color }) => {
-						return <Image source={ NotificationIcon } color={ color } />;
+					tabBarIcon: () => {
+						return<Icon
+						type={ 'FontAwesome' }
+						name={ 'bell' }
+						size={ 22 }
+						color={ '#b8b8b8' }
+					/>;
+					}
+				} }
+				listeners={ {
+					tabPress: () => {
+						navigation.dispatch(
+							CommonActions.reset({
+								index: 0,
+								routes: [ { name: 'AppTabs', key: 'Notification' } ]
+							})
+						);
+						navigation.navigate('Notification');
 					}
 				} }
 				listeners={ {
@@ -126,8 +171,24 @@ function AppTabs(props) {
 				component={ Settings }
 				options={ {
 					tabBarLabel: 'Settings',
-					tabBarIcon: ({ color }) => {
-						return <Image source={ SettingsIcon } color={ color } />;
+					tabBarIcon: () => {
+						return	<Icon
+						type={ 'FontAwesome' }
+						name={ 'gear' }
+						size={ 22 }
+						color={ '#b8b8b8' }
+					/>;
+					}
+				} }
+				listeners={ {
+					tabPress: () => {
+						navigation.dispatch(
+							CommonActions.reset({
+								index: 0,
+								routes: [ { name: 'AppTabs', key: 'Settings' } ]
+							})
+						);
+						navigation.navigate('Settings');
 					}
 				} }
 				listeners={ {

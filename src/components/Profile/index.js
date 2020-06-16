@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
 	View,
 	Text,
-	Image,
 	KeyboardAvoidingView,
 	TouchableOpacity,
 	ScrollView,
@@ -49,24 +48,24 @@ function Profile(props) {
 	);
 
 	useEffect(() => {
-    const backAction = () => {
-      Alert.alert('Hold on!', 'Are you sure you want to exit App.', [
-        {
-          text: 'Cancel',
-          onPress: () => null,
-          style: 'cancel'
-        },
-        { text: 'YES', onPress: () => BackHandler.exitApp() }
-      ]);
-      return true;
-    };
+		const backAction = () => {
+			Alert.alert('Hold on!', 'Are you sure you want to exit App.', [
+				{
+					text: 'Cancel',
+					onPress: () => null,
+					style: 'cancel'
+				},
+				{ text: 'YES', onPress: () => BackHandler.exitApp() }
+			]);
+			return true;
+		};
 
-	const backHandler = BackHandler.addEventListener(
-		'hardwareBackPress',
+		const backHandler = BackHandler.addEventListener(
+			'hardwareBackPress',
 			backAction
 		);
-			return () => backHandler.remove();
-		}, []);
+		return () => backHandler.remove();
+	}, []);
 
 	return (
 		<KeyboardAvoidingView
@@ -83,14 +82,16 @@ function Profile(props) {
 				</Text>
 				<Text style={ styles.welcomeText }>welcome to teethAffairs</Text>
 				<View style={ styles.contentWrapText }>
-					{
-						user && (user.user_type === 'PRIMARY_PATIENT' || user.user_type === 'PRIMARY-PATIENT') &&
-						<Text style={ styles.contentText }>
-							Now you can add family members
-						</Text>
-					}
+					{user &&
+						(user.user_type === 'PRIMARY_PATIENT' ||
+							user.user_type === 'PRIMARY-PATIENT') && (
+							<Text style={ styles.contentText }>
+								Now you can add family members
+							</Text>
+						)}
 					<Text style={ styles.contentText }>
-						To keep track of the dental habits, dental visit, journal and ask questions to a real dentist 24/7.
+						To keep track of the dental habits, dental visit, journal and ask
+						questions to a real dentist 24/7.
 					</Text>
 					<Text style={ styles.contentText }>Answer provided within 24 hrs.</Text>
 				</View>
@@ -108,7 +109,11 @@ function Profile(props) {
 							style={ styles.imageWrap2 }
 							onPress={ () => navigation.navigate('ListReminder') }>
 							<View style={ styles.contentWrap }>
-								<Image source={ require('../../assets/alarm.png') } />
+								<Icon
+									type={ 'MaterialCommunityIcons' }
+									name={ 'alarm' }
+									size={ 35 }
+								/>
 								<Text style={ styles.imageContent }>Brush/Floss Reminder</Text>
 							</View>
 						</TouchableOpacity>

@@ -2,7 +2,8 @@ import constants from '../constants/payment.constant';
 
 const initialState = {
 	cards: [],
-	loading: false
+	loading: false,
+	upgraded: false
 };
 
 function paymentReducer(state = initialState, action) {
@@ -46,7 +47,8 @@ function paymentReducer(state = initialState, action) {
 		case constants.UPGRADE_APP_SUCCESS:
 			return {
 				...state,
-				loading: false
+				loading: false,
+				upgraded: true
 			};
 		case constants.UPGRADE_APP_FAILURE:
 			return {

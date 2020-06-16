@@ -304,13 +304,9 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 25,
 		width: '100%'
 	},
-	searchIcon: {
-		position: 'absolute',
-		right: 10,
-		top: 15
-	},
+
 	removeSpace: {
-		display:'none'
+		display: 'none'
 	},
 	modalWrap: {
 		backgroundColor: '#000000aa',
@@ -415,6 +411,20 @@ const styles = StyleSheet.create({
 	},
 	activeTickIcon: {
 		backgroundColor: '#14DF94'
+	},
+	searchIcon: {
+		position: 'absolute',
+		right: 10,
+		top: 15,
+		width: 0,
+		height: 0,
+		borderTopWidth: 5,
+		borderTopColor: 'transparent',
+		borderStyle: 'solid',
+		borderBottomWidth: 5,
+		borderBottomColor: 'transparent',
+		borderLeftWidth: 5,
+		borderLeftColor: '#555'
 	}
 });
 

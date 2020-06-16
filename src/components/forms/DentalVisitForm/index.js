@@ -19,8 +19,11 @@ import EntypoIcon from 'react-native-vector-icons/Entypo';
 import RNFetchBlob from 'rn-fetch-blob';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { createDentalVisits, updateDentalVisit } from '../../../state/actions/journal';
-
+import {
+	createDentalVisits,
+	updateDentalVisit
+} from '../../../state/actions/journal';
+import Video from 'react-native-video';
 import styles from './styles';
 import globalStyles from '../../../globalStyles';
 
@@ -48,11 +51,10 @@ var tempImage = [];
 var tempMedia = [];
 
 function DentalVisitForm(props) {
-
 	const { route, updateDentalVisit, navigation, createDentalVisits } = props;
 	let initialValues = {};
 	const doesEditEnabled = route && route.params && route.params.visit;
-	if(doesEditEnabled) {
+	if (doesEditEnabled) {
 		const { visit } = route.params;
 		initialValues = {
 			visit_reason: visit.visit_reason,
@@ -83,7 +85,7 @@ function DentalVisitForm(props) {
 	const ratings = [ 'very good', 'good', 'moderate', 'ok', 'bad' ];
 
 	const handleSubmit = async (values, actions) => {
-		if(route && route.params && route.params.visit) {
+		if (route && route.params && route.params.visit) {
 			const { visit } = route.params;
 			const data = {
 				visit_reason: values.visit_reason,
@@ -93,9 +95,21 @@ function DentalVisitForm(props) {
 				insurance_used: values.insurance_used,
 				doctor: values.doctor
 			};
-			await updateDentalVisit(visit.id, data, editDentalVisitsSuccess);
+			await updateDentalVisit(
+				visit.id,
+				data,
+				editDentalVisitsSuccess,
+				editDentalVisitsFailure
+			);
 		} else {
-			const { visit_reason, visit_description, visit_experience, insurance_used, fees_paid, doctor } = values;
+			const {
+				visit_reason,
+				visit_description,
+				visit_experience,
+				insurance_used,
+				fees_paid,
+				doctor
+			} = values;
 			const data = [
 				{
 					name: 'doctor',
@@ -126,7 +140,10 @@ function DentalVisitForm(props) {
 				data.push({
 					name: 'media',
 					filename: `patient${Date.now()}`,
-					data: Platform.OS === 'android' ? RNFetchBlob.wrap(item.uri) :  RNFetchBlob.wrap(item.uri.replace('file://', '')),
+					data:
+						Platform.OS === 'android'
+							? RNFetchBlob.wrap(item.uri)
+							: RNFetchBlob.wrap(item.uri.replace('file://', '')),
 					type: item.type
 				});
 			});
@@ -147,7 +164,7 @@ function DentalVisitForm(props) {
 						quality: 1
 					},
 					customResponse => {
-						let source = { 
+						let source = {
 							...customResponse,
 							media: customResponse.uri
 						};
@@ -183,7 +200,7 @@ function DentalVisitForm(props) {
 					}
 				);
 			} else {
-				let source = { 
+				let source = {
 					...response,
 					media: response.uri
 				};
@@ -205,12 +222,15 @@ function DentalVisitForm(props) {
 	const createDentalVisitsSuccess = () => {
 		setShowModal(true);
 		setImageSource([]);
+		tempImage = [];
 	};
 
 	const editDentalVisitsSuccess = () => {
 		setShowModal(true);
 		setImageSource([]);
 	};
+
+	const editDentalVisitsFailure = () => {};
 
 	const handleToastSuccess = () => {
 		setShowModal(false);
@@ -221,8 +241,7 @@ function DentalVisitForm(props) {
 		<View>
 			<ScrollView
 				contentContainerStyle={ styles.container }
-				showsVerticalScrollIndicator={ false }
-			>
+				showsVerticalScrollIndicator={ false }>
 				<Formik
 					initialValues={ {
 						...initialValues
@@ -231,10 +250,8 @@ function DentalVisitForm(props) {
 					enableReinitialize
 					onSubmit={ (values, actions) => {
 						handleSubmit(values, actions);
-					} }
-				>
-					{
-						(props) => (
+					} }>
+					{props => (
 						<View style={ styles.dentalVisitWrapper }>
 							<View style={ styles.wrapper }>
 								<Text style={ styles.title }>reason for visit ?</Text>
@@ -244,11 +261,15 @@ function DentalVisitForm(props) {
 									onChangeText={ props.handleChange('visit_reason') }
 									onBlur={ props.handleBlur('visit_reason') }
 									value={ props.values.visit_reason }
-									error={ props.touched.visit_reason && props.errors.visit_reason }
+									error={
+										props.touched.visit_reason && props.errors.visit_reason
+									}
 									underlineColorAndroid="transparent"
 									placeholderTextColor="grey"
 								/>
-								<Text style={ styles.errorText }>{props.touched.visit_reason && props.errors.visit_reason}</Text>
+								<Text style={ styles.errorText }>
+									{props.touched.visit_reason && props.errors.visit_reason}
+								</Text>
 							</View>
 
 							<View style={ styles.wrapper }>
@@ -260,40 +281,57 @@ function DentalVisitForm(props) {
 									onChangeText={ props.handleChange('visit_description') }
 									onBlur={ props.handleBlur('visit_description') }
 									underlineColorAndroid="transparent"
-									error={ props.touched.visit_description && props.errors.visit_description }
+									error={
+										props.touched.visit_description &&
+										props.errors.visit_description
+									}
 									placeholderTextColor="grey"
 									numberOfLines={ 5 }
 									multiline={ true }
 								/>
-								<Text style={ styles.errorText }>{props.touched.visit_description && props.errors.visit_description}</Text>
+								<Text style={ styles.errorText }>
+									{props.touched.visit_description &&
+										props.errors.visit_description}
+								</Text>
 							</View>
 
 							<TouchableOpacity style={ [ styles.wrapper ] }>
 								<Text style={ styles.title }>experience of that visit</Text>
-								<TouchableOpacity style={ [ styles.inputText, styles.flexRow ] } onPress={ () => setShowDropDown(!showDropDown) }>
-									<Text>{ props.values.visit_experience }</Text>
+								<TouchableOpacity
+									style={ [ styles.inputText, styles.flexRow ] }
+									onPress={ () => setShowDropDown(!showDropDown) }>
+									<Text>{props.values.visit_experience}</Text>
 									<View style={ styles.flexEnd }>
-										<Ionicons name={ 'ios-arrow-down' } size={ 20 } color={ '#A1A1A1' }/>
+										<Ionicons
+											name={ 'ios-arrow-down' }
+											size={ 20 }
+											color={ '#A1A1A1' }
+										/>
 									</View>
 								</TouchableOpacity>
 							</TouchableOpacity>
-							
-							{showDropDown && <View style={ styles.dropdownContainer }>
-								{
-									ratings.map((item, index) => {
+
+							{showDropDown && (
+								<View style={ styles.dropdownContainer }>
+									{ratings.map((item, index) => {
 										return (
-											<TouchableOpacity 
-											key={ `index-${index}` } 
-											style={ styles.dropDownContent } 
-											onPress={ () => [ props.setFieldValue('visit_experience', item, true), setShowDropDown(!showDropDown) ] }>
+											<TouchableOpacity
+												key={ `index-${index}` }
+												style={ styles.dropDownContent }
+												onPress={ () => [
+													props.setFieldValue('visit_experience', item, true),
+													setShowDropDown(!showDropDown)
+												] }>
 												<Text style={ styles.experienceText }>{item}</Text>
 											</TouchableOpacity>
 										);
-									})
-								}
+									})}
 								</View>
-							}
-							<Text style={ styles.errorText }>{props.touched.visit_experience && props.errors.visit_experience}</Text>
+							)}
+							<Text style={ styles.errorText }>
+								{props.touched.visit_experience &&
+									props.errors.visit_experience}
+							</Text>
 
 							<View style={ styles.wrapper }>
 								<Text style={ styles.title }>dentist name</Text>
@@ -306,7 +344,9 @@ function DentalVisitForm(props) {
 									underlineColorAndroid="transparent"
 									placeholderTextColor="grey"
 								/>
-								<Text style={ styles.errorText }>{props.touched.doctor && props.errors.doctor}</Text>
+								<Text style={ styles.errorText }>
+									{props.touched.doctor && props.errors.doctor}
+								</Text>
 							</View>
 
 							<View style={ styles.wrapper }>
@@ -321,7 +361,9 @@ function DentalVisitForm(props) {
 									placeholderTextColor="grey"
 									keyboardType="numeric"
 								/>
-								<Text style={ styles.errorText }>{props.touched.fees_paid && props.errors.fees_paid}</Text>
+								<Text style={ styles.errorText }>
+									{props.touched.fees_paid && props.errors.fees_paid}
+								</Text>
 							</View>
 
 							<View style={ styles.wrapper }>
@@ -356,42 +398,54 @@ function DentalVisitForm(props) {
 										secureTextEntry={ false }
 									/>
 								</View>
-								<Text style={ styles.errorText }>{props.touched.insurance_used && props.errors.insurance_used}</Text>
+								<Text style={ styles.errorText }>
+									{props.touched.insurance_used && props.errors.insurance_used}
+								</Text>
 							</View>
 
 							<View style={ styles.wrapper }>
-								{
-									!doesEditEnabled &&
-									<Text style={ styles.title }>files</Text>
-								}
+								{!doesEditEnabled && <Text style={ styles.title }>files</Text>}
 								<View style={ styles.fileContainer }>
-									{
-										!doesEditEnabled &&
+									{!doesEditEnabled && (
 										<TouchableOpacity
 											style={ styles.addTile }
 											onPress={ takeImageHandler }
 											activeOpacity={ 0.7 }>
 											<SimpleLineIcons name="plus" size={ 20 } color="#0A8A7B" />
 										</TouchableOpacity>
-									}
-									{imageSource.length > 0 ? (
-										imageSource.map((img, index) => {
-											return (
-												<View
-													key={ `image_${index}` }
-													style={ styles.imagePreview }>
-													<Image source={ { uri: img.media } } style={ styles.image } />
-												</View>
-											);
-										})
-									) : ( !doesEditEnabled &&
-										<View style={ styles.textContainer }>
-											<Text style={ styles.lightText }>
-												Add Images or Video through the camera or adding it from
-												the gallery (Optional)
-											</Text>
-										</View>
 									)}
+
+									{imageSource.length > 0
+										? imageSource.map((img, index) => {
+												return img.mime_type === 'application/octet-stream' ? (
+													<View
+														key={ `image_${index}` }
+														style={ styles.imagePreview }>
+														<Video
+															source={ { uri: img.media } }
+															style={ styles.image }
+														/>
+													</View>
+												) : (
+													<View
+														key={ `image_${index}` }
+														style={ styles.imagePreview }>
+														<Image
+															source={ { uri: img.media } }
+															style={ styles.image }
+														/>
+													</View>
+												);
+												/* eslint-disable no-mixed-spaces-and-tabs */
+										  })
+										: !doesEditEnabled && (
+												<View style={ styles.textContainer }>
+													<Text style={ styles.lightText }>
+														Add Images or Video through the camera or adding it
+														from the gallery (Optional)
+													</Text>
+												</View>
+										  )}
 								</View>
 								<Modal transparent={ true } visible={ isVideoUpload }>
 									<View style={ styles.modalWrap }>
@@ -416,7 +470,9 @@ function DentalVisitForm(props) {
 								style={ [ globalStyles.secondaryButton, styles.button ] }
 								onPress={ props.handleSubmit }
 								activeOpacity={ 0.8 }>
-								<Text style={ globalStyles.buttonText }>{doesEditEnabled ? 'update' : 'add'}</Text>
+								<Text style={ globalStyles.buttonText }>
+									{doesEditEnabled ? 'update' : 'add'}
+								</Text>
 							</TouchableOpacity>
 						</View>
 					)}

@@ -82,7 +82,7 @@ export const getPasswordFailure = error => ({
 	error
 });
 
-export const getLogOut = (data) => ({
+export const getLogOut = data => ({
 	type: constants.GET_LOGOUT,
 	data
 });
@@ -158,7 +158,7 @@ export const clearUser = () => ({
 	type: constants.CLEAR_USER
 });
 
-export const submitContactUs = (data) => ({
+export const submitContactUs = data => ({
 	type: constants.SUBMIT_CONTACT_US,
 	data
 });
@@ -199,5 +199,22 @@ export const getNotificationsSuccess = response => ({
 
 export const getNotificationsFailure = error => ({
 	type: constants.GET_NOTIFICATIONS_FAILURE,
+	error
+});
+
+export const getCheckName = (data, onSuccess, onFailure) => ({
+	type: constants.GET_CHECK_NAME,
+	data,
+	onSuccess,
+	onFailure
+});
+
+export const getCheckNameSuccess = response => ({
+	type: constants.GET_CHECK_NAME_SUCCESS,
+	response
+});
+
+export const getCheckNameFailure = error => ({
+	type: constants.GET_CHECK_NAME_FAILURE,
 	error
 });

@@ -122,7 +122,11 @@ export function* fetchSendQuestion(action) {
 		onSuccess();
 		yield put(getQuestionSuccess(response));
 	} catch (e) {
-		FlashMessage.message('Failure', 'Something went wrong. Please try again later.', '#ff4444');
+		FlashMessage.message(
+			'Failure',
+			'Something went wrong. Please try again later.',
+			'#ff4444'
+		);
 		yield put(getQuestionFailure(e));
 	}
 }

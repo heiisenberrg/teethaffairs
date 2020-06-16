@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		alignContent: 'center',
-		marginLeft: 260,
+		marginLeft: 300,
 		marginTop: 10
 	},
 	successIcon: {

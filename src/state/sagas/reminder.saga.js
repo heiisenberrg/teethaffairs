@@ -11,7 +11,9 @@ import {
 	fetchReminderBasedOnFilterSuccess,
 	fetchReminderBasedOnFilterFailure,
 	getReminderSuccess,
-	getReminderFailure
+	getReminderFailure,
+	updateNotificationReminderSuccess,
+	updateNotificationReminderrFailure
 } from '../actions/reminder';
 
 import {
@@ -20,7 +22,8 @@ import {
 	remove,
 	update,
 	viewByFilter,
-	get
+	get,
+	notificationUpdate
 } from '../services/reminder.service';
 import FlashMessage from '../../components/global/FlashMessage';
 
@@ -40,7 +43,11 @@ export function* createReminder(action) {
 		yield put(createReminderSuccess(response));
 		data.navigation.navigate('ListReminder', { refresh: true });
 	} catch (e) {
-		FlashMessage.message('Alert', 'Unable to create the reminder at the moment. Please try again later', 'red');
+		FlashMessage.message(
+			'Alert',
+			'Unable to create the reminder at the moment. Please try again later',
+			'red'
+		);
 		yield put(createReminderFailure(e));
 	}
 }
@@ -54,7 +61,11 @@ export function* updateReminder(action) {
 			data.navigation.navigate('ListReminder', { refresh: true });
 		}
 	} catch (e) {
-		FlashMessage.message('Alert', 'Unable to update the reminder at the moment, something went wrong.Please try again later', 'red');
+		FlashMessage.message(
+			'Alert',
+			'Unable to update the reminder at the moment, something went wrong.Please try again later',
+			'red'
+		);
 		yield put(updateReminderFailure(e));
 	}
 }
@@ -88,5 +99,21 @@ export function* getReminder(action) {
 		yield put(getReminderSuccess(response));
 	} catch (e) {
 		yield put(getReminderFailure(e));
+	}
+}
+
+export function* updateNotificationReminder(action) {
+	const { data, navigation } = action;
+	try {
+		const response = yield call(notificationUpdate, data);
+		yield put(updateNotificationReminderSuccess(response));
+		navigation.navigate('AppTabs', { screen: 'Home' });
+	} catch (e) {
+		FlashMessage.message(
+			'Alert',
+			'Unable to update the reminder at the moment, something went wrong.Please try again later',
+			'red'
+		);
+		yield put(updateNotificationReminderrFailure(e));
 	}
 }

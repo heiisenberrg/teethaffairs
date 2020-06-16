@@ -21,10 +21,9 @@ import { setDoctorDetail }  from '../../state/actions/journal';
 						<View style={ styles.profileWrap }>
 						<Image
 							style={ styles.doctorImage }
-							source={ require('../../assets/profile.png') }
+							source={ { uri: item.profile_pic } }
 						/>
 						</View>
-
 						<View style={ styles.doctorDetails }>
 							<Text style={ styles.doctorNameText }>Dr. {item.first_name} {item.last_name}</Text>
 							<Text style={ styles.doctorAddressText }>

@@ -14,6 +14,8 @@ module.exports = {
 	SUBMIT_QUERY: '/contact-us/contact-us/',
 	UPLOAD_PROFILE_PIC: '/users/upload-pic/',
 	FETCH_NOTIFICATIONS: '/notifications/notifications/',
+	CHECK_NAME: '/users/check-username/',
+
 	// doctor
 	DOCTOR_QUESTIONS_BASE_URL: '/doctor/questions/',
 	DOCTOR_HISTORY_QUESTIONS: '/doctor/get-question-history/',
@@ -37,7 +39,7 @@ module.exports = {
 	GET_REMOTE_CONSULTATION_FOR_PATIENTS: '/notes/user-questions/',
 	DENTAL_VISIT_BASE_URL: '/visit/visits/',
 	USER_NOTE_ID: '/notes/user-notes?user_id=',
-	NOTE_EDIT:'/notes/notes-edit/',
+	NOTE_EDIT: '/notes/notes-edit/',
 
 	//payment
 	GET_CARDS: '/payments/customer-cards/',

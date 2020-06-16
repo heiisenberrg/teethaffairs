@@ -14,6 +14,7 @@ import View from '../global/View';
 import styles from './styles/index';
 import { fetchNotes } from '../../state/actions/journal';
 import { getUsers } from '../../state/actions/user';
+import Video from 'react-native-video';
 
 /* eslint-disable no-mixed-spaces-and-tabs */
 
@@ -111,7 +112,12 @@ function DentalNote(props) {
 					<View style={ styles.noteTitle }>
 						<Text style={ styles.title }>{note.reference_name}</Text>
 						<View style={ styles.dummy }>
-							<Image source={ require('../../assets/time.png') } />
+							<Icon
+								type={ 'FontAwesome5' }
+								name={ 'clock' }
+								size={ 17 }
+								color={ '#b8b8b8' }
+							/>
 							<Text style={ styles.title1 }>
 								{date}&nbsp;{monthNames[month.getMonth()]}
 								&nbsp;{year}
@@ -124,7 +130,8 @@ function DentalNote(props) {
 							source={
 								note && note.patient_pic.profile_pic !== null
 									? { uri: note.patient_pic.profile_pic }
-									: require('../../assets/profile.png') }
+									: require('../../assets/profile.png')
+							}
 						/>
 						<Text style={ [ styles.normalText, styles.person ] }>
 							{note.patient_name}
@@ -139,15 +146,25 @@ function DentalNote(props) {
 				showsHorizontalScrollIndicator={ false }>
 				{note.media &&
 					note.media.length > 0 &&
-					note.media.map((item, index) => (
-						<Image
-							key={ `index_${index}` }
-							style={ styles.imageReport }
-							source={ {
-								uri: item.media
-							} }
-						/>
-					))}
+					note.media.map((item, index) =>
+						(item.mime_type === 'application/octet-stream' ? (
+							<Video
+								key={ `index_${index}` }
+								style={ styles.imageReport }
+								source={ {
+									uri: item.media
+								} }
+							/>
+						) : (
+							<Image
+								key={ `index_${index}` }
+								style={ styles.imageReport }
+								source={ {
+									uri: item.media
+								} }
+							/>
+						))
+					)}
 			</ScrollView>
 		</TouchableOpacity>
 	);

@@ -26,7 +26,9 @@ import {
 	uploadProfilePictureSuccess,
 	uploadProfilePictureFailure,
 	getNotificationsSuccess,
-	getNotificationsFailure
+	getNotificationsFailure,
+	getCheckNameSuccess,
+	getCheckNameFailure
 } from '../actions/user';
 
 import { clearDoctor } from '../actions/doctor';
@@ -48,7 +50,8 @@ import {
 	updateDeviceToken,
 	submitQuery,
 	uploadMyProfilePicture,
-	fetchNotifications
+	fetchNotifications,
+	checkUserName
 } from '../services/user.service';
 import FlashMessage from '../../components/global/FlashMessage';
 import localStorage from '../localstorage';
@@ -63,19 +66,27 @@ export function* fetchLogin(action) {
 		yield put(getLoginSuccess(response.data));
 		yield call(updateDeviceToken, { device_id: token });
 	} catch (e) {
-		FlashMessage.message('Failure', 'Please check your password or username', '#ff4444');
+		FlashMessage.message(
+			'Failure',
+			'Please check your password or username',
+			'#ff4444'
+		);
 		yield put(getLoginFailure(e));
 	}
 }
 
 export function* fetchSignup(action) {
-	const { data,onSuccess } = action;
+	const { data, onSuccess } = action;
 	try {
 		const response = yield call(signup, data);
 		onSuccess();
 		yield put(getSignUpSuccess(response.data));
 	} catch (e) {
-		FlashMessage.message('Failure', 'Something went wrong.Please try again later', '#ff4444');
+		FlashMessage.message(
+			'Failure',
+			'Something went wrong.Please try again later',
+			'#ff4444'
+		);
 		yield put(getSignUpFailure(e));
 	}
 }
@@ -98,12 +109,16 @@ export function* fetchForgetPassword(action) {
 		data.onSuccess();
 		yield put(getForgetEmailSuccess(response));
 	} catch (e) {
-		FlashMessage.message('Failure', 'Something went wrong.Please try again later', '#ff4444');
+		FlashMessage.message(
+			'Failure',
+			'Something went wrong.Please try again later',
+			'#ff4444'
+		);
 		yield put(getForgetEmailFailure(e));
 	}
 }
 
-// Used in Reset password 
+// Used in Reset password
 export function* fetchResetPin(action) {
 	const { data } = action;
 	try {
@@ -115,7 +130,9 @@ export function* fetchResetPin(action) {
 }
 
 export function* fetchLogOut(action) {
-	const { data: { navigation, onSuccess } } = action;
+	const {
+		data: { navigation, onSuccess }
+	} = action;
 	try {
 		const response = yield call(logout);
 		yield localStorage.clearAll();
@@ -127,9 +144,7 @@ export function* fetchLogOut(action) {
 		navigation.dispatch(
 			CommonActions.reset({
 				index: 2,
-				routes: [
-					{ name: 'OnBoarding', key: 'Login' }
-				]
+				routes: [ { name: 'OnBoarding', key: 'Login' } ]
 			})
 		);
 		onSuccess();
@@ -145,9 +160,7 @@ export function* fetchLogOut(action) {
 		navigation.dispatch(
 			CommonActions.reset({
 				index: 0,
-				routes: [
-					{ name: 'OnBoarding', key: 'Login' }
-				]
+				routes: [ { name: 'OnBoarding', key: 'Login' } ]
 			})
 		);
 		onSuccess();
@@ -205,7 +218,11 @@ export function* submitContactUsQuery(action) {
 		FlashMessage.message('Success', 'Query sent successfully', '#00C851');
 		yield put(submitContactUsSuccess(response.data));
 	} catch (e) {
-		FlashMessage.message('Failure', 'Something went wrong.Please try again later', '#ff4444');
+		FlashMessage.message(
+			'Failure',
+			'Something went wrong.Please try again later',
+			'#ff4444'
+		);
 		yield put(submitContactUsFailure(e));
 	}
 }
@@ -214,19 +231,39 @@ export function* uploadProfilePicture(action) {
 	const { data } = action;
 	try {
 		const response = yield call(uploadMyProfilePicture, data);
-		FlashMessage.message('Success', 'Profile picture updated successfully.', '#00C851');
+		FlashMessage.message(
+			'Success',
+			'Profile picture updated successfully.',
+			'#00C851'
+		);
 		yield put(uploadProfilePictureSuccess(response.data));
 	} catch (e) {
-		FlashMessage.message('Failure', 'Upload failed. Please try after sometime.', '#ff4444');
+		FlashMessage.message(
+			'Failure',
+			'Upload failed. Please try after sometime.',
+			'#ff4444'
+		);
 		yield put(uploadProfilePictureFailure(e));
 	}
 }
 
-export function* getNotifications () {
-    try {
-        const response = yield call(fetchNotifications);
-        yield put(getNotificationsSuccess(response.data));
-    } catch (e) {
-        yield put(getNotificationsFailure(e));
-    }
+export function* getNotifications() {
+	try {
+		const response = yield call(fetchNotifications);
+		yield put(getNotificationsSuccess(response.data));
+	} catch (e) {
+		yield put(getNotificationsFailure(e));
+	}
+}
+
+export function* fetchCheckName(action) {
+	const { data, onSuccess, onFailure } = action;
+	try {
+		const response1 = yield call(checkUserName, data);
+		yield put(getCheckNameSuccess(response1.data));
+		onSuccess();
+	} catch (e) {
+		yield put(getCheckNameFailure(e));
+		onFailure();
+	}
 }

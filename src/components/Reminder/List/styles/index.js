@@ -18,12 +18,12 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 		...Platform.select({
-            ios: {
-              bottom: 10
-            },
-            android: {
-              bottom: 25
-            }
+			ios: {
+				bottom: 10
+			},
+			android: {
+				bottom: 25
+			}
 		}),
 		right: 0,
 		shadowColor: '#000000',
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
 	},
 	scrollViewContainer: {
 		maxHeight: 300
-	}, 
+	},
 	scrollView: {
 		flexGrow: 1
 	},
@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
 		borderColor: '#CAC7C7'
 	},
 	modalContainer: {
-		backgroundColor: '#000000aa',
+		backgroundColor: 'red',
 		flex: 1,
 		justifyContent: 'center'
 	},
@@ -247,13 +247,13 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		backgroundColor: 'white'
 	},
-	crossButton: { 
-		justifyContent: 'center', 
-		alignItems: 'flex-end' 
+	crossButton: {
+		justifyContent: 'center',
+		alignItems: 'flex-end'
 	},
-	profileContainer: { 
-		paddingTop: 0, 
-		top: 0 
+	profileContainer: {
+		paddingTop: 0,
+		top: 0
 	},
 	profileContent: {
 		borderWidth: 0.3,
@@ -261,13 +261,13 @@ const styles = StyleSheet.create({
 		opacity: 0.6,
 		marginVertical: 10
 	},
-	proImage: { 
-		padding: 10, 
-		paddingTop: 0 
+	proImage: {
+		padding: 10,
+		paddingTop: 0
 	},
-	proText: { 
-		width: '50%', 
-		marginHorizontal: 10 
+	proText: {
+		width: '50%',
+		marginHorizontal: 10
 	},
 	radioContainer: {
 		width: 15,
@@ -284,15 +284,15 @@ const styles = StyleSheet.create({
 		height: 10,
 		borderRadius: 10
 	},
-	width80: { 
+	width80: {
 		width: '80%'
 	},
-	editContent: { 
-		padding: 10 
+	editContent: {
+		padding: 10
 	},
-	modContent: { 
-		alignItems: 'center', 
-		marginVertical: 10 
+	modContent: {
+		alignItems: 'center',
+		marginVertical: 10
 	},
 	modStatus: {
 		borderRadius: 10,
@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
 		marginRight: 10
 	},
 	modalWrap: {
-		backgroundColor: '#000000aa',
+		backgroundColor: '#00000014',
 		flex: 1,
 		justifyContent: 'center'
 	},

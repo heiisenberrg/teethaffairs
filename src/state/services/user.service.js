@@ -13,7 +13,8 @@ import {
 	UPDATE_DEVICE_TOKEN,
 	SUBMIT_QUERY,
 	UPLOAD_PROFILE_PIC,
-	FETCH_NOTIFICATIONS
+	FETCH_NOTIFICATIONS,
+	CHECK_NAME
 } from '../config';
 
 export const login = data =>
@@ -120,23 +121,34 @@ export const submitQuery = data =>
 		withCredentials: true
 	});
 
-export const uploadMyProfilePicture = data => uploadFile({
-	url: `${UPLOAD_PROFILE_PIC}`,
-	method: 'POST',
-	data,
-	headers: {
-		Accept: 'application/json',
-		'Content-Type': 'multipart/form-data'
-	},
-	withCredentials: true
-});
+export const uploadMyProfilePicture = data =>
+	uploadFile({
+		url: `${UPLOAD_PROFILE_PIC}`,
+		method: 'POST',
+		data,
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'multipart/form-data'
+		},
+		withCredentials: true
+	});
 
-export const fetchNotifications = () => apiCall({
-	url: `${FETCH_NOTIFICATIONS}`,
-	method: 'GET',
-	headers: {
-		Accept: 'application/json',
-		'Content-Type': 'application/json'
-	},
-	withCredentials: true
-});
+export const fetchNotifications = () =>
+	apiCall({
+		url: `${FETCH_NOTIFICATIONS}`,
+		method: 'GET',
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json'
+		},
+		withCredentials: true
+	});
+
+export const checkUserName = data => {
+	apiCall({
+		url: `${CHECK_NAME}`,
+		method: 'POST',
+		data,
+		withCredentials: false
+	});
+};

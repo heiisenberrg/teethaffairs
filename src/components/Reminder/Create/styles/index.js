@@ -55,8 +55,8 @@ const styles = StyleSheet.create({
 	selectAllContent: {
 		borderRadius: 1,
 		borderWidth: 0.5,
-		width: 15,
-		height: 15,
+		width: 23,
+		height: 23,
 		marginRight: 5
 	},
 	dayContainer: {
@@ -124,9 +124,9 @@ const styles = StyleSheet.create({
 	},
 	checkContainer: {
 		borderRadius: 10,
-		width: 20,
-		height: 21,
-		borderWidth: 0.5,
+		width: 23,
+		height: 23,
+		borderWidth: 1,
 		marginRight: 10,
 		justifyContent: 'center',
 		alignItems: 'center'
@@ -138,16 +138,20 @@ const styles = StyleSheet.create({
 		borderWidth: 0.5,
 		marginHorizontal: 5
 	},
-	flexRow: { 
-		flexDirection: 'row', 
-		alignItems: 'center', 
+	flexRow: {
+		flexDirection: 'row',
+		alignItems: 'center',
 		justifyContent: 'space-between'
 	},
-	marginHorizontal: { 
+	marginHorizontal: {
 		marginHorizontal: 10
 	},
 	displayNone: {
 		display: 'none'
+	},
+	dateTimePickerStyle: {
+		backgroundColor: 'white',
+		color: 'black'
 	}
 });
 

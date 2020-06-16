@@ -36,12 +36,12 @@ const styles = StyleSheet.create({
 	},
 	flexGrow: {
 		flexGrow: 1
-    },
-    ph20: {
-       paddingHorizontal: 20
-    },
-    m15: { margin: 15 },
-    pV3: { paddingVertical: 3 },
+	},
+	ph20: {
+		paddingHorizontal: 20
+	},
+	m15: { margin: 15 },
+	pV3: { paddingVertical: 3 },
 	scrollViewContainer: {
 		backgroundColor: 'white',
 		margin: 10,
@@ -211,15 +211,16 @@ const styles = StyleSheet.create({
 	},
 	width80: {
 		width: '80%'
-    },
-    actionButtonContent: { alignSelf: 'center', width: '90%' },
-    actionables: {
-        padding: 10,
-        borderBottomWidth: 0.5,
-        borderColor: '#7C7C7C'
-    },
-    actionableText: { 
-        paddingLeft: 15, letterSpacing: 0.5
+	},
+	actionButtonContent: { alignSelf: 'center', width: '90%' },
+	actionables: {
+		padding: 10,
+		borderBottomWidth: 0.5,
+		borderColor: '#7C7C7C'
+	},
+	actionableText: {
+		paddingLeft: 15,
+		letterSpacing: 0.5
 	},
 	doctorResponseContainer: {
 		marginVertical: 20,
@@ -228,7 +229,28 @@ const styles = StyleSheet.create({
 	},
 	doctorImage: { width: 80, height: 80 },
 	avatarContainer: { paddingHorizontal: 20 },
-	doctorNameContainer: { paddingLeft: 25, flex: 1 }
+	doctorNameContainer: { paddingLeft: 25, flex: 1 },
+	backgroundVideo: {
+		position: 'absolute',
+		top: 0,
+		left: 0,
+		bottom: 0,
+		right: 0
+	},
+	mediaPlayer: {
+		position: 'absolute',
+		top: 0,
+		left: 0,
+		bottom: 0,
+		right: 0,
+		backgroundColor: 'black'
+	},
+	toolbar: {
+		marginTop: 30,
+		backgroundColor: 'white',
+		padding: 10,
+		borderRadius: 5
+	}
 });
 
 export default styles;

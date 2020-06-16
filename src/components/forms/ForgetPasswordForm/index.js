@@ -28,11 +28,12 @@ const loginSchema = yup.object({
 		.matches(
 			/[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$/,
 			'Is not in correct format'
-		).required()
+		)
+		.required()
 });
 
 function ForgetPasswordForm(props) {
-	const { navigation, getForgetEmail } =props;
+	const { navigation, getForgetEmail } = props;
 
 	const onGetForgetPasswordSuccess = () => {
 		navigation.navigate('PasswordResetVerify');
@@ -43,23 +44,22 @@ function ForgetPasswordForm(props) {
 	};
 	return (
 		<SafeAreaView style={ styles.container }>
-		<ScrollView >
-			<View style={ styles.resetContainer }>
-				<Image source={ lock } style={ styles.lock } />
-				<Image source={ questionIcon } style={ styles.questionIcon } />
-			</View>
-					<Text style={ styles.header }>Reset password</Text>
-					<Formik
-						initialValues={ { email: '' } }
-						validationSchema={ loginSchema }
-						onSubmit={ (values, actions) => {
-							actions.resetForm();
-							handleSubmit(values);
-						} }>
-						{props => (
-							<View style={ styles.resetContainer1 }>
-								<KeyboardAvoidingView enabled>
-
+			<ScrollView>
+				<View style={ styles.resetContainer }>
+					<Image source={ lock } style={ styles.lock } />
+					<Image source={ questionIcon } style={ styles.questionIcon } />
+				</View>
+				<Text style={ styles.header }>Reset password</Text>
+				<Formik
+					initialValues={ { email: '' } }
+					validationSchema={ loginSchema }
+					onSubmit={ (values, actions) => {
+						actions.resetForm();
+						handleSubmit(values);
+					} }>
+					{props => (
+						<View style={ styles.resetContainer1 }>
+							<KeyboardAvoidingView enabled>
 								<TextInput
 									placeholder="Enter Email Address"
 									placeholderTextColor="white"
@@ -69,44 +69,44 @@ function ForgetPasswordForm(props) {
 									onBlur={ props.handleBlur('email') }
 									secureTextEntry={ false }
 								/>
-								{ props.touched.email && props.errors.email  ?
-								<Text style={ styles.errorText }>{props.errors.email}</Text>: <Text></Text>}
-									</KeyboardAvoidingView>
+								{props.touched.email && props.errors.email ? (
+									<Text style={ styles.errorText }>{props.errors.email}</Text>
+								) : (
+									<Text />
+								)}
+							</KeyboardAvoidingView>
 
-								<View style={ styles.buttonWrapper }>
+							<View style={ styles.buttonWrapper }>
 								<TouchableOpacity
 									style={ globalStyles.tertiaryButton }
 									onPress={ props.handleSubmit }>
 									<Text style={ globalStyles.tertiaryButtonText }>Submit</Text>
 								</TouchableOpacity>
-								</View>
-
 							</View>
-						)}
-					</Formik>
-					<Text style={ styles.newUserText }>New User?</Text>
-					<View style={ styles.buttonWrapper }>
-
+						</View>
+					)}
+				</Formik>
+				<Text style={ styles.newUserText }>New User?</Text>
+				<View style={ styles.buttonWrapper }>
 					<TouchableOpacity
 						style={ globalStyles.normalButton }
 						onPress={ () => navigation.navigate('SignUp') }>
-						<Text
-							style={ globalStyles.buttonText }>
-							Sign Up
-						</Text>
+						<Text style={ globalStyles.buttonText }>Sign Up</Text>
 					</TouchableOpacity>
-					</View>
-				</ScrollView>
+				</View>
+			</ScrollView>
 		</SafeAreaView>
 	);
 }
 
 function mapStateToProps() {
-	return {
-	};
+	return {};
 }
 
-export default connect(mapStateToProps, {
-	getForgetEmail,
-	setForgetPassword
-})(ForgetPasswordForm);
+export default connect(
+	mapStateToProps,
+	{
+		getForgetEmail,
+		setForgetPassword
+	}
+)(ForgetPasswordForm);

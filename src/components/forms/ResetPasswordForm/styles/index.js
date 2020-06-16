@@ -1,15 +1,15 @@
 import { StyleSheet, Dimensions } from 'react-native';
-const {  height } = Dimensions.get('screen');
+const { height } = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
 	logoHeader: {
 		height: 60,
 		backgroundColor: '#108E79',
-		maxHeight: (height - 210),
-		justifyContent:'center',
+		maxHeight: height - 210,
+		justifyContent: 'center',
 		zIndex: 1,
 		top: 0
-		},
+	},
 	container: {
 		backgroundColor: 'white',
 		flexGrow: 1
@@ -30,36 +30,36 @@ const styles = StyleSheet.create({
 		elevation: 10,
 		width: 126,
 		height: 120
-},
-filterWrapper: {
-	display: 'flex',
-	alignItems: 'center',
-	justifyContent: 'space-between',
-	flexDirection: 'row',
-	flex: 1
-},
-avatar: {
-	width: 76,
-	height: 75
-},
-normalText: {
-	fontSize: 14,
-	color: '#B8B8B8',
-	paddingHorizontal: 5
-},
-note: {
-fontSize:11,
-marginTop: -25,
-color:'#6A6A6A',
-marginLeft: 15
-},
-divider: {
-marginTop: 28,
-marginBottom: 20
-},
-filterArrow: {
-	justifyContent: 'flex-end'
-},
+	},
+	filterWrapper: {
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		flexDirection: 'row',
+		flex: 1
+	},
+	avatar: {
+		width: 76,
+		height: 75
+	},
+	normalText: {
+		fontSize: 14,
+		color: '#B8B8B8',
+		paddingHorizontal: 5
+	},
+	note: {
+		fontSize: 11,
+		marginTop: -25,
+		color: '#6A6A6A',
+		marginLeft: 15
+	},
+	divider: {
+		marginTop: 28,
+		marginBottom: 20
+	},
+	filterArrow: {
+		justifyContent: 'flex-end'
+	},
 	textInput: {
 		borderWidth: 1,
 		borderColor: '#A1A1A1',
@@ -148,7 +148,7 @@ filterArrow: {
 	},
 
 	loginContainer: {
-		marginTop:43,
+		marginTop: 43,
 		marginLeft: 25,
 		marginRight: 25,
 		marginBottom: 25

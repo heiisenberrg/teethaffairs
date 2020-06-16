@@ -36,12 +36,37 @@ const styles = StyleSheet.create({
 		},
 		left: 10
 	},
+	dropright: {
+		justifyContent: 'center',
+		alignItems: 'center',
+		position: 'relative',
+		left: 12,
+		top: 9,
+		width: 0,
+		height: 0,
+		borderTopWidth: 5,
+		borderTopColor: 'transparent',
+		borderStyle: 'solid',
+		borderBottomWidth: 5,
+		borderBottomColor: 'transparent',
+		borderLeftWidth: 5,
+		borderLeftColor: '#555'
+	},
 	dropdown: {
 		justifyContent: 'center',
 		alignItems: 'center',
 		position: 'relative',
-		left: 6,
-		top: 6
+		left: 9,
+		top: 12,
+		width: 0,
+		height: 0,
+		borderTopWidth: 5,
+		borderTopColor: '#555',
+		borderStyle: 'solid',
+		borderRightWidth: 5,
+		borderRightColor: 'transparent',
+		borderLeftWidth: 5,
+		borderLeftColor: 'transparent'
 	},
 	iconViewWrap: {
 		right: 0,
@@ -432,10 +457,13 @@ const styles = StyleSheet.create({
 	searchContainer: {
 		borderRadius: 1,
 		borderWidth: 0.5,
-		width: 15,
-		height: 15,
+		width: 23,
+		height: 23,
 		marginRight: 10
 	},
-	carouselContainer: { height: 250, marginTop: 30 }
+	carouselContainer: { height: 250, marginTop: 30 },
+	noDentist: {
+		marginTop: 20
+	}
 });
 export default styles;

@@ -21,7 +21,7 @@ const cardBrands = {
 };
 
 function PaymentList(props) {
-	const { cards, getCards, createCard, loading } = props;
+	const { cards, getCards, createCard, loading, navigation } = props;
 
 	const [ , setCardToken ] = useState('');
 
@@ -31,6 +31,11 @@ function PaymentList(props) {
 
 	const onSuccess = () => {
 		getCards();
+		if (props.route.params !== undefined) {
+			if (props.route.params.from === 'remote') {
+				navigation.goBack();
+			}
+		}
 	};
 
 	const addCardDetails = async () => {
@@ -61,15 +66,17 @@ function PaymentList(props) {
 			<TouchableOpacity
 				key={ `carditem-${index}` }
 				activeOpacity={ 1 }
+				/* eslint-disable no-mixed-spaces-and-tabs */
 				style={ {
 					...styles.cardContainer,
 					...{
-						backgroundColor:
-							cardBrands[
-								item.brand !== '' ? item.brand.toLowerCase() : 'default'
-							] ? cardBrands[
-								item.brand !== '' ? item.brand.toLowerCase() : 'default'
-							] : cardBrands.default
+						backgroundColor: cardBrands[
+							item.brand !== '' ? item.brand.toLowerCase() : 'default'
+						]
+							? cardBrands[
+									item.brand !== '' ? item.brand.toLowerCase() : 'default'
+							  ]
+							: cardBrands.default
 					}
 				} }>
 				<View row jC={ 'flex-end' } style={ styles.m10 }>

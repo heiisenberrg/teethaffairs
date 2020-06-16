@@ -22,12 +22,13 @@ import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import Icon from '../global/Icon';
 import Tooltip from '../global/Tooltip/Tooltip';
 import TextInputField from '../textInputs/TextInputField';
-import { getSignUp } from '../../state/actions/user';
+import { getSignUp, getCheckName } from '../../state/actions/user';
 import calender from '../../assets/calender.png';
 import FlashMessage from '../global/FlashMessage';
 import styles from './styles';
 import globalStyles from '../../globalStyles';
 import passwordStyle from '../textInputs/style';
+import Config from 'react-native-config';
 
 const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
 const { width } = Dimensions.get('screen');
@@ -54,11 +55,15 @@ const registerSchema = yup.object().shape({
 		),
 	first_name: yup.string().required('Required'),
 	last_name: yup.string().required('Required'),
-	username: yup.string().required('User ID is a required field.'),
+	username: yup.string(),
+	// .required('User ID is a required field.'),
 	password: yup
 		.string()
 		.min(8, 'Too Short!')
-		.matches(/^(?=.*[A-Za-z])(?=.*[0-9!@#$%^&*])(?=.{8,})/, 'Password Policy Violation')
+		.matches(
+			/^(?=.*[A-Za-z])(?=.*[0-9!@#$%^&*])(?=.{8,})/,
+			'Password Policy Violation'
+		)
 		.required('Required')
 		.label('Password'),
 	confirm_password: yup
@@ -82,10 +87,13 @@ function SignUpForm(props) {
 	const [ gender, selectGender ] = useState('');
 	const [ showEye, setShowEye ] = useState(true);
 	const [ showConfirmEye, setShowConfirmEye ] = useState(true);
+	const [ userName, setUserName ] = useState('');
+	const [ checkExist, setCheckExist ] = useState(true);
 
 	const onGetSignupSuccess = () => {
 		navigation.navigate('AccountSuccess');
 	};
+
 	const handleSubmit = (data, actions) => {
 		if (isChecked) {
 			data = {
@@ -166,6 +174,40 @@ function SignUpForm(props) {
 		</View>
 	);
 
+	const onChange1 = name => {
+		setUserName(name);
+		let data = {
+			username: name
+		};
+		fetch(Config.PROTOCOL + Config.HOST_NAME + '/users/check-username/', {
+			method: 'POST',
+			body: JSON.stringify(data),
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json'
+			}
+		})
+			.then(response => response.json())
+			.then(response => {
+				if (response.availability === true) {
+					onSuccess(true);
+				} else {
+					onFailure(false);
+				}
+			})
+			.catch(() => {
+				onFailure(false);
+			}); //need to modify this api call
+	};
+
+	const onSuccess = () => {
+		setCheckExist(true);
+	};
+
+	const onFailure = () => {
+		setCheckExist(false);
+	};
+
 	return (
 		<>
 			<View style={ styles.logoHeader }>
@@ -201,7 +243,10 @@ function SignUpForm(props) {
 						} }
 						validationSchema={ registerSchema }
 						onSubmit={ (values, actions) => {
-							handleSubmit(values, actions);
+							values.username = userName;
+							if (values.userName !== '' && checkExist === true) {
+								handleSubmit(values, actions);
+							}
 						} }>
 						{props => (
 							<View style={ styles.signupContainer }>
@@ -211,10 +256,18 @@ function SignUpForm(props) {
 									<TextInputField
 										lable="User ID"
 										placeholder="Individual or Family User ID"
-										onChangeText={ props.handleChange('username') }
-										value={ props.values.username }
+										onChangeText={ text => onChange1(text) }
+										value={ userName }
 										onBlur={ props.handleBlur('username') }
-										error={ props.touched.username && props.errors.username }
+										error={
+											props.touched.username
+												? userName === ''
+													? 'User ID is a required field.'
+													: userName !== '' && checkExist === false
+													? 'The username already exists'
+													: ''
+												: ''
+										}
 										secureTextEntry={ false }
 									/>
 									<TextInputField
@@ -436,9 +489,11 @@ function SignUpForm(props) {
 										<CheckBox
 											checkedImage={
 												<View style={ styles.customCheckbox }>
-													<Image
-														style={ styles.checkedStyle }
-														source={ require('../../assets/checkbox.png') }
+													<Icon
+														type={ 'MaterialCommunityIcons' }
+														name={ 'check' }
+														color={ 'green' }
+														size={ 21 }
 													/>
 												</View>
 											}
@@ -497,6 +552,7 @@ function mapStateToProps(state) {
 export default connect(
 	mapStateToProps,
 	{
-		getSignUp
+		getSignUp,
+		getCheckName
 	}
 )(SignUpForm);

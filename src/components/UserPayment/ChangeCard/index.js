@@ -18,7 +18,7 @@ function changeCard(props) {
 	const [ selectedCardId, setSelectedCardId ] = useState(0);
 	const [ amount ] = useState(10);
 	const { source } = route.params;
-	
+
 	useEffect(() => {
 		getCards();
 	}, []);
@@ -33,12 +33,14 @@ function changeCard(props) {
 					...styles.cardContainer,
 					...styles.card,
 					...{
-						backgroundColor:
-							cardBrands[
-								item.brand !== '' ? item.brand.toLowerCase() : 'default'
-							] ? cardBrands[
-								item.brand !== '' ? item.brand.toLowerCase() : 'default'
-							] : cardBrands.default
+						backgroundColor: cardBrands[
+							item.brand !== '' ? item.brand.toLowerCase() : 'default'
+						]
+							? cardBrands[
+									item.brand !== '' ? item.brand.toLowerCase() : 'default'
+									/* eslint-disable no-mixed-spaces-and-tabs */
+							  ]
+							: cardBrands.default
 					}
 				} }>
 				<View row jC={ 'flex-end' } style={ styles.m10 }>
@@ -76,83 +78,84 @@ function changeCard(props) {
 		);
 	};
 
-	const onViewRef = React.useRef(({ viewableItems })=> {
+	const onViewRef = React.useRef(({ viewableItems }) => {
 		setSelectedCardId(viewableItems[0].item.id);
 	});
 	const viewConfigRef = React.useRef({ viewAreaCoveragePercentThreshold: 50 });
 
 	const onSuccess = () => {
-		navigation.navigate('AppTabs', { screen: user && user.user_type === 'DOCTOR' ? 'Teledental' : 'Home' });
+		navigation.navigate('AppTabs', {
+			screen: user && user.user_type === 'DOCTOR' ? 'Teledental' : 'Home'
+		});
 	};
 
 	const pay = () => {
-		upgradeApp({ data: { card_id: selectedCardId, payment_description: 'payment' }, onSuccess });
+		upgradeApp({
+			data: { card_id: selectedCardId, payment_description: 'payment' },
+			onSuccess
+		});
 	};
 
 	return (
 		<View style={ styles.container }>
 			<ScrollView>
-			{
-				cards && cards.length > 0 &&
-				<View style={ styles.carouselContainer }>
-				<FlatList
-					data={ cards }
-					decelerationRate="fast"
-					horizontal={ true }
-					pagingEnabled={ false }
-					showsHorizontalScrollIndicator={ false }
-					snapToInterval={ width }
-					snapToAlignment="center"
-					contentContainerStyle={ styles.scrollContainer }
-					onViewableItemsChanged={ onViewRef.current }
-					viewabilityConfig={ viewConfigRef.current }
-					keyExtractor={ item => item.id }
-					renderItem={ renderItem }
-				/>
+				{cards && cards.length > 0 && (
+					<View style={ styles.carouselContainer }>
+						<FlatList
+							data={ cards }
+							decelerationRate="fast"
+							horizontal={ true }
+							pagingEnabled={ false }
+							showsHorizontalScrollIndicator={ false }
+							snapToInterval={ width }
+							snapToAlignment="center"
+							contentContainerStyle={ styles.scrollContainer }
+							onViewableItemsChanged={ onViewRef.current }
+							viewabilityConfig={ viewConfigRef.current }
+							keyExtractor={ item => item.id }
+							renderItem={ renderItem }
+						/>
+					</View>
+				)}
+				<View style={ styles.cardContainer }>
+					<View row style={ styles.bw }>
+						<Text s={ 16 } c={ '#363636' } style={ styles.p15 }>
+							Payment Details
+						</Text>
+					</View>
+					<View row jC={ 'space-between' }>
+						<Text s={ 16 } c={ '#363636' } style={ styles.p15 }>
+							{source !== 'settings' ? 'Remote Consultation' : 'Upgrade Plan'}
+						</Text>
+						<Text s={ 16 } c={ '#363636' } style={ styles.p15 }>
+							$ {amount}.00
+						</Text>
+					</View>
+					<View row jC={ 'space-between' }>
+						<Text s={ 16 } c={ '#363636' } style={ styles.p15 }>
+							Tax & Fees
+						</Text>
+						<Text s={ 16 } c={ '#363636' } style={ styles.p15 }>
+							$ 0.00
+						</Text>
+					</View>
+					<View style={ { ...styles.mv10, ...styles.bw } } />
+					<View row jC={ 'space-between' }>
+						<Text s={ 16 } c={ '#363636' } style={ styles.p15 }>
+							Amount Payable
+						</Text>
+						<Text s={ 22 } c={ '#363636' } style={ styles.p15 }>
+							$ {amount}.00
+						</Text>
+					</View>
 				</View>
-			}
-			<View style={ styles.cardContainer }>
-				<View row style={ styles.bw }>
-					<Text s={ 16 } c={ '#363636' } style={ styles.p15 }>
-						Payment Details
+				<TouchableOpacity
+					style={ [ styles.buttonContainer, styles.mv10 ] }
+					onPress={ () => pay() }>
+					<Text s={ 16 } lh={ 16 } w={ 'bold' } c={ 'white' } style={ styles.upperCase }>
+						Pay now
 					</Text>
-				</View>
-				<View row jC={ 'space-between' }>
-					<Text s={ 16 } c={ '#363636' } style={ styles.p15 }>
-						{
-							source !== 'settings' ? 
-							'Remote Consultation' : 'Upgrade Plan'
-						}
-					</Text>
-					<Text s={ 16 } c={ '#363636' } style={ styles.p15 }>
-						$ {amount}.00
-					</Text>
-				</View>
-				<View row jC={ 'space-between' }>
-					<Text s={ 16 } c={ '#363636' } style={ styles.p15 }>
-						Tax & Fees
-					</Text>
-					<Text s={ 16 } c={ '#363636' } style={ styles.p15 }>
-						$ 0.00
-					</Text>
-				</View>
-				<View style={ { ...styles.mv10, ...styles.bw } } />
-				<View row jC={ 'space-between' }>
-					<Text s={ 16 } c={ '#363636' } style={ styles.p15 }>
-						Amount Payable
-					</Text>
-					<Text s={ 22 } c={ '#363636' } style={ styles.p15 }>
-						$ {amount}.00
-					</Text>
-				</View>
-			</View>
-			<TouchableOpacity
-				style={ [ styles.buttonContainer, styles.mv10 ] }
-				onPress={ () => pay() }>
-				<Text s={ 16 } lh={ 16 } w={ 'bold' } c={ 'white' } style={ styles.upperCase }>
-					Pay now
-				</Text>
-			</TouchableOpacity>
+				</TouchableOpacity>
 			</ScrollView>
 		</View>
 	);

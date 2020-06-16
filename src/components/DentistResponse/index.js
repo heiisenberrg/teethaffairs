@@ -15,7 +15,9 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import { verifyPin } from '../../state/actions/doctor';
 import ImagePreviewer from '../../components/global/ImagePreviewer';
+import VideoPreviewer from '../../components/global/VideoPreviewer';
 import FlashMessage from '../../components/global/FlashMessage';
+import Video from 'react-native-video';
 
 const detail = [
 	{
@@ -92,6 +94,11 @@ const detail = [
 		question: 'Loose tooth',
 		answer: 'tooth_loss',
 		type: 'string'
+	},
+	{
+		question: 'Prior History',
+		answer: 'prior_history',
+		type: 'string'
 	}
 ];
 
@@ -118,6 +125,7 @@ function DentistResponse(props) {
 	const [ selectedPharmacy, setSelectedPharmacy ] = useState('');
 	const [ uri, setUri ] = useState('');
 	const [ enablePreview, setEnablePreview ] = useState(false);
+	const [ isImage, setIsImage ] = useState(true);
 
 	useEffect(() => {
 		if (route && route.params && Object.keys(route.params).length > 0) {
@@ -139,7 +147,12 @@ function DentistResponse(props) {
 		setShowDropDown(true);
 	};
 
-	const handlePreview = () => {
+	const handlePreview = data => {
+		if (data === 'image') {
+			setIsImage(true);
+		} else {
+			setIsImage(false);
+		}
 		setEnablePreview(!enablePreview);
 	};
 
@@ -154,20 +167,24 @@ function DentistResponse(props) {
 		setSearchValue(item);
 		setShowDropDown(!showDropDown);
 	};
-	
+
 	const submitPin = () => {
 		if (pinValue !== '') {
-			verifyPin( { 
-				secret_pin: pinValue, 
-				question_id: data.id 
-			}, verifyPinSuccess, () => setShowError(!showError) );
+			verifyPin(
+				{
+					secret_pin: pinValue,
+					question_id: data.id
+				},
+				verifyPinSuccess,
+				() => setShowError(!showError)
+			);
 		} else {
 			FlashMessage.message('Alert', 'Please enter the pin to continue', 'red');
 		}
 	};
 
 	function verifyPinSuccess(response) {
-		if(response && response.error_code === 2001) {
+		if (response && response.error_code === 2001) {
 			FlashMessage.message('Alert', 'Invalid PIN', 'red');
 			navigation.goBack();
 		} else {
@@ -273,7 +290,9 @@ function DentistResponse(props) {
 							Medical Conditions:
 						</Text>
 						<Text s={ 14 } lh={ 16 } style={ styles.mv5 }>
-							{data.medical_conditions ? data.medical_conditions.join(', ') : 'N/A'}
+							{data.medical_conditions
+								? data.medical_conditions.join(', ')
+								: 'N/A'}
 						</Text>
 					</View>
 					<View style={ styles.flexColumn }>
@@ -305,18 +324,33 @@ function DentistResponse(props) {
 					) }
 					renderItem={ ({ item, index }) => {
 						return (
-							<TouchableOpacity
-								activeOpacity={ 0.9 }
-								onPress={ () => [ setUri(item.media), handlePreview() ] }
-								key={ `${item}-${index}` }
-							>
-								<Image
-									style={ styles.attachmentImage }
-									source={ {
-										uri: item.media
-									} }
-								/>
-							</TouchableOpacity>
+							<View>
+								{item.mime_type === 'application/octet-stream' ? (
+									<TouchableOpacity
+										activeOpacity={ 0.9 }
+										onPress={ () => [ setUri(item.media), handlePreview('video') ] }
+										key={ `${item}-${index}` }>
+										<Video
+											source={ {
+												uri: item.media
+											} }
+											style={ styles.attachmentImage }
+										/>
+									</TouchableOpacity>
+								) : (
+									<TouchableOpacity
+										activeOpacity={ 0.9 }
+										onPress={ () => [ setUri(item.media), handlePreview('image') ] }
+										key={ `${item}-${index}` }>
+										<Image
+											style={ styles.attachmentImage }
+											source={ {
+												uri: item.media
+											} }
+										/>
+									</TouchableOpacity>
+								)}
+							</View>
 						);
 					} }
 					extraData={ data }
@@ -365,34 +399,39 @@ function DentistResponse(props) {
 
 	const actionButtons = () => {
 		/* eslint-disable no-unused-vars */
-
 		const docData =
 			Object.keys(data).length !== 0 &&
 			data.question_info &&
 			data.question_info[0];
 		return (
 			<View style={ { ...styles.mb20, ...styles.ph20 } }>
-				{data && data.responded && (
-					<View style={ styles.actionButtons }>
-						<Text s={ 14 } c={ '#848484' } center>
+				{/* {data && data.responded && (
+					<View style={styles.actionButtons}>
+						<Text s={14} c={'#848484'} center>
 							To request a prescription for these medications, click the
 							“Request prescription” button below and select your pharmacy. You
 							will be charged $10 to request this prescription.
 						</Text>
 					</View>
-				)}
-				{
-					data && data.responded &&
+				)} */}
+				{data && data.responded && data.rejected && (
 					<TouchableOpacity
 						style={ [ styles.buttonContainer, styles.mv10 ] }
 						onPress={ () =>
-							(data.rejected ? naviagteToNote() : setShowModal(!showModal))
+							// data.rejected ? naviagteToNote() : setShowModal(!showModal)
+							naviagteToNote()
 						}>
-						<Text s={ 16 } lh={ 16 } w={ 'bold' } c={ 'white' } style={ styles.upperCase }>
-							{data.rejected ? 'Edit question' : 'Request prescription'}
+						<Text
+							s={ 16 }
+							lh={ 16 }
+							w={ 'bold' }
+							c={ 'white' }
+							style={ styles.upperCase }>
+							{/* {data.rejected ? 'Edit question' : 'Request prescription'} */}
+							Edit question
 						</Text>
 					</TouchableOpacity>
-				}
+				)}
 				{/* {data && data.responded && (
 					<View style={ styles.m15 }>
 						<View row style={ styles.actionables }>
@@ -447,8 +486,7 @@ function DentistResponse(props) {
 						</View>
 					</View>
 				)} 
-				{/* it will be implemented in future*/}
-
+					{/* will be implemented this feature in future*/}
 			</View>
 		);
 	};
@@ -527,8 +565,7 @@ function DentistResponse(props) {
 									)}
 								</View>
 							</View>
-							<TouchableOpacity
-								style={ [ styles.buttonContainer, styles.mv10 ] }>
+							<TouchableOpacity style={ [ styles.buttonContainer, styles.mv10 ] }>
 								<Text
 									s={ 16 }
 									lh={ 16 }
@@ -552,7 +589,10 @@ function DentistResponse(props) {
 					<View style={ styles.modalContent }>
 						<TouchableOpacity
 							style={ styles.crossButton }
-							onPress={ () => ([ setShowVerifyPinModal(!showVerifyPinModal), navigation.goBack() ]) }>
+							onPress={ () => [
+								setShowVerifyPinModal(!showVerifyPinModal),
+								navigation.goBack()
+							] }>
 							<Icon
 								type={ 'MaterialCommunityIcons' }
 								name={ 'close' }
@@ -579,10 +619,12 @@ function DentistResponse(props) {
 									onChangeText={ value => setPinValue(value) }
 								/>
 							</View>
-							{showError && <Text center c={ 'red' } style={ [ styles.upperCase, styles.mv10 ] }>Enter a valid pin</Text>}
-							<TouchableOpacity
-								style={ styles.okButton }
-								onPress={ submitPin }>
+							{showError && (
+								<Text center c={ 'red' } style={ [ styles.upperCase, styles.mv10 ] }>
+									Enter a valid pin
+								</Text>
+							)}
+							<TouchableOpacity style={ styles.okButton } onPress={ submitPin }>
 								<Text
 									s={ 16 }
 									lh={ 16 }
@@ -611,7 +653,11 @@ function DentistResponse(props) {
 					<View center style={ styles.doctorImage }>
 						<Image
 							style={ styles.doctorImage }
-							source={ docData?.doctor_pic?.profile_pic ? { uri: docData?.doctor_pic?.profile_pic } : require('../../assets/profile.png') }
+							source={
+								docData?.doctor_pic?.profile_pic
+									? { uri: docData?.doctor_pic?.profile_pic }
+									: require('../../assets/profile.png')
+							}
 						/>
 					</View>
 					<View style={ styles.doctorNameContainer }>
@@ -623,10 +669,11 @@ function DentistResponse(props) {
 								Dentist , {docData.city}, Lic no : {docData.license_no}
 							</Text>
 							<Text s={ 14 } lh={ 26 } w={ '500' } c={ '#B8B8B8' }>
-							{
-								docData && docData.responded_on &&
-								<Text style={ styles.addressText }>Answered {moment(docData.responded_on).fromNow()}</Text>
-							}
+								{docData && docData.responded_on && (
+									<Text style={ styles.addressText }>
+										Answered {moment(docData.responded_on).fromNow()}
+									</Text>
+								)}
 							</Text>
 						</View>
 					</View>
@@ -650,9 +697,7 @@ function DentistResponse(props) {
 							Recommended follow up:
 						</Text>
 						<Text s={ 14 } lh={ 16 } c={ '#4A4A4A' }>
-							{docData.followup
-								? docData.followup
-								: '-'}
+							{docData.followup ? docData.followup : '-'}
 						</Text>
 					</View>
 					<View style={ styles.mv10 }>
@@ -682,9 +727,7 @@ function DentistResponse(props) {
 							Doctor Opinion:
 						</Text>
 						<Text s={ 14 } lh={ 16 } c={ '#4A4A4A' }>
-							{docData.doctor_opinion
-								? docData.doctor_opinion
-								: '-'}
+							{docData.doctor_opinion ? docData.doctor_opinion : '-'}
 						</Text>
 					</View>
 				</View>
@@ -707,10 +750,26 @@ function DentistResponse(props) {
 						</Text>
 					</View>
 					<View row aI={ 'flex-start' } style={ styles.mv10 }>
-						<Image
-							style={ styles.profileImage }
-							source={ require('../../assets/profile.png') }
-						/>
+						{data.patient_pic !== undefined && data.patient_pic !== null ? (
+							data.patient_pic.profile_pic !== '' &&
+							data.patient_pic.profile_pic !== null &&
+							data.patient_pic.profile_pic !== undefined ? (
+								<Image
+									style={ styles.profileImage }
+									source={ { uri: data.patient_pic.profile_pic } }
+								/>
+							) : (
+								<Image
+									style={ styles.profileImage }
+									source={ require('../../assets/profile.png') }
+								/>
+							)
+						) : (
+							<Image
+								style={ styles.profileImage }
+								source={ require('../../assets/profile.png') }
+							/>
+						)}
 						<Text s={ 14 } lh={ 16 } c={ '#B8B8B8' } style={ styles.ph10 }>
 							{data.patient_name ? data.patient_name : ''}
 						</Text>
@@ -724,31 +783,41 @@ function DentistResponse(props) {
 			</View>
 			{patientQuestions()}
 			{data && (data.answered || data.rejected) && doctorResponse()}
-			{
-				data && (data.answered || data.rejected) && user && user.user_type !== 'DOCTOR' &&
-				actionButtons()
-			}
-			<ImagePreviewer
-				uri={ uri }
-				enablePreview={ enablePreview }
-				handlePreview={ handlePreview }
-			/>
-			{
-				user && user.user_type === 'DOCTOR' &&
-				verifyPinModal()
-			}
+			{data &&
+				(data.answered || data.rejected) &&
+				user &&
+				user.user_type !== 'DOCTOR' &&
+				actionButtons()}
+			{isImage ? (
+				<ImagePreviewer
+					uri={ uri }
+					enablePreview={ enablePreview }
+					handlePreview={ handlePreview }
+				/>
+			) : (
+				<VideoPreviewer
+					uri={ uri }
+					enablePreview={ enablePreview }
+					handlePreview={ handlePreview }
+				/>
+			)}
+			{user && user.user_type === 'DOCTOR' && verifyPinModal()}
 		</ScrollView>
 	);
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
 	return {
 		user: state.user.user
 	};
 };
 
-const mapDispatchToProps = (dispatch) => ({
-	verifyPin: (data, onSuccess, onFailure) => dispatch(verifyPin(data, onSuccess, onFailure))
+const mapDispatchToProps = dispatch => ({
+	verifyPin: (data, onSuccess, onFailure) =>
+		dispatch(verifyPin(data, onSuccess, onFailure))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DentistResponse);
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(DentistResponse);

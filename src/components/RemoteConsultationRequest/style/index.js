@@ -155,8 +155,8 @@ const styles = StyleSheet.create({
 	followUpContainer: {
 		borderRadius: 1,
 		borderWidth: 0.5,
-		width: 15,
-		height: 15,
+		width: 23,
+		height: 23,
 		marginRight: 10,
 		marginTop: 5
 	},

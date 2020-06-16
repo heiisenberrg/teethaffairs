@@ -1,6 +1,6 @@
 import constants from '../constants/journal.constant';
 
-export const getAddMember = (data) => ({
+export const getAddMember = data => ({
 	type: constants.GET_ADD_MEMBER,
 	data
 });
@@ -29,7 +29,7 @@ export const getUserListFailure = error => ({
 	error
 });
 
-export const getUserNote = (data) => ({
+export const getUserNote = data => ({
 	type: constants.GET_USER_NOTE,
 	data
 });
@@ -44,7 +44,7 @@ export const getUserNoteFailure = error => ({
 	error
 });
 
-export const getDeactivateUserId = (data) => ({
+export const getDeactivateUserId = data => ({
 	type: constants.GET_DEACTIVATE_USER_ID,
 	data
 });
@@ -59,7 +59,7 @@ export const getDeactivateUserIdFailure = error => ({
 	error
 });
 
-export const fetchNotes = (data) => ({
+export const fetchNotes = data => ({
 	type: constants.GET_NOTE_LIST,
 	data
 });
@@ -74,7 +74,7 @@ export const fetchNotesFailure = error => ({
 	error
 });
 
-export const getDoctorsList = (data) => ({
+export const getDoctorsList = data => ({
 	type: constants.GET_DOCTORS_LIST,
 	data
 });
@@ -140,7 +140,7 @@ export const getDeleteNoteFailure = error => ({
 	error
 });
 
-export const getDentalVisits = (data) => ({
+export const getDentalVisits = data => ({
 	type: constants.GET_DENTAL_VISITS,
 	data
 });
@@ -155,7 +155,7 @@ export const getDentalVisitsFailure = error => ({
 	error
 });
 
-export const getRemoteConsultationsForPatients = (data) => ({
+export const getRemoteConsultationsForPatients = data => ({
 	type: constants.GET_REMOTE_CONSULTATION_FOR_PATIENTS,
 	data
 });
@@ -173,7 +173,7 @@ export const getRemoteConsultationsForPatientsFailure = error => ({
 export const createDentalVisits = (data, onSuccess) => ({
 	type: constants.CREATE_DENTAL_VISIT,
 	data,
-	onSuccess 
+	onSuccess
 });
 
 export const createDentalVisitsSuccess = response => ({
@@ -203,7 +203,7 @@ export const updateDentalVisitFailure = error => ({
 	error
 });
 
-export const deleteDentalVisit = (data) => ({
+export const deleteDentalVisit = data => ({
 	type: constants.DELETE_DENTAL_VISIT,
 	data
 });
@@ -241,6 +241,6 @@ export const setDoctorDetail = data => ({
 	data
 });
 
-export const clearJournal= () => ({
+export const clearJournal = () => ({
 	type: constants.CLEAR_JOURNAL
 });

@@ -21,6 +21,10 @@ import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import ImagePreviewer from '../../components/global/ImagePreviewer';
+import Icon from '../global/Icon';
+import Video from 'react-native-video';
+import VideoPreviewer from '../../components/global/VideoPreviewer';
+
 var date = new Date().getDate();
 var month = new Date();
 var year = new Date().getFullYear();
@@ -45,8 +49,9 @@ function NotePreview(props) {
 	const [ uri, setUri ] = useState('');
 	const [ enablePreview, setEnablePreview ] = useState(false);
 	const { previewNote } = route.params;
+	const [ isImage, setIsImage ] = useState(true);
 
-	const handleDeleteNote = (noteId) => {
+	const handleDeleteNote = noteId => {
 		getDeleteNote(noteId, onGetDeleteNoteSuccess, onGetDeleteNoteFailure);
 	};
 
@@ -58,7 +63,7 @@ function NotePreview(props) {
 		alert('Something went wrong');
 	};
 
-	const handleRemote = (id) => {
+	const handleRemote = id => {
 		navigation.navigate('RemoteConsultation', { id });
 	};
 
@@ -66,13 +71,18 @@ function NotePreview(props) {
 		navigation.navigate('AddQuestion', { data: previewNote, updateNotes: true });
 	};
 
-	useEffect(function () {
+	useEffect(function() {
 		navigation.setOptions({
 			title: previewNote.reference_name
 		});
 	}, []);
 
-	const handlePreview = () => {
+	const handlePreview = data => {
+		if (data === 'image') {
+			setIsImage(true);
+		} else {
+			setIsImage(false);
+		}
 		setEnablePreview(!enablePreview);
 	};
 
@@ -115,16 +125,27 @@ function NotePreview(props) {
 									<View style={ styles.miniProfileImageWrap }>
 										<View style={ styles.miniProfileImageWrap1 }>
 											<Image
-												source={ previewNote?.patient_pic?.profile_pic ? { uri: previewNote?.patient_pic?.profile_pic } : require('../../assets/profile.png') }
+												source={
+													previewNote?.patient_pic?.profile_pic
+														? { uri: previewNote?.patient_pic?.profile_pic }
+														: require('../../assets/profile.png')
+												}
 												style={ styles.image3 }
 											/>
-											<Text style={ styles.dateText }>{previewNote.patient_name}</Text>
+											<Text style={ styles.dateText }>
+												{previewNote.patient_name}
+											</Text>
 										</View>
 										<View style={ styles.miniProfileImageWrap2 }>
-											<Image
-												source={ require('../../assets/time.png') }
-												style={ styles.timeImage }
-											/>
+											<View style={ styles.timeImage }>
+												<Icon
+													type={ 'FontAwesome5' }
+													name={ 'clock' }
+													color={ '#b8b8b8' }
+													size={ 15 }
+												/>
+											</View>
+
 											<Text style={ styles.dateText }>
 												{date}&nbsp;{monthNames[month.getMonth()]}
 												&nbsp;{year}
@@ -146,10 +167,14 @@ function NotePreview(props) {
 									<TouchableOpacity
 										style={ styles.deleteWrap }
 										onPress={ () => setIsDeleteModalVisible(true) }>
-										<Image
-											source={ require('../../assets/delete-white.png') }
-											style={ styles.deleteIcon }
-										/>
+										<View style={ styles.deleteIcon }>
+											<Icon
+												type={ 'MaterialCommunityIcons' }
+												name={ 'trash-can-outline' }
+												color={ 'white' }
+												size={ 15 }
+											/>
+										</View>
 									</TouchableOpacity>
 								</View>
 							</View>
@@ -159,14 +184,37 @@ function NotePreview(props) {
 									previewNote.media.length > 0 &&
 									previewNote.media.map((data, index) => {
 										return (
-											<TouchableOpacity
-												onPress={ () => [ setUri(data.media), handlePreview() ] }
-												key={ index } style={ styles.imagePreview1 }>
-												<Image
-													source={ { uri: data.media } }
-													style={ styles.image }
-												/>
-											</TouchableOpacity>
+											<View>
+												{data.mime_type === 'application/octet-stream' ? (
+													<TouchableOpacity
+														onPress={ () => [
+															setUri(data.media),
+															handlePreview('video')
+														] }
+														key={ index }
+														style={ styles.imagePreview1 }>
+														<Video
+															source={ {
+																uri: data.media
+															} }
+															style={ styles.image }
+														/>
+													</TouchableOpacity>
+												) : (
+													<TouchableOpacity
+														onPress={ () => [
+															setUri(data.media),
+															handlePreview('image')
+														] }
+														key={ index }
+														style={ styles.imagePreview1 }>
+														<Image
+															source={ { uri: data.media } }
+															style={ styles.image }
+														/>
+													</TouchableOpacity>
+												)}
+											</View>
 										);
 									})}
 							</View>
@@ -306,11 +354,19 @@ function NotePreview(props) {
 						</View>
 					</View>
 				</View>
-				<ImagePreviewer
-					uri={ uri }
-					enablePreview={ enablePreview }
-					handlePreview={ handlePreview }
-				/>
+				{isImage ? (
+					<ImagePreviewer
+						uri={ uri }
+						enablePreview={ enablePreview }
+						handlePreview={ handlePreview }
+					/>
+				) : (
+					<VideoPreviewer
+						uri={ uri }
+						enablePreview={ enablePreview }
+						handlePreview={ handlePreview }
+					/>
+				)}
 			</ScrollView>
 			<Modal transparent={ true } visible={ isDeleteModalVisible }>
 				<View style={ styles.modalWrap }>
@@ -360,9 +416,12 @@ function mapStateToProps(state) {
 	};
 }
 
-export default connect(mapStateToProps, {
-	getUserNote,
-	setUserNote,
-	getDeleteNote,
-	setDeleteNote
-})(NotePreview);
+export default connect(
+	mapStateToProps,
+	{
+		getUserNote,
+		setUserNote,
+		getDeleteNote,
+		setDeleteNote
+	}
+)(NotePreview);

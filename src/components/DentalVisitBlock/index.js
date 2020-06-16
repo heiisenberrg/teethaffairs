@@ -18,7 +18,7 @@ function DentalVisitBlock(props) {
 				<View style={ styles.dentalHeaderWrapper }>
 					<Icon 
 						type={ 'FontAwesome5' }
-						name={ 'notes-medical' }
+						name={ 'user-md' }
 						size={ 36 }
 					/>
 					<View style={ styles.dentalHeaderContainer }>

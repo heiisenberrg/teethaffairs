@@ -14,11 +14,13 @@ import { connect } from 'react-redux';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
-import { getLogin } from '../../state/actions/user';
+import { getLogin, getLogOut, setLogOut } from '../../state/actions/user';
 
 import loginStyles from './styles';
 import styles from '../SignUpForm/styles';
 import globalStyles from '../../globalStyles';
+import FlashMessage from '../global/FlashMessage';
+import localStorage from '../../state/localstorage';
 
 /* eslint-disable no-undef */
 
@@ -45,7 +47,16 @@ function LoginForm(props) {
 
 	useEffect(() => {
 		if (user && Object.keys(user).length > 0) {
-			navigation.navigate('AppTabs');
+			if (user.approved_doctor === false && user.user_type === 'DOCTOR') {
+				getLogOut({ navigation, onSuccess });
+				FlashMessage.message(
+					'Alert',
+					'Your account is pending for the admin approval!',
+					'red'
+				);
+			} else {
+				navigation.navigate('AppTabs');
+			}
 		}
 	}, [ user ]);
 
@@ -65,6 +76,12 @@ function LoginForm(props) {
 		setShowEye(!showEye);
 	};
 
+	const onSuccess = () => {
+		localStorage.clearAll();
+		localStorage.removeItem('accessToken');
+		navigation.navigate('OnBoarding', { screen: 'Login' });
+	};
+
 	return (
 		<>
 			<View style={ styles.logoHeader }>
@@ -80,16 +97,36 @@ function LoginForm(props) {
 			<SafeAreaView style={ styles.container }>
 				<ScrollView>
 					<View style={ loginStyles.groupButtonContainer }>
-						<TouchableOpacity activeOpacity={ 0.8 } onPress={ () => handleIspatient(true) }>
-							<Text style={ { ...loginStyles.buttonLeftCorner, ...(isPatient && loginStyles.activeGroupButton) } }>Patient</Text>
+						<TouchableOpacity
+							activeOpacity={ 0.8 }
+							onPress={ () => handleIspatient(true) }>
+							<Text
+								style={ {
+									...loginStyles.buttonLeftCorner,
+									...(isPatient && loginStyles.activeGroupButton)
+								} }>
+								Patient
+							</Text>
 						</TouchableOpacity>
-						<TouchableOpacity activeOpacity={ 0.8 } onPress={ () => handleIspatient(false) }>
-							<Text style={ { ...loginStyles.buttonRightCorner, ...(!isPatient && loginStyles.activeGroupButton) } }>Doctor</Text>
+						<TouchableOpacity
+							activeOpacity={ 0.8 }
+							onPress={ () => handleIspatient(false) }>
+							<Text
+								style={ {
+									...loginStyles.buttonRightCorner,
+									...(!isPatient && loginStyles.activeGroupButton)
+								} }>
+								Doctor
+							</Text>
 						</TouchableOpacity>
 					</View>
 					<Text style={ loginStyles.header }>Login</Text>
 					<Formik
-						initialValues={ { username: isPatient ? '' : '', password: '', isPatient } }
+						initialValues={ {
+							username: isPatient ? '' : '',
+							password: '',
+							isPatient
+						} }
 						enableReinitialize
 						validationSchema={ loginSchema }
 						onSubmit={ (values, actions) => {
@@ -103,11 +140,15 @@ function LoginForm(props) {
 									keyboardVerticalOffset={ keyboardVerticalOffset }>
 									<View style={ loginStyles.textInputContainer }>
 										<View style={ loginStyles.labelContainer }>
-											<Text style={ loginStyles.label }>{isPatient ? 'User ID' : 'Email ID' }</Text>
+											<Text style={ loginStyles.label }>
+												{isPatient ? 'User ID' : 'Email ID'}
+											</Text>
 										</View>
 										<TextInput
 											style={ loginStyles.textInput }
-											placeholder={ `Enter Your ${isPatient ? 'User' : 'Email'} ID` }
+											placeholder={ `Enter Your ${
+												isPatient ? 'User' : 'Email'
+											} ID` }
 											onChangeText={ props.handleChange('username') }
 											value={ props.values.username }
 											onBlur={ props.handleBlur('username') }
@@ -169,12 +210,13 @@ function LoginForm(props) {
 										onPress={ props.handleSubmit }>
 										<Text style={ globalStyles.buttonText }>login</Text>
 									</TouchableOpacity>
-									{isPatient && 
-									<TouchableOpacity
-										style={ globalStyles.secondaryButton }
-										onPress={ () => navigation.navigate('SignUp') }>
-										<Text style={ globalStyles.buttonText }>sign up</Text>
-									</TouchableOpacity>}
+									{isPatient && (
+										<TouchableOpacity
+											style={ globalStyles.secondaryButton }
+											onPress={ () => navigation.navigate('SignUp') }>
+											<Text style={ globalStyles.buttonText }>sign up</Text>
+										</TouchableOpacity>
+									)}
 									<View style={ styles.loginTermsWrapper }>
 										<Text
 											style={ loginStyles.forgetPassword }
@@ -199,7 +241,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-	getLogin: (data, token) => dispatch(getLogin(data, token))
+	getLogin: (data, token) => dispatch(getLogin(data, token)),
+	getLogOut,
+	setLogOut
 });
 
 export default connect(

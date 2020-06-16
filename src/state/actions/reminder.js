@@ -79,8 +79,7 @@ export const clearReminder = () => ({
 	type: constants.CLEAR_REMINDER
 });
 
-
-export const getReminder = (data) => ({
+export const getReminder = data => ({
 	type: constants.GET_REMINDER,
 	data
 });
@@ -92,5 +91,21 @@ export const getReminderSuccess = response => ({
 
 export const getReminderFailure = error => ({
 	type: constants.GET_REMINDER_FAILURE,
+	error
+});
+
+export const updateNotificationReminder = (data, navigation) => ({
+	type: constants.UPDATE_NOTIFICATION_REMINDER,
+	data,
+	navigation
+});
+
+export const updateNotificationReminderSuccess = response => ({
+	type: constants.UPDATE_NOTIFICATION_REMINDER_SUCCESS,
+	response
+});
+
+export const updateNotificationReminderrFailure = error => ({
+	type: constants.UPDATE_NOTIFICATION_REMINDER_FAILURE,
 	error
 });

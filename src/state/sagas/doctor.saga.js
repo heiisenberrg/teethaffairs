@@ -76,7 +76,8 @@ export function* updateDoctorProfile (action) {
   const { data } = action;
   try {
     const response = yield call(profileUpdate, data);
-    yield put(updateDoctorProfileSuccess(response));
+		yield put(updateDoctorProfileSuccess(response));
+		FlashMessage.message('Success', 'Profile has been updated successfully.', '#00C851');
   } catch (e) {
     yield put(updateDoctorProfileFailure(e));
   }

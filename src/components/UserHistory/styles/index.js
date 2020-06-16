@@ -326,10 +326,11 @@ const styles = StyleSheet.create({
 		alignSelf:'flex-end'
 	},
 	time: {
-		marginTop: 3,
+		marginTop: 1,
 		width:23,
 		height: 23,
-		marginLeft: 10
+		marginLeft:0,
+		marginRight: -5
 	},
 	descriptionWrap: {
 		flex: 1,
