@@ -127,7 +127,6 @@ const styles = StyleSheet.create({
 	termsWrapper: {
 		flexDirection: 'row',
 		justifyContent: 'center',
-		marginLeft: 40,
 		marginTop: 5
 	},
 	loginTermsWrapper: {
@@ -331,6 +330,12 @@ const styles = StyleSheet.create({
 		borderRadius: 50,
 		backgroundColor: '#14DF94',
 		marginHorizontal: 10
+	},
+	checkText: {
+		backgroundColor: 'transparent', 
+		width: 40, 
+		height: 40,
+		marginLeft: 10
 	}
 });
 

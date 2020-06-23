@@ -20,8 +20,7 @@ const styles = StyleSheet.create({
 		fontSize: 12,
 		textAlign: 'center',
 		color: '#003CFF',
-		textDecorationLine: 'underline',
-		marginTop: 21
+		textDecorationLine: 'underline'
 	},
 	responseWrap: {
 		marginTop: -10,
@@ -40,7 +39,7 @@ const styles = StyleSheet.create({
 	header: {
 		textAlign: 'center',
 		fontSize: 22,
-		marginTop: 25,
+		marginTop: 100,
 		fontWeight: 'bold',
 		color: '#3F4440',
 		marginBottom: 10
@@ -73,9 +72,10 @@ const styles = StyleSheet.create({
 		marginLeft: 17
 	},
 	groupButtonContainer: {
-		marginTop: 100,
 		flexDirection: 'row',
-		justifyContent: 'center'
+		justifyContent: 'center',
+		position: 'relative',
+		top: 80
 	},
 	groupButton: {
 		color: '#14DF94',

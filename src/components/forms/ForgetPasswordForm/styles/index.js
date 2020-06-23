@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		fontSize: 24,
 		color: 'white',
-		marginTop: 30
+		marginTop: 120
 	},
 	label: {
 		marginLeft: 10,
@@ -95,9 +95,10 @@ const styles = StyleSheet.create({
 		marginTop: 50
 	},
 	resetContainer: {
-		marginTop: 150,
 		alignItems: 'center',
-		justifyContent: 'center'
+		justifyContent: 'center',
+		position:'relative',
+		top: 80
 	},
 	lock: {
 		position: 'absolute'

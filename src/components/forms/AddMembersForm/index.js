@@ -5,7 +5,6 @@ import {
 	TouchableOpacity,
 	ScrollView,
 	SafeAreaView,
-	KeyboardAvoidingView,
 	Image,
 	Modal,
 	TextInput,
@@ -35,6 +34,7 @@ import Tooltip from '../../global/Tooltip/Tooltip';
 import Icon from '../../global/Icon';
 import Config from 'react-native-config';
 import RNFetchBlob from 'rn-fetch-blob';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const { width } = Dimensions.get('screen');
 
@@ -93,7 +93,6 @@ const imageOptions = {
 };
 
 /* eslint-disable no-undef */
-const keyboardVerticalOffset = Platform.OS === 'ios' ? 0 : 0;
 
 let relation_options = [
 	{
@@ -107,15 +106,14 @@ let relation_options = [
 	{
 		value: 'FATHER'
 	},
-
 	{
 		value: 'MOTHER'
 	},
 	{
-		value: 'WIFE'
+		value: 'SISTER'
 	},
 	{
-		value: 'HUSBAND'
+		value: 'BROTHER'
 	}
 ];
 
@@ -397,9 +395,7 @@ function AddMembersForm(props) {
 					} }>
 					{props => (
 						<View style={ styles.signupContainer }>
-							<KeyboardAvoidingView
-								behavior={ Platform.OS === 'ios' ? 'padding' : 'absolute' }
-								keyboardVerticalOffset={ keyboardVerticalOffset }>
+							<KeyboardAwareScrollView showsVerticalScrollIndicator={ false }>
 								<TextInputField
 									lable="First Name"
 									placeholder="Enter First Name"
@@ -667,7 +663,7 @@ function AddMembersForm(props) {
 										{addMember === true ? 'Add' : 'Update'}
 									</Text>
 								</TouchableOpacity>
-							</KeyboardAvoidingView>
+							</KeyboardAwareScrollView>
 						</View>
 					)}
 				</Formik>

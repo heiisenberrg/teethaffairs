@@ -329,31 +329,34 @@ function AddQuestion(props) {
 						let source = { ...customResponse };
 						let media;
 						if (response.customButton === 'image') {
-							media = {
-								uri: customResponse.uri,
-								name: customResponse.fileName,
-								type: customResponse.fileName
-							};
-
-							if (tempMedia.length < 5) {
-								tempImage.push(source);
-								tempMedia.push(media);
-							}
-							setImageSource([ ...imageSource, tempImage ]);
-						} else {
-							if (enableVideo) {
+							if (source.didCancel !== true) {
 								media = {
 									uri: customResponse.uri,
-									path: customResponse.path
+									name: customResponse.fileName,
+									type: customResponse.fileName
 								};
-								setEnableVideo(false);
 								if (tempMedia.length < 5) {
 									tempImage.push(source);
 									tempMedia.push(media);
 								}
 								setImageSource([ ...imageSource, tempImage ]);
-							} else {
-								setIsVideoUpload(true);
+							}
+						} else {
+							if (source.didCancel !== true) {
+								if (enableVideo) {
+									media = {
+										uri: customResponse.uri,
+										path: customResponse.path
+									};
+									setEnableVideo(false);
+									if (tempMedia.length < 5) {
+										tempImage.push(source);
+										tempMedia.push(media);
+									}
+									setImageSource([ ...imageSource, tempImage ]);
+								} else {
+									setIsVideoUpload(true);
+								}
 							}
 						}
 					}
@@ -365,7 +368,6 @@ function AddQuestion(props) {
 					name: response.fileName,
 					type: response.fileName
 				};
-
 				if (tempMedia.length < 5) {
 					tempImage.push(source);
 					tempMedia.push(media);

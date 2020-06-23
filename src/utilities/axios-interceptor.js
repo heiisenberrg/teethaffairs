@@ -83,11 +83,13 @@ const formData = async (data = {}) => {
 	} else {
 		data.headers = baseHeaders;
 	}
-	const accessToken = await checkAuth();
-	const token =
-		process.env.NODE_ENV === 'test' ? '123456' : 'Bearer ' + accessToken;
-	if (data.withCredentials) {
+	if (data.withCredentials === true) {
+		const accessToken = await checkAuth();
+		const token =
+			process.env.NODE_ENV === 'test' ? '123456' : 'Bearer ' + accessToken;
 		client.defaults.headers.common['Authorization'] = token;
+	} else {
+		client.defaults.headers.common['Authorization'] = '';
 	}
 	return data;
 };

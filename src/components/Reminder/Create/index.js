@@ -4,7 +4,8 @@ import {
 	ScrollView,
 	TouchableOpacity,
 	TextInput,
-	FlatList
+	FlatList,
+	KeyboardAvoidingView
 } from 'react-native';
 import styles from './styles';
 import Icon from '../../global/Icon';
@@ -16,6 +17,9 @@ import { createReminder, updateReminder } from '../../../state/actions/reminder'
 import { getUsers } from '../../../state/actions/user';
 import FlashMessage from '../../global/FlashMessage';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+
+/* eslint-disable no-undef */
+const keyboardVerticalOffset = Platform.OS === 'ios' ? 150 : 0;
 
 /* eslint-disable no-mixed-spaces-and-tabs */
 
@@ -352,6 +356,9 @@ function CreateReminder(props) {
 					</View>
 				</View>
 			</View>
+			<KeyboardAvoidingView
+					behavior="padding"
+					keyboardVerticalOffset={ keyboardVerticalOffset }>
 			<View style={ styles.nameContainer }>
 				<Text style={ styles.nameText }>Name The Event</Text>
 				<View style={ styles.nameInputContainer }>
@@ -362,6 +369,7 @@ function CreateReminder(props) {
 					/>
 				</View>
 			</View>
+			</KeyboardAvoidingView>
 			<View
 				row
 				style={

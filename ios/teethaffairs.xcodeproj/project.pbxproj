@@ -688,6 +688,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = teethaffairs/teethaffairs.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 5;
 				DEAD_CODE_STRIPPING = NO;
@@ -703,7 +704,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.teethaffairs;
 				PRODUCT_NAME = teethaffairs;
-				PROVISIONING_PROFILE_SPECIFIER = "Teethaffairs Dev Profile";
+				PROVISIONING_PROFILE_SPECIFIER = Teethaffairs_Dev_18062020;
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

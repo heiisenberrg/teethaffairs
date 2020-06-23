@@ -125,6 +125,11 @@ function MainStack(props) {
 			.notifications()
 			.getInitialNotification();
 		if (notificationOpen) {
+			if (notificationOpen.notification._data.type === 'reminder') {
+				RootNavigation.navigate('ReminderNotification', {
+					id: notificationOpen.notification._data.id
+				});
+			}
 		}
 		this.messageListener = firebase.messaging().onMessage(message => {});
 	};

@@ -4,8 +4,8 @@ const { height } = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: 'white',
-		flexGrow: 1
+		backgroundColor: 'white'
+		// flexGrow: 1
 	},
 	passwordWrapper: {
 		flexDirection: 'row'
@@ -425,6 +425,9 @@ const styles = StyleSheet.create({
 		borderBottomColor: 'transparent',
 		borderLeftWidth: 5,
 		borderLeftColor: '#555'
+	},
+	bhunaa: {
+		flex: 1
 	}
 });
 

@@ -553,7 +553,7 @@ function UserRemoteConsultation(props) {
 										</Text>
 									)}
 								</View>
-								{renderPaymentCard()}
+								{cards !== null && cards.length > 0 ? renderPaymentCard(): <Text/>}
 								{cards !== null && cards.length === 0 ? (
 									<View style={ styles.sendButtonWrapper }>
 										<TouchableOpacity

@@ -85,9 +85,10 @@ function ReminderNotification(props) {
 								<Image
 									style={ styles.profileImage }
 									source={
-										reminder && reminder.data.profile_pic !== null
-											? { uri: reminder.data.profile_pic }
-											: require('../../../assets/profile.png')
+									reminder && reminder.data !== undefined ?
+										reminder.data.profile_pic !== null && reminder.data.profile_pic !== undefined
+										? { uri: reminder.data.profile_pic }
+										: require('../../../assets/profile.png') :require('../../../assets/profile.png') 
 									}
 								/>
 							</View>
@@ -105,8 +106,9 @@ function ReminderNotification(props) {
 								<View row center>
 									<View center style={ styles.timeContainer }>
 										<Text style={ styles.mediumText }>
-											{moment(reminder.data.reminder_time, 'HHmm').format('LT')}
-										</Text>
+										{reminder && reminder.data !== undefined ?
+										moment(reminder.data.reminder_time, 'HHmm').format('LT') : ''}
+									</Text>
 									</View>
 								</View>
 							</View>

@@ -697,7 +697,9 @@ function DentistResponse(props) {
 							Recommended follow up:
 						</Text>
 						<Text s={ 14 } lh={ 16 } c={ '#4A4A4A' }>
-							{docData.followup ? docData.followup : '-'}
+							{docData.recommended_followup
+								? docData.recommended_followup
+								: '-'}
 						</Text>
 					</View>
 					<View style={ styles.mv10 }>

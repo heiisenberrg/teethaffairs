@@ -5,8 +5,7 @@ import {
 	ScrollView,
 	TouchableOpacity,
 	TextInput,
-	Modal,
-	KeyboardAvoidingView
+	Modal
 } from 'react-native';
 import Toast from '../../components/Toast';
 import FlashMessage from '../../components/global/FlashMessage';
@@ -25,9 +24,9 @@ import ImagePreviewer from '../../components/global/ImagePreviewer';
 import { CommonActions } from '@react-navigation/native';
 import Video from 'react-native-video';
 import VideoPreviewer from '../../components/global/VideoPreviewer';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 /* eslint-disable no-undef */
-const keyboardVerticalOffset = Platform.OS === 'ios' ? 0 : 0;
 
 import remoteStyles from '../UserRemoteConsultation/styles';
 
@@ -321,9 +320,7 @@ function RemoteConsultationRequest(props) {
 		return (
 			<View style={ styles.mv10 }>
 				<ScrollView>
-					<KeyboardAvoidingView
-						behavior={ `${Platform.OS === 'ios' ? 'padding' : 'absolute'}` }
-						keyboardVerticalOffset={ keyboardVerticalOffset }>
+					<KeyboardAwareScrollView showsVerticalScrollIndicator={ false }>
 						<Text
 							s={ 14 }
 							lh={ 16 }
@@ -447,7 +444,7 @@ function RemoteConsultationRequest(props) {
 								<View style={ styles.flex } />
 							</View>
 						</View>
-					</KeyboardAvoidingView>
+					</KeyboardAwareScrollView>
 				</ScrollView>
 			</View>
 		);

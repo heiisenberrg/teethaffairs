@@ -44,7 +44,7 @@ function ForgetPasswordForm(props) {
 	};
 	return (
 		<SafeAreaView style={ styles.container }>
-			<ScrollView>
+			<ScrollView showsVerticalScrollIndicator={ false } >
 				<View style={ styles.resetContainer }>
 					<Image source={ lock } style={ styles.lock } />
 					<Image source={ questionIcon } style={ styles.questionIcon } />

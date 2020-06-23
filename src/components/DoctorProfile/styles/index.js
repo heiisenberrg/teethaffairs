@@ -79,6 +79,9 @@ const styles = StyleSheet.create({
 		borderStyle: 'dashed',
 		borderRadius: 50,
 		borderWidth: 1
+	},
+	noSpace: {
+		marginTop: -10
 	}
 }); 
 

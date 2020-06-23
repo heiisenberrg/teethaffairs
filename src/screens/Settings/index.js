@@ -153,7 +153,11 @@ function Settings(props) {
 					)}
 				<TouchableOpacity
 					style={ styles.linkContainer }
-					onPress={ () => navigation.navigate('History') }>
+					onPress={ () => 
+						(user && user.user_type === 'DOCTOR' ?
+						navigation.navigate('History', {
+								screen: 'DoctorHistory' }) : navigation.navigate('History'))
+						}>					
 					<View style={ styles.imageContainer }>
 						<Icon
 							type={ 'FontAwesome5' }

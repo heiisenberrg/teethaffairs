@@ -95,7 +95,7 @@ function LoginForm(props) {
 				</TouchableOpacity>
 			</View>
 			<SafeAreaView style={ styles.container }>
-				<ScrollView>
+				<ScrollView showsVerticalScrollIndicator={ false }>
 					<View style={ loginStyles.groupButtonContainer }>
 						<TouchableOpacity
 							activeOpacity={ 0.8 }
