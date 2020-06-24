@@ -13,27 +13,17 @@ import {
 	NOTE_EDIT
 } from '../config';
 
-export const getMember = (data) => 
+export const getMember = (data, id) => 
 	uploadFile({
-		url: `${ADD_MEMBER}`,
-		method: 'POST',
-		headers: {
-			Accept: 'application/json'
-			// 'Content-Type': 'multipart/form-data'
-		},
+		url: id === '' ? ADD_MEMBER : USER_LIST + id + '/',
+		method: id === '' ? 'POST' : 'PUT',
 		data,
+		headers: {
+		Accept: 'application/json',
+		'Content-Type': 'multipart/form-data'
+		},
 		withCredentials: true
 	});
-	// return uploadFile({
-	// 	url: id === '' ? ADD_MEMBER : USER_LIST + id + '/',
-	// 	method: id === '' ? 'POST' : 'PUT',
-	// 	data,
-	// 	headers: {
-	// 	Accept: 'application/json',
-	// 	'Content-Type': 'multipart/form-data'
-	// 	},
-	// 	withCredentials: true
-	// });
 
 export const getUsers = () =>
 	apiCall({

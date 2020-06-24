@@ -30,7 +30,7 @@ import calender from '../../../assets/calender.png';
 import { Dropdown } from 'react-native-material-dropdown';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 
-import FlashMessage from '../../global/FlashMessage';
+// import FlashMessage from '../../global/FlashMessage';
 import Tooltip from '../../global/Tooltip/Tooltip';
 import Icon from '../../global/Icon';
 import Config from 'react-native-config';
@@ -93,8 +93,6 @@ const imageOptions = {
 	}
 };
 
-/* eslint-disable no-undef */
-
 let relation_options = [
 	{
 		value: 'SON'
@@ -137,8 +135,8 @@ function AddMembersForm(props) {
 		route: {
 			params: { userdata }
 		},
-		user,
-		uploadProfilePicture
+		user
+		// uploadProfilePicture
 	} = props;
 	const [ isModalVisible, setIsModalVisible ] = useState(false);
 	const [ addMember, setAddMember ] = useState(false);
@@ -171,7 +169,7 @@ function AddMembersForm(props) {
 		var form_data = [
 			{
 				name: 'email',
-				data: 'bpandian+28290@fleetstudio.com'
+				data: memberDetails.email
 			},
 			{
 				name: 'first_name',
@@ -197,10 +195,10 @@ function AddMembersForm(props) {
 				name: 'user_type',
 				data: memberDetails.user_type
 			},
-			// {
-			// 	name: 'date_of_birth',
-			// 	data: memberDetails.date_of_birth
-			// },
+			{
+				name: 'date_of_birth',
+				data: memberDetails.date_of_birth
+			},
 			{
 				name: 'zipcode',
 				data: 11111
@@ -211,6 +209,7 @@ function AddMembersForm(props) {
 			}		
 		];
 		// console.log('IMAMMA', imageSource);
+
 			form_data.push({
 				name: 'profile_pic',
 				filename: `profile${Date.now()}`,
@@ -229,19 +228,19 @@ function AddMembersForm(props) {
 		// });
 	};
 
-	const onGetAddMemberFailure = () => {
-		setAddMember(true);
-		FlashMessage.message('Alert', 'Something went wrong', '#ff4444');
-	};
+	// const onGetAddMemberFailure = () => {
+	// 	setAddMember(true);
+	// 	FlashMessage.message('Alert', 'Something went wrong', '#ff4444');
+	// };
 
-	const onGetAddMemberSuccess = data => {
-		addedMember = data.username
-			? data.username
-			: data[0].username
-			? data[0].username
-			: '';
-		setIsModalVisible(true);
-	};
+	// const onGetAddMemberSuccess = data => {
+	// 	addedMember = data.username
+	// 		? data.username
+	// 		: data[0].username
+	// 		? data[0].username
+	// 		: '';
+	// 	setIsModalVisible(true);
+	// };
 
 	useEffect(function() {
 		if (
@@ -322,20 +321,20 @@ function AddMembersForm(props) {
 		});
 	};
 
-	const saveProfilePhoto = item => {
-		const data = [
-			{
-				name: 'profile_pic',
-				filename: `profile${Date.now()}`,
-				data:
-					Platform.OS === 'android'
-						? RNFetchBlob.wrap(item.uri)
-						: RNFetchBlob.wrap(item.uri.replace('file://', '')),
-				type: item.type
-			}
-		];
-		uploadProfilePicture(data);
-	};
+	// const saveProfilePhoto = item => {
+	// 	const data = [
+	// 		{
+	// 			name: 'profile_pic',
+	// 			filename: `profile${Date.now()}`,
+	// 			data:
+	// 				Platform.OS === 'android'
+	// 					? RNFetchBlob.wrap(item.uri)
+	// 					: RNFetchBlob.wrap(item.uri.replace('file://', '')),
+	// 			type: item.type
+	// 		}
+	// 	];
+	// 	uploadProfilePicture(data);
+	// };
 
 	const doesPasswordMatchSuccess = values =>
 		values.password &&
@@ -660,11 +659,11 @@ function AddMembersForm(props) {
 									/>
 									<View style={ styles.searchIcon } />
 								</View>
-								{/* {props.touched.relation && props.errors.relation ? (
+								{props.touched.relation && props.errors.relation ? (
 									<Text style={ styles.errorText }>{props.errors.relation}</Text>
 								) : (
 									<Text />
-								)} */}
+								)}
 								<TextInputField
 									lable="Zipcode"
 									placeholder="Enter Zipcode"

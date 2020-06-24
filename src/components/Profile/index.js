@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
 	View,
 	Text,
-	KeyboardAvoidingView,
 	TouchableOpacity,
 	ScrollView,
 	BackHandler,
@@ -20,9 +19,6 @@ import Icon from '../global/Icon';
 
 import { connect } from 'react-redux';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-
-/* eslint-disable no-undef */
-const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
 
 const noteSchema = yup.object({
 	description: yup.string().required(),
