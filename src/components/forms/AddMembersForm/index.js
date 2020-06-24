@@ -8,7 +8,8 @@ import {
 	Image,
 	Modal,
 	TextInput,
-	Dimensions
+	Dimensions,
+	Platform
 } from 'react-native';
 import { connect } from 'react-redux';
 import ImagePicker from 'react-native-image-picker';
@@ -166,11 +167,66 @@ function AddMembersForm(props) {
 			memberDetails.id = userId;
 		}
 		memberDetails.date_of_birth = birthDate;
-		getAddMember({
-			data: memberDetails,
-			onSuccess: response => onGetAddMemberSuccess(response),
-			onFailure: onGetAddMemberFailure
-		});
+
+		var form_data = [
+			{
+				name: 'email',
+				data: 'bpandian+28290@fleetstudio.com'
+			},
+			{
+				name: 'first_name',
+				data: memberDetails.first_name
+			},
+			{
+				name: 'last_name',
+				data: memberDetails.last_name
+			},
+			{
+				name: 'gender',
+				data: memberDetails.gender
+			},
+			{
+				name: 'username',
+				data: userName
+			},
+			{
+				name: 'password',
+				data: memberDetails.password
+			},
+			{
+				name: 'user_type',
+				data: memberDetails.user_type
+			},
+			// {
+			// 	name: 'date_of_birth',
+			// 	data: memberDetails.date_of_birth
+			// },
+			{
+				name: 'zipcode',
+				data: 11111
+			},
+			{
+				name: 'relationship',
+				data: memberDetails.profile.relationship
+			}		
+		];
+		// console.log('IMAMMA', imageSource);
+			form_data.push({
+				name: 'profile_pic',
+				filename: `profile${Date.now()}`,
+				data:
+					Platform.OS === 'android'
+						? RNFetchBlob.wrap(imageSource.uri)
+						: RNFetchBlob.wrap(imageSource.uri.replace('file://', '')),
+						type: imageSource.type
+
+			});
+		getAddMember(form_data, memberDetails.id);
+		// getAddMember({
+		// 	data: memberDetails,
+		// 	onSuccess: response => onGetAddMemberSuccess(response),
+		// 	onFailure: onGetAddMemberFailure
+		// });
 	};
 
 	const onGetAddMemberFailure = () => {
@@ -194,6 +250,7 @@ function AddMembersForm(props) {
 		) {
 			setUpdateMember(true);
 			setUserId(props.route.params.userdata.id);
+			setImageSource({ uri: props.route.params.userdata.profile_pic });
 		} else {
 			setAddMember(true);
 		}
@@ -260,7 +317,7 @@ function AddMembersForm(props) {
 					...response
 				};
 				setImageSource(source);
-				saveProfilePhoto(source);
+				// saveProfilePhoto(source);
 			}
 		});
 	};
@@ -305,10 +362,10 @@ function AddMembersForm(props) {
 		</View>
 	);
 
-	const onChange1 = name => {
-		setUserName(name);
+	const onChangeUserId = name => {
+		setUserName(name.trim());
 		let data = {
-			username: name
+			username: name.trim().toLowerCase()
 		};
 		fetch(Config.PROTOCOL + Config.HOST_NAME + '/users/check-username/', {
 			method: 'POST',
@@ -321,22 +378,14 @@ function AddMembersForm(props) {
 			.then(response => response.json())
 			.then(response => {
 				if (response.availability === true) {
-					onSuccess(true);
+					setCheckExist(true);
 				} else {
-					onFailure(false);
+					setCheckExist(false);
 				}
 			})
 			.catch(() => {
-				onFailure(false);
+				setCheckExist(false);
 			}); //need to modify this api call
-	};
-
-	const onSuccess = () => {
-		setCheckExist(true);
-	};
-
-	const onFailure = () => {
-		setCheckExist(false);
 	};
 
 	return (
@@ -346,9 +395,10 @@ function AddMembersForm(props) {
 					activeOpacity={ 0.8 }
 					onPress={ takeImageHandler }
 					style={ styles.profileImageContainer }>
+					{console.log('USER', imageSource)}
 					<Image
 						source={
-							imageSource
+							imageSource !== null && imageSource.uri !== null
 								? { uri: imageSource.uri }
 								: require('../../../assets/profile.png')
 						}
@@ -399,7 +449,9 @@ function AddMembersForm(props) {
 								<TextInputField
 									lable="First Name"
 									placeholder="Enter First Name"
-									onChangeText={ props.handleChange('first_name') }
+									onChangeText={ value =>
+										props.setFieldValue('first_name', value.trim())
+									}
 									value={ props.values.first_name }
 									onBlur={ props.handleBlur('first_name') }
 									error={ props.touched.first_name && props.errors.first_name }
@@ -408,7 +460,9 @@ function AddMembersForm(props) {
 								<TextInputField
 									lable="Last Name"
 									placeholder="Enter Last Name"
-									onChangeText={ props.handleChange('last_name') }
+									onChangeText={ value =>
+										props.setFieldValue('last_name', value.trim())
+									}
 									value={ props.values.last_name }
 									onBlur={ props.handleBlur('last_name') }
 									error={ props.touched.last_name && props.errors.last_name }
@@ -418,7 +472,7 @@ function AddMembersForm(props) {
 									lable="User ID"
 									placeholder="Enter User ID"
 									editable={ addMember }
-									onChangeText={ text => onChange1(text) }
+									onChangeText={ text => onChangeUserId(text) }
 									value={ userName }
 									onBlur={ props.handleBlur('username') }
 									error={
@@ -441,7 +495,9 @@ function AddMembersForm(props) {
 											<TextInput
 												style={ passwordStyle.textInput }
 												placeholder="Enter Your Password"
-												onChangeText={ props.handleChange('password') }
+												onChangeText={ value =>
+													props.setFieldValue('password', value.trim())
+												}
 												value={ props.values.password }
 												onBlur={ props.handleBlur('password') }
 												secureTextEntry={ showEye ? true : false }
@@ -503,7 +559,9 @@ function AddMembersForm(props) {
 											<TextInput
 												style={ passwordStyle.textInput }
 												placeholder="Retype Password"
-												onChangeText={ props.handleChange('confirm_password') }
+												onChangeText={ value =>
+													props.setFieldValue('confirm_password', value.trim())
+												}
 												value={ props.values.confirm_password }
 												onBlur={ props.handleBlur('confirm_password') }
 												secureTextEntry={ showConfirmEye ? true : false }
@@ -602,19 +660,22 @@ function AddMembersForm(props) {
 									/>
 									<View style={ styles.searchIcon } />
 								</View>
-								{props.touched.relation && props.errors.relation ? (
+								{/* {props.touched.relation && props.errors.relation ? (
 									<Text style={ styles.errorText }>{props.errors.relation}</Text>
 								) : (
 									<Text />
-								)}
+								)} */}
 								<TextInputField
 									lable="Zipcode"
 									placeholder="Enter Zipcode"
-									onChangeText={ props.handleChange('zipcode') }
+									onChangeText={ value =>
+										props.setFieldValue('zipcode', value.trim())
+									}
 									value={ props.values.zipcode }
 									onBlur={ props.handleBlur('zipcode') }
 									error={ props.touched.zipcode && props.errors.zipcode }
 									secureTextEntry={ false }
+									keyboardType="numeric"
 								/>
 								{addMember === true ? (
 									<View style={ styles.genderWrapper }>

@@ -34,7 +34,7 @@ const globalStyles = StyleSheet.create({
 		borderColor: '#0A8A7B',
 		marginBottom: 10,
 		alignSelf: 'center',
-		width: width - 45
+		width: width-50
 	},
 	tertiaryButton: {
 		padding: 13,

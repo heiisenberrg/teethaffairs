@@ -4,7 +4,7 @@ const { height, width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
 	container: {
-		display: 'flex',
+		// display: 'flex',
 		padding: 10,
 		marginVertical: 5,
 		...Platform.select({
@@ -12,10 +12,11 @@ const styles = StyleSheet.create({
 				height: (height - 170)
             },
             android: {
-				height: (height - 150)
+				height: 500
             }
 		}),
-		width
+		width,
+		flexGrow: 1
 	},
 	listContainer: {
 		display: 'flex',
@@ -38,7 +39,7 @@ const styles = StyleSheet.create({
               bottom: 10
             },
             android: {
-              bottom: 25
+              bottom: 50
             }
 		}),
 		right: 10,

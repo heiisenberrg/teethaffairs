@@ -1,8 +1,9 @@
 import constants from '../constants/journal.constant';
 
-export const getAddMember = data => ({
+export const getAddMember = (data, id)  => ({
 	type: constants.GET_ADD_MEMBER,
-	data
+	data,
+	id
 });
 
 export const getAddMemberSuccess = response => ({

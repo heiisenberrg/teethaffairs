@@ -19,6 +19,7 @@ import TextInputBoxField from '../textInputs/TextInputBoxField';
 import Icon from '../global/Icon';
 
 import { connect } from 'react-redux';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 /* eslint-disable no-undef */
 const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
@@ -68,9 +69,7 @@ function Profile(props) {
 	}, []);
 
 	return (
-		<KeyboardAvoidingView
-			behavior="padding"
-			keyboardVerticalOffset={ keyboardVerticalOffset }>
+		<KeyboardAwareScrollView showsVerticalScrollIndicator={ false }>
 			<ScrollView
 				showsVerticalScrollIndicator={ false }
 				contentContainerStyle={ styles.container }>
@@ -182,7 +181,7 @@ function Profile(props) {
 					</Formik>
 				</View>
 			</ScrollView>
-		</KeyboardAvoidingView>
+		</KeyboardAwareScrollView>
 	);
 }
 

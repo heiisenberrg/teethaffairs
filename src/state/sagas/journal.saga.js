@@ -53,13 +53,14 @@ import {
 import FlashMessage from '../../components/global/FlashMessage';
 
 export function* fetchAddMember(action) {
-	const { data } = action;
+	const { data, id } = action;
 	try {
-		const response = yield call(getMember, data.data);
+	const response = yield call(getMember, data, id);
+	console.log('response', response);
 		yield put(getAddMemberSuccess(response));
-		data.onSuccess(response.data);
+		// data.onSuccess(response.data);
 	} catch (e) {
-		data.onFailure();
+		// data.onFailure();
 		yield put(getAddMemberFailure(e));
 	}
 }

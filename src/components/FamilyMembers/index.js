@@ -141,6 +141,8 @@ function FamilyMembers(props) {
 									/>
 									<Text style={ styles.editText }>Edit</Text>
 								</TouchableOpacity>
+								{console.log(item)}
+								{item.user_type === 'MEMBER_PATIENT' ?
 								<TouchableOpacity
 									activeOpacity={ 0.8 }
 									onPress={ () => handleModal(item.id) }
@@ -152,7 +154,7 @@ function FamilyMembers(props) {
 										size={ 20 }
 									/>
 									<Text style={ styles.deleteText }>Delete</Text>
-								</TouchableOpacity>
+								</TouchableOpacity> : <Text></Text>}
 							</View>
 						</View>
 					)}

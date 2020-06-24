@@ -60,7 +60,7 @@ function Settings(props) {
 	};
 	return (
 		<View style={ styles.container }>
-			<ScrollView>
+			<ScrollView showsVerticalScrollIndicator={ false }>
 				{user &&
 					(user.user_type === 'PRIMARY_PATIENT' ||
 						user.user_type === 'PRIMARY-PATIENT') && (
