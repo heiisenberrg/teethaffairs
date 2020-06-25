@@ -29,7 +29,8 @@ export const signup = data =>
 	apiCall({
 		url: SIGNUP,
 		method: 'POST',
-		data
+		data,
+		withCredentials: false
 	});
 
 export const verifyEmail = data =>
@@ -43,7 +44,8 @@ export const forgotPassword = data =>
 	apiCall({
 		url: FORGET_PASSWORD,
 		method: 'POST',
-		data
+		data,
+		withCredentials: false
 	});
 
 export const resetPin = data =>

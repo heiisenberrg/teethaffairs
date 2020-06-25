@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-	View,
-	Text,
-	TouchableOpacity,
-	ScrollView,
-	KeyboardAvoidingView
-} from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { Formik } from 'formik';
 import { connect } from 'react-redux';
 import * as yup from 'yup';
@@ -13,9 +7,7 @@ import styles from './styles';
 import TextInputField from '../../components/textInputs/TextInputField';
 import { submitContactUs } from '../../state/actions/user';
 import globalStyles from '../../globalStyles';
-
-/* eslint-disable no-undef */
-const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const contactSchema = yup.object({
 	name: yup
@@ -55,7 +47,7 @@ function ContactUs(props) {
 					TeethAffairs admin will respond to your registered Email Id.
 				</Text>
 			</View>
-			<ScrollView showsVerticalScrollIndicator={ false }>
+			<ScrollView>
 				<Formik
 					initialValues={ {
 						name: '',
@@ -69,9 +61,7 @@ function ContactUs(props) {
 						handleSubmit(values, actions);
 					} }>
 					{props => (
-						<KeyboardAvoidingView
-							behavior="position"
-							keyboardVerticalOffset={ keyboardVerticalOffset }>
+						<KeyboardAwareScrollView showsVerticalScrollIndicator={ false }>
 							<View style={ styles.formContainer }>
 								<TextInputField
 									lable="Name"
@@ -119,7 +109,7 @@ function ContactUs(props) {
 									</TouchableOpacity>
 								</View>
 							</View>
-						</KeyboardAvoidingView>
+						</KeyboardAwareScrollView>
 					)}
 				</Formik>
 			</ScrollView>

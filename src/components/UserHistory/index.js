@@ -23,7 +23,6 @@ function UserHistory(props) {
 	const [ showModal, setShowModal ] = useState(false);
 	const [ filterBy, setFilterBy ] = useState(null);
 
-	/* eslint-disable no-mixed-spaces-and-tabs */
 	const [ user, setUser ] = useState(
 		userDetails &&
 			(userDetails.user_type !== 'PRIMARY_PATIENT' ||
@@ -32,12 +31,12 @@ function UserHistory(props) {
 					id: userDetails.id,
 					name: `${userDetails.first_name}`,
 					avatar: userDetails.profile_pic
-			  }
+				}
 			: {
 					id: 'all-users',
 					name: 'All Users',
 					avatar: null
-			  }
+			}
 	);
 
 	useEffect(() => {

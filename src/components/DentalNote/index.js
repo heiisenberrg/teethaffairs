@@ -16,8 +16,6 @@ import { fetchNotes } from '../../state/actions/journal';
 import { getUsers } from '../../state/actions/user';
 import Video from 'react-native-video';
 
-/* eslint-disable no-mixed-spaces-and-tabs */
-
 var date = new Date().getDate();
 var month = new Date();
 var year = new Date().getFullYear();
@@ -68,12 +66,12 @@ function DentalNote(props) {
 					id: userDetails.id,
 					name: `${userDetails.first_name}`,
 					avatar: userDetails.profile_pic
-			  }
+			}
 			: {
 					id: 'all-users',
 					name: 'All Users',
 					avatar: null
-			  }
+			}
 	);
 
 	useEffect(() => {

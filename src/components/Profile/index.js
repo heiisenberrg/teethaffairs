@@ -6,7 +6,7 @@ import {
 	TouchableOpacity,
 	ScrollView,
 	BackHandler,
-	Alert
+	Alert, Platform
 } from 'react-native';
 
 import { Formik } from 'formik';
@@ -20,7 +20,6 @@ import Icon from '../global/Icon';
 
 import { connect } from 'react-redux';
 
-/* eslint-disable no-undef */
 const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
 
 const noteSchema = yup.object({

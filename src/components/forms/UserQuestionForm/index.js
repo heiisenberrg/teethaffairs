@@ -44,7 +44,6 @@ import FlashMessage from '../../../components/global/FlashMessage';
 import Icon from '../../../components/global/Icon';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
-/* eslint-disable no-undef */
 const keyboardVerticalOffset = Platform.OS === 'ios' ? 100 : 0;
 
 const userNoteSchema = yup.object({
@@ -80,7 +79,6 @@ const imageOptions = {
 	takePhotoButtonTitle: null
 };
 
-/* eslint-disable no-mixed-spaces-and-tabs */
 function AddQuestion(props) {
 	var tempImage = [];
 	var preview = [];
@@ -267,11 +265,13 @@ function AddQuestion(props) {
 				reference_name: userNotes.reference_name
 			};
 			updateUserNote(
+				/* eslint-disable no-undef */
 				updatedNote,
 				(id = props.route.params.data.id),
 				onGetUserNoteSuccess,
 				onGetUserNoteFailure
 			);
+			/* eslint-enable no-undef */
 		}
 	};
 
@@ -329,31 +329,34 @@ function AddQuestion(props) {
 						let source = { ...customResponse };
 						let media;
 						if (response.customButton === 'image') {
-							media = {
-								uri: customResponse.uri,
-								name: customResponse.fileName,
-								type: customResponse.fileName
-							};
-
-							if (tempMedia.length < 5) {
-								tempImage.push(source);
-								tempMedia.push(media);
-							}
-							setImageSource([ ...imageSource, tempImage ]);
-						} else {
-							if (enableVideo) {
+							if (source.didCancel !== true) {
 								media = {
 									uri: customResponse.uri,
-									path: customResponse.path
+									name: customResponse.fileName,
+									type: customResponse.fileName
 								};
-								setEnableVideo(false);
 								if (tempMedia.length < 5) {
 									tempImage.push(source);
 									tempMedia.push(media);
 								}
 								setImageSource([ ...imageSource, tempImage ]);
-							} else {
-								setIsVideoUpload(true);
+							}
+						} else {
+							if (source.didCancel !== true) {
+								if (enableVideo) {
+									media = {
+										uri: customResponse.uri,
+										path: customResponse.path
+									};
+									setEnableVideo(false);
+									if (tempMedia.length < 5) {
+										tempImage.push(source);
+										tempMedia.push(media);
+									}
+									setImageSource([ ...imageSource, tempImage ]);
+								} else {
+									setIsVideoUpload(true);
+								}
 							}
 						}
 					}
@@ -365,7 +368,6 @@ function AddQuestion(props) {
 					name: response.fileName,
 					type: response.fileName
 				};
-
 				if (tempMedia.length < 5) {
 					tempImage.push(source);
 					tempMedia.push(media);
@@ -672,7 +674,7 @@ function AddQuestion(props) {
 									</TouchableOpacity>
 								</View>
 							</View>
-					  )
+					)
 					: showStep2
 					? props => (
 							<View style={ styles.step2Styles }>
@@ -946,7 +948,7 @@ function AddQuestion(props) {
 									</TouchableOpacity>
 								</View>
 							</View>
-					  )
+					)
 					: props => (
 							<View style={ styles.keyboard }>
 								<KeyboardAvoidingView
@@ -1234,7 +1236,7 @@ function AddQuestion(props) {
 									</ScrollView>
 								</KeyboardAvoidingView>
 							</View>
-					  )}
+					)}
 			</Formik>
 			<Modal transparent={ true } visible={ isDeleteModalVisible }>
 				<View style={ styles.modalWrap }>
@@ -1310,8 +1312,6 @@ function AddQuestion(props) {
 		</ScrollView>
 	);
 }
-
-/* eslint-enable no-mixed-spaces-and-tabs */
 
 function mapStateToProps(state) {
 	return {

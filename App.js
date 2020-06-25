@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, { useState, useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { PERMISSIONS, check, request, RESULTS } from 'react-native-permissions';
@@ -7,8 +6,6 @@ import store from './src/state/store';
 import Splash from './src/screens/Splash';
 import FlashMessage from 'react-native-flash-message';
 import localStorage from './src/state/localstorage';
-
-/* eslint-disable no-mixed-spaces-and-tabs */
 
 // For Getting Network Requests in React Native Debugger.
 global.XMLHttpRequest = global.originalXMLHttpRequest
@@ -79,6 +76,7 @@ function App() {
 		return <Splash />;
 	}
 	return (
+		/* eslint-disable react-native/no-inline-styles */
 		<Provider store={ store }>
 			<MainNavigation isAuth={ isAuth } user={ user } />
 			<FlashMessage

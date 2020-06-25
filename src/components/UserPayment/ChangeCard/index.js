@@ -38,8 +38,7 @@ function changeCard(props) {
 						]
 							? cardBrands[
 									item.brand !== '' ? item.brand.toLowerCase() : 'default'
-									/* eslint-disable no-mixed-spaces-and-tabs */
-							  ]
+							]
 							: cardBrands.default
 					}
 				} }>

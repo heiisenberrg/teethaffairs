@@ -76,11 +76,16 @@ export function* fetchLogin(action) {
 }
 
 export function* fetchSignup(action) {
-	const { data, onSuccess } = action;
+	const { data, onSuccess, onFailure } = action;
 	try {
 		const response = yield call(signup, data);
-		onSuccess();
-		yield put(getSignUpSuccess(response.data));
+		if (response.data.ErrorCode === 4000) {
+			onFailure();
+			yield put(getSignUpFailure(response.data));
+		} else {
+			onSuccess();
+			yield put(getSignUpSuccess(response.data));
+		}
 	} catch (e) {
 		FlashMessage.message(
 			'Failure',

@@ -53,6 +53,7 @@ function MainStack(props) {
 					.catch(() => {});
 			})
 			.catch(err => {});
+			/* eslint-enable no-unused-vars */
 	};
 
 	const requestPermission = async () => {
@@ -125,8 +126,15 @@ function MainStack(props) {
 			.notifications()
 			.getInitialNotification();
 		if (notificationOpen) {
+			if (notificationOpen.notification._data.type === 'reminder') {
+				RootNavigation.navigate('ReminderNotification', {
+					id: notificationOpen.notification._data.id
+				});
+			}
 		}
+		/* eslint-disable no-unused-vars */
 		this.messageListener = firebase.messaging().onMessage(message => {});
+		/* eslint-enable no-unused-vars */
 	};
 
 	return (

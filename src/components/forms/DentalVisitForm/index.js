@@ -436,8 +436,7 @@ function DentalVisitForm(props) {
 														/>
 													</View>
 												);
-												/* eslint-disable no-mixed-spaces-and-tabs */
-										  })
+										})
 										: !doesEditEnabled && (
 												<View style={ styles.textContainer }>
 													<Text style={ styles.lightText }>
@@ -445,7 +444,7 @@ function DentalVisitForm(props) {
 														from the gallery (Optional)
 													</Text>
 												</View>
-										  )}
+										)}
 								</View>
 								<Modal transparent={ true } visible={ isVideoUpload }>
 									<View style={ styles.modalWrap }>

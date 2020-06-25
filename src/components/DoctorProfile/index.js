@@ -424,21 +424,26 @@ const DoctorProfile = props => {
 											}
 											secureTextEntry={ false }
 										/>
-										<ScrollView
-											contentContainerStyle={ styles.licenceContainer }
-											horizontal={ true }
-											showsHorizontalScrollIndicator={ false }>
-											{props.values.media &&
-												props.values.media.map((item, index) => (
-													<Image
-														key={ `index_${index}` }
-														style={ styles.imageReport }
-														source={ {
-															uri: item.media
-														} }
-													/>
-												))}
-										</ScrollView>
+										{props.values.media[0].media !== null &&
+										props.values.media[0].media !== undefined ? (
+											<ScrollView
+												contentContainerStyle={ styles.licenceContainer }
+												horizontal={ true }
+												showsHorizontalScrollIndicator={ false }>
+												{props.values.media &&
+													props.values.media.map((item, index) => (
+														<Image
+															key={ `index_${index}` }
+															style={ styles.imageReport }
+															source={ {
+																uri: item.media
+															} }
+														/>
+													))}
+											</ScrollView>
+										) : (
+											<Text style={ styles.noSpace } />
+										)}
 										<TextInputField
 											lable="National Provider No"
 											placeholder="Enter National Provider Number"

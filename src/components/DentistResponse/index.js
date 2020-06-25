@@ -403,6 +403,7 @@ function DentistResponse(props) {
 			Object.keys(data).length !== 0 &&
 			data.question_info &&
 			data.question_info[0];
+		/* eslint-enable no-unused-vars */
 		return (
 			<View style={ { ...styles.mb20, ...styles.ph20 } }>
 				{/* {data && data.responded && (
@@ -697,7 +698,9 @@ function DentistResponse(props) {
 							Recommended follow up:
 						</Text>
 						<Text s={ 14 } lh={ 16 } c={ '#4A4A4A' }>
-							{docData.followup ? docData.followup : '-'}
+							{docData.recommended_followup
+								? docData.recommended_followup
+								: '-'}
 						</Text>
 					</View>
 					<View style={ styles.mv10 }>

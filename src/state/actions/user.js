@@ -21,10 +21,11 @@ export const getLoginFailure = error => ({
 	error
 });
 
-export const getSignUp = (data, onSuccess) => ({
+export const getSignUp = (data, onSuccess, onFailure) => ({
 	type: constants.GET_SIGNUP,
 	data,
-	onSuccess
+	onSuccess,
+	onFailure
 });
 
 export const getSignUpSuccess = response => ({

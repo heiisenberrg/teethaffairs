@@ -7,7 +7,8 @@ import {
 	KeyboardAvoidingView,
 	SafeAreaView,
 	Image,
-	TextInput
+	TextInput,
+	Platform
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -21,8 +22,6 @@ import styles from '../SignUpForm/styles';
 import globalStyles from '../../globalStyles';
 import FlashMessage from '../global/FlashMessage';
 import localStorage from '../../state/localstorage';
-
-/* eslint-disable no-undef */
 
 const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
 
@@ -95,7 +94,7 @@ function LoginForm(props) {
 				</TouchableOpacity>
 			</View>
 			<SafeAreaView style={ styles.container }>
-				<ScrollView>
+				<ScrollView showsVerticalScrollIndicator={ false }>
 					<View style={ loginStyles.groupButtonContainer }>
 						<TouchableOpacity
 							activeOpacity={ 0.8 }
