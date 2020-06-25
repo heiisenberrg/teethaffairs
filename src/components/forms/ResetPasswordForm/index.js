@@ -6,7 +6,8 @@ import {
 	ScrollView,
 	SafeAreaView,
 	KeyboardAvoidingView,
-	Image
+	Image,
+	Platform
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -19,9 +20,8 @@ import TextInputField from '../../textInputs/TextInputField';
 import styles from './styles';
 import globalStyles from '../../../globalStyles';
 
-/* eslint-disable no-undef */
-
 const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
+
 const resetPinSchema = yup.object({
 	password: yup
 		.string()

@@ -22,8 +22,6 @@ import ImagePreviewer from '../global/ImagePreviewer';
 import VideoPreviewer from '..//global/VideoPreviewer';
 import Video from 'react-native-video';
 
-/* eslint-disable no-mixed-spaces-and-tabs */
-
 function DentalVisit(props) {
 	const {
 		getDentalVisits,
@@ -73,12 +71,12 @@ function DentalVisit(props) {
 					id: userDetails.id,
 					name: `${userDetails.first_name}`,
 					avatar: userDetails.profile_pic
-			  }
+			}
 			: {
 					id: 'all-users',
 					name: 'All Users',
 					avatar: null
-			  }
+			}
 	);
 
 	useEffect(() => {

@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import { TouchableOpacity, Modal, View, StatusBar, Dimensions, Platform } from 'react-native';
 import Triangle from './Triangle';
@@ -61,6 +60,7 @@ class Tooltip extends React.PureComponent {
     const { backgroundColor, pointerColor } = this.props;
     const pastMiddleLine = yOffset > tooltipY;
     return (
+			/* eslint-disable react-native/no-inline-styles */
       <View
         style={ {
           position: 'absolute',
@@ -69,6 +69,7 @@ class Tooltip extends React.PureComponent {
         } }>
         <Triangle style={ { borderBottomColor: pointerColor || backgroundColor } } isDown={ pastMiddleLine } />
       </View>
+		/* eslint-enable react-native/no-inline-styles */
     );
   };
   renderContent = withTooltip => {
@@ -79,6 +80,7 @@ class Tooltip extends React.PureComponent {
     const { yOffset, xOffset, elementWidth, elementHeight } = this.state;
     const tooltipStyle = this.getTooltipStyle();
     return (
+			/* eslint-disable react-native/no-inline-styles */
       <View>
         <View
           style={ {
@@ -97,6 +99,7 @@ class Tooltip extends React.PureComponent {
           {popover}
         </View>
       </View>
+		/* eslint-enable react-native/no-inline-styles */
     );
   };
   componentDidMount() {

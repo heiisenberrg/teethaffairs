@@ -113,6 +113,9 @@ let relation_options = [
 	},
 	{
 		value: 'BROTHER'
+	},
+	{
+		value: 'WIFE'
 	}
 ];
 
@@ -201,7 +204,7 @@ function AddMembersForm(props) {
 			},
 			{
 				name: 'zipcode',
-				data: 11111
+				data: memberDetails.zipcode[0]
 			},
 			{
 				name: 'relationship',
@@ -218,10 +221,10 @@ function AddMembersForm(props) {
 						: RNFetchBlob.wrap(imageSource.uri.replace('file://', '')),
 						type: imageSource.type
 			}); 
-			getUpdateMember(form_data, onGetAddMemberSuccess, onGetAddMemberFailure);
+			getAddMember(form_data, onGetAddMemberSuccess, onGetAddMemberFailure);
 		}
 		else {
-			getAddMember(memberDetails, onGetAddMemberSuccess, onGetAddMemberFailure);
+			getUpdateMember(memberDetails, onGetAddMemberSuccess, onGetAddMemberFailure);
 		}
 	};
 

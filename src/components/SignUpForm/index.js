@@ -331,27 +331,38 @@ function SignUpForm(props) {
 													/>
 												)}
 											</TouchableOpacity>
-											<View style={ [ styles.icon, styles.infoIcon ] }>
-												<Tooltip
-													withOverlay={ true }
-													overlayColor={ 'rgba(0, 0, 0, 0.5)' }
-													highlightColor={ 'transparent' }
-													withPointer={ true }
-													height={ 140 }
-													toggleOnPress={ true }
-													width={ width / 1.3 }
-													containerStyle={ styles.tooltipContainer }
-													backgroundColor={ 'white' }
-													skipAndroidStatusBar={ true }
-													popover={ _renderPasswordInfo() }>
+											{doesPasswordMatchSuccess(props.values) ? (
+												<View style={ [ styles.icon, styles.activeTickIcon ] }>
 													<Icon
-														type={ 'MaterialCommunityIcons' }
-														name={ 'exclamation' }
-														color={ 'white' }
-														size={ 20 }
+														type={ 'FontAwesome' }
+														name={ 'check' }
+														color={ '#FFF' }
+														size={ 15 }
 													/>
-												</Tooltip>
-											</View>
+												</View>
+											) : (
+												<View style={ [ styles.icon, styles.infoIcon ] }>
+													<Tooltip
+														withOverlay={ true }
+														overlayColor={ 'rgba(0, 0, 0, 0.5)' }
+														highlightColor={ 'transparent' }
+														withPointer={ true }
+														height={ 140 }
+														toggleOnPress={ true }
+														width={ width / 1.3 }
+														containerStyle={ styles.tooltipContainer }
+														backgroundColor={ 'white' }
+														skipAndroidStatusBar={ true }
+														popover={ _renderPasswordInfo() }>
+														<Icon
+															type={ 'MaterialCommunityIcons' }
+															name={ 'exclamation' }
+															color={ 'white' }
+															size={ 20 }
+														/>
+													</Tooltip>
+												</View>
+											)}
 										</View>
 										{props.touched.password && props.errors.password ? (
 											<Text style={ passwordStyle.errorText }>

@@ -28,6 +28,21 @@ function journalReducer(state = initialState, action) {
 				...state,
 				loading: false
 			};
+		case constants.GET_UPDATE_MEMBER:
+			return {
+				...state,
+				loading: true
+			};
+		case constants.GET_UPDATE_MEMBER_FAILURE:
+			return {
+				...state,
+				loading: false
+			};
+		case constants.GET_UPDATE_MEMBER_SUCCESS:
+			return {
+				...state,
+				loading: false
+			};
 		case constants.GET_USER_LIST:
 			return {
 				...state,

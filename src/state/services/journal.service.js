@@ -14,14 +14,6 @@ import {
 } from '../config';
 
 export const getMember = (data) => 
-	apiCall({
-		url:  USER_LIST + data.id + '/',
-		method: 'PUT',
-		data,
-		withCredentials: true
-	});
-		
-export const updateMember = (data) => 
 	uploadFile({
 		url:  ADD_MEMBER,
 		method: 'POST',
@@ -32,7 +24,14 @@ export const updateMember = (data) =>
 		},
 		withCredentials: true
 	});
-
+		
+export const updateMember = (data) => 
+apiCall({
+	url:  USER_LIST + data.id + '/',
+	method: 'PUT',
+	data,
+	withCredentials: true
+});
 
 export const getUsers = () =>
 	apiCall({

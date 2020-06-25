@@ -27,8 +27,6 @@ import FlashMessage from '../global/FlashMessage';
 import { getCards } from '../../state/actions/payment';
 import { CommonActions } from '@react-navigation/native';
 
-/* eslint-disable no-mixed-spaces-and-tabs */
-
 var allergies_array = [];
 var medications_array = [];
 
@@ -245,7 +243,7 @@ function UserRemoteConsultation(props) {
 						]
 							? cardBrands[
 									item.brand !== '' ? item.brand.toLowerCase() : 'default'
-							  ]
+								]
 							: cardBrands.default
 					}
 				} }>

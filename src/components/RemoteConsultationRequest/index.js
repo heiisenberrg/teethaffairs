@@ -25,9 +25,6 @@ import { CommonActions } from '@react-navigation/native';
 import Video from 'react-native-video';
 import VideoPreviewer from '../../components/global/VideoPreviewer';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-
-/* eslint-disable no-undef */
-
 import remoteStyles from '../UserRemoteConsultation/styles';
 
 const detail = [

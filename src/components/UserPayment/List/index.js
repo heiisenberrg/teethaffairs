@@ -66,7 +66,6 @@ function PaymentList(props) {
 			<TouchableOpacity
 				key={ `carditem-${index}` }
 				activeOpacity={ 1 }
-				/* eslint-disable no-mixed-spaces-and-tabs */
 				style={ {
 					...styles.cardContainer,
 					...{
@@ -75,7 +74,7 @@ function PaymentList(props) {
 						]
 							? cardBrands[
 									item.brand !== '' ? item.brand.toLowerCase() : 'default'
-							  ]
+							]
 							: cardBrands.default
 					}
 				} }>

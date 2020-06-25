@@ -5,7 +5,6 @@ const { height } = Dimensions.get('screen');
 const styles = StyleSheet.create({
 	container: {
 		backgroundColor: 'white'
-		// flexGrow: 1
 	},
 	passwordWrapper: {
 		flexDirection: 'row'
@@ -46,7 +45,7 @@ const styles = StyleSheet.create({
 	labelContainer: {
 		position: 'absolute',
 		backgroundColor: '#FFF',
-		top: -15,
+		top: -17,
 		left: 14,
 		padding: 7,
 		zIndex: 1

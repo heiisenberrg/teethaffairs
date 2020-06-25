@@ -53,6 +53,7 @@ function MainStack(props) {
 					.catch(() => {});
 			})
 			.catch(err => {});
+			/* eslint-enable no-unused-vars */
 	};
 
 	const requestPermission = async () => {
@@ -131,7 +132,9 @@ function MainStack(props) {
 				});
 			}
 		}
+		/* eslint-disable no-unused-vars */
 		this.messageListener = firebase.messaging().onMessage(message => {});
+		/* eslint-enable no-unused-vars */
 	};
 
 	return (
