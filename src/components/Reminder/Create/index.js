@@ -105,7 +105,7 @@ function CreateReminder(props) {
 				min: data.reminder_time.split(':')[1].split(' ')[0],
 				day
 			});
-			setSnooze(data.snooze);
+			setSnooze(data.is_muted);
 			setReminderText(data.reminder_text);
 			setSelectedUser([ data.reminder_user ]);
 			setIsCreate(false);
@@ -170,7 +170,8 @@ function CreateReminder(props) {
 									: parseInt(selectedTime.hours, 10) + 12
 						}:${selectedTime.min}:00`,
 				reminder_user: userData,
-				snooze: snooze,
+				snooze: false,
+				is_muted: snooze,
 				time_zone: momentTimezone.tz.guess(true)
 			});
 		});

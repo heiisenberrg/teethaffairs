@@ -21,7 +21,7 @@ const editContent = [
 	}
 ];
 
-const reminderResponse = [ 'BF', 'NBF', 'OB', 'SNOOZE' ];
+const reminderResponse = [ 'BF', 'SNOOZE', 'OB', 'NBF'  ];
 
 var d = new Date();
 var weekday = new Array(7);
@@ -115,10 +115,26 @@ function ReminderNotification(props) {
 						</View>
 						<View style={ styles.profileContent } />
 						<View row center style={ styles.proImage }>
-							<Image
-								style={ styles.profileImage }
-								source={ require('../../../assets/happy-face.png') }
-							/>
+							{
+								selectedContent === 0 ? (
+									<Image
+										style={ styles.profileImage }
+										source={ require('../../../assets/happy-face.png') }
+									/>
+								) : (
+									selectedContent === 1 ? (
+										<Image
+											style={ styles.profileImage }
+											source={ require('../../../assets/rollingeyes.png') }
+										/>
+									) : (
+										<Image
+											style={ styles.profileImage }
+											source={ require('../../../assets/frown.png') }
+										/>
+									)
+								)
+							}
 							<View style={ styles.proText }>
 								<Text>You have completed your task today!</Text>
 							</View>

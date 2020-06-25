@@ -19,10 +19,10 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		...Platform.select({
 			ios: {
-				bottom: 10
+				bottom: 20
 			},
 			android: {
-				bottom: 25
+				bottom: 35
 			}
 		}),
 		right: 0,
@@ -65,7 +65,8 @@ const styles = StyleSheet.create({
 	},
 	profileImage: {
 		width: 45,
-		height: 45
+		height: 45,
+		borderRadius: 25
 	},
 	statusContainer: {
 		position: 'absolute',
@@ -352,6 +353,9 @@ const styles = StyleSheet.create({
 		alignContent: 'center',
 		alignSelf: 'center',
 		marginLeft: 10
+	},
+	flatliststyle: {
+		paddingBottom: 100
 	}
 });
 

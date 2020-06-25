@@ -149,6 +149,44 @@ function ListReminder(props) {
 									: require('../../../assets/profile.png')
 							}
 						/>
+						<View
+							row
+							center
+							style={ {
+								...styles.modStatus,
+								...{
+									backgroundColor:
+									item.reminder_response !==  '' ?
+										item.reminder_response === 'BF'
+											? '#00C57D'
+											: item.reminder_response === 'OB' || item.reminder_response === 'NBF'
+											? '#FA5050'
+											: '#858585' : 'transparent',
+									borderColor:
+									item.reminder_response !==  '' ?
+									item.reminder_response === 'BF'
+											? '#00C57D'
+											: item.reminder_response === 'OB' || item.reminder_response === 'NBF'
+											? '#FA5050'
+											: '#858585' : 'transparent',
+									position: 'absolute',
+									bottom: 0,
+									right: -10
+								}
+							} }>
+							<View style={ styles.statusContent }>
+								<Icon
+									type={ 'MaterialCommunityIcons' }
+									name={ item.reminder_response !==  '' ? item.reminder_response === 'BF'
+									? 'check'
+									: item.reminder_response === 'OB' || item.reminder_response === 'NBF'
+									? 'exclamation'
+									: 'pause' : '' }
+									color={ 'white' }
+									size={ 14 }
+								/>
+							</View>
+						</View>
 					</View>
 					<View row center jC={ 'space-between' } style={ styles.titleContainer }>
 						<View>
@@ -158,8 +196,8 @@ function ListReminder(props) {
 							<TouchableOpacity>
 								<Icon
 									type={ 'MaterialCommunityIcons' }
-									name={ !item.snooze ? 'bell-off-outline' : 'bell' }
-									color={ !item.snooze ? 'grey' : '#00C57D' }
+									name={ !item.is_muted ? 'bell-off-outline' : 'bell' }
+									color={ !item.is_muted ? 'grey' : '#00C57D' }
 									size={ 22 }
 								/>
 							</TouchableOpacity>
@@ -471,6 +509,7 @@ function ListReminder(props) {
 					<FlatList
 						data={ reminderList }
 						renderItem={ _renderNoteCards }
+						contentContainerStyle={ styles.flatliststyle }
 						keyExtractor={ item => `${item.id}${reminderList.length}` }
 						extraData={ props }
 						ListEmptyComponent={ () => (

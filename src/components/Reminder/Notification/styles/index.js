@@ -11,7 +11,8 @@ const styles = StyleSheet.create({
   titleText: { fontSize: 24, color: 'white', textAlign: 'center' },
   profileImage: {
 		width: 45,
-		height: 45
+		height: 45,
+		tintColor: '#5BE352'
   },
   titleContainer: {
 		marginHorizontal: 10,
