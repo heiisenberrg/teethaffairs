@@ -141,7 +141,6 @@ function FamilyMembers(props) {
 									/>
 									<Text style={ styles.editText }>Edit</Text>
 								</TouchableOpacity>
-								{console.log(item)}
 								{item.user_type === 'MEMBER_PATIENT' ?
 								<TouchableOpacity
 									activeOpacity={ 0.8 }

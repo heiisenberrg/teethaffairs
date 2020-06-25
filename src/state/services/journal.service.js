@@ -13,10 +13,18 @@ import {
 	NOTE_EDIT
 } from '../config';
 
-export const getMember = (data, id) => 
+export const getMember = (data) => 
+	apiCall({
+		url:  USER_LIST + data.id + '/',
+		method: 'PUT',
+		data,
+		withCredentials: true
+	});
+		
+export const updateMember = (data) => 
 	uploadFile({
-		url: id === '' ? ADD_MEMBER : USER_LIST + id + '/',
-		method: id === '' ? 'POST' : 'PUT',
+		url:  ADD_MEMBER,
+		method: 'POST',
 		data,
 		headers: {
 		Accept: 'application/json',
@@ -24,6 +32,7 @@ export const getMember = (data, id) =>
 		},
 		withCredentials: true
 	});
+
 
 export const getUsers = () =>
 	apiCall({

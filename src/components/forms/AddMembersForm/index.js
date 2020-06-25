@@ -20,7 +20,7 @@ import LinearGradient from 'react-native-linear-gradient';
 
 import TextInputField from '../../textInputs/TextInputField';
 import passwordStyle from '../../textInputs/style';
-import { getAddMember, setAddMember } from '../../../state/actions/journal';
+import { getAddMember, setAddMember, getUpdateMember } from '../../../state/actions/journal';
 import { uploadProfilePicture } from '../../../state/actions/user';
 
 import styles from './styles';
@@ -30,7 +30,7 @@ import calender from '../../../assets/calender.png';
 import { Dropdown } from 'react-native-material-dropdown';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 
-// import FlashMessage from '../../global/FlashMessage';
+import FlashMessage from '../../global/FlashMessage';
 import Tooltip from '../../global/Tooltip/Tooltip';
 import Icon from '../../global/Icon';
 import Config from 'react-native-config';
@@ -135,8 +135,9 @@ function AddMembersForm(props) {
 		route: {
 			params: { userdata }
 		},
-		user
-		// uploadProfilePicture
+		user,
+		uploadProfilePicture,
+		getUpdateMember
 	} = props;
 	const [ isModalVisible, setIsModalVisible ] = useState(false);
 	const [ addMember, setAddMember ] = useState(false);
@@ -165,7 +166,6 @@ function AddMembersForm(props) {
 			memberDetails.id = userId;
 		}
 		memberDetails.date_of_birth = birthDate;
-
 		var form_data = [
 			{
 				name: 'email',
@@ -208,8 +208,7 @@ function AddMembersForm(props) {
 				data: memberDetails.profile.relationship
 			}		
 		];
-		// console.log('IMAMMA', imageSource);
-
+		if(addMember === true) {
 			form_data.push({
 				name: 'profile_pic',
 				filename: `profile${Date.now()}`,
@@ -218,29 +217,28 @@ function AddMembersForm(props) {
 						? RNFetchBlob.wrap(imageSource.uri)
 						: RNFetchBlob.wrap(imageSource.uri.replace('file://', '')),
 						type: imageSource.type
-
-			});
-		getAddMember(form_data, memberDetails.id);
-		// getAddMember({
-		// 	data: memberDetails,
-		// 	onSuccess: response => onGetAddMemberSuccess(response),
-		// 	onFailure: onGetAddMemberFailure
-		// });
+			}); 
+			getUpdateMember(form_data, onGetAddMemberSuccess, onGetAddMemberFailure);
+		}
+		else {
+			getAddMember(memberDetails, onGetAddMemberSuccess, onGetAddMemberFailure);
+		}
 	};
 
-	// const onGetAddMemberFailure = () => {
-	// 	setAddMember(true);
-	// 	FlashMessage.message('Alert', 'Something went wrong', '#ff4444');
-	// };
+	const onGetAddMemberFailure = () => {
+		setAddMember(true);
+		FlashMessage.message('Alert', 'Something went wrong', '#ff4444');
+	};
 
-	// const onGetAddMemberSuccess = data => {
-	// 	addedMember = data.username
-	// 		? data.username
-	// 		: data[0].username
-	// 		? data[0].username
-	// 		: '';
-	// 	setIsModalVisible(true);
-	// };
+	const onGetAddMemberSuccess = data => {
+		addedMember = data.data.username
+			? data.data.username
+			: data[0].username
+			? data[0].username
+			: '';
+		
+		setIsModalVisible(true);
+	};
 
 	useEffect(function() {
 		if (
@@ -316,25 +314,32 @@ function AddMembersForm(props) {
 					...response
 				};
 				setImageSource(source);
-				// saveProfilePhoto(source);
+				if(addMember === false) {
+					saveProfilePhoto(source);
+				}
 			}
 		});
 	};
 
-	// const saveProfilePhoto = item => {
-	// 	const data = [
-	// 		{
-	// 			name: 'profile_pic',
-	// 			filename: `profile${Date.now()}`,
-	// 			data:
-	// 				Platform.OS === 'android'
-	// 					? RNFetchBlob.wrap(item.uri)
-	// 					: RNFetchBlob.wrap(item.uri.replace('file://', '')),
-	// 			type: item.type
-	// 		}
-	// 	];
-	// 	uploadProfilePicture(data);
-	// };
+	const saveProfilePhoto = item => {
+		const data = [
+			{
+				name: 'profile_pic',
+				filename: `profile${Date.now()}`,
+				data:
+					Platform.OS === 'android'
+						? RNFetchBlob.wrap(item.uri)
+						: RNFetchBlob.wrap(item.uri.replace('file://', '')),
+				type: item.type
+			},
+			{ 
+				name: 'user_id',
+				data: userName 
+			}
+
+		];
+		uploadProfilePicture(data);
+	};
 
 	const doesPasswordMatchSuccess = values =>
 		values.password &&
@@ -394,7 +399,6 @@ function AddMembersForm(props) {
 					activeOpacity={ 0.8 }
 					onPress={ takeImageHandler }
 					style={ styles.profileImageContainer }>
-					{console.log('USER', imageSource)}
 					<Image
 						source={
 							imageSource !== null && imageSource.uri !== null
@@ -438,8 +442,20 @@ function AddMembersForm(props) {
 					onSubmit={ (values, actions) => {
 						values.username = userName;
 						if (values.username !== '' && checkExist === true) {
-							handleSubmit(values, actions);
-							actions.resetForm();
+							if(addMember === true) {
+								if(imageSource !== null) {
+									handleSubmit(values, actions);
+									actions.resetForm();
+								}
+								else {
+									FlashMessage.message('Alert', 'Profile is required', '#ff4444');
+								}
+							}
+							else {
+								handleSubmit(values, actions);
+								actions.resetForm();
+							}
+
 						}
 					} }>
 					{props => (
@@ -514,27 +530,38 @@ function AddMembersForm(props) {
 													/>
 												)}
 											</TouchableOpacity>
-											<View style={ [ styles.icon, styles.infoIcon ] }>
-												<Tooltip
-													withOverlay={ true }
-													overlayColor={ 'rgba(0, 0, 0, 0.5)' }
-													highlightColor={ 'transparent' }
-													withPointer={ true }
-													height={ 140 }
-													toggleOnPress={ true }
-													width={ width / 1.3 }
-													containerStyle={ styles.tooltipContainer }
-													backgroundColor={ 'white' }
-													skipAndroidStatusBar={ true }
-													popover={ _renderPasswordInfo() }>
+											{doesPasswordMatchSuccess(props.values) ? (
+												<View style={ [ styles.icon, styles.activeTickIcon ] }>
 													<Icon
-														type={ 'MaterialCommunityIcons' }
-														name={ 'exclamation' }
-														color={ 'white' }
-														size={ 20 }
+														type={ 'FontAwesome' }
+														name={ 'check' }
+														color={ '#FFF' }
+														size={ 15 }
 													/>
-												</Tooltip>
-											</View>
+												</View>
+											) : (
+												<View style={ [ styles.icon, styles.infoIcon ] }>
+													<Tooltip
+														withOverlay={ true }
+														overlayColor={ 'rgba(0, 0, 0, 0.5)' }
+														highlightColor={ 'transparent' }
+														withPointer={ true }
+														height={ 140 }
+														toggleOnPress={ true }
+														width={ width / 1.3 }
+														containerStyle={ styles.tooltipContainer }
+														backgroundColor={ 'white' }
+														skipAndroidStatusBar={ true }
+														popover={ _renderPasswordInfo() }>
+														<Icon
+															type={ 'MaterialCommunityIcons' }
+															name={ 'exclamation' }
+															color={ 'white' }
+															size={ 20 }
+														/>
+													</Tooltip>
+												</View>
+											)}
 										</View>
 										{props.touched.password && props.errors.password ? (
 											<Text style={ passwordStyle.errorText }>
@@ -775,6 +802,7 @@ export default connect(
 	{
 		getAddMember,
 		setAddMember,
-		uploadProfilePicture
+		uploadProfilePicture,
+		getUpdateMember
 	}
 )(AddMembersForm);

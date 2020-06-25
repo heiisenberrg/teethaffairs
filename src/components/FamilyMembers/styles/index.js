@@ -85,7 +85,8 @@ const styles = StyleSheet.create({
 	},
 	profileImage: {
 		width: 45,
-		height: 45
+		height: 45,
+		borderRadius: 25
 	},
 	titleContainer: {
 		marginHorizontal: 10,

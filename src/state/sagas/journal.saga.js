@@ -29,7 +29,9 @@ import {
 	updateUserNoteSuccess,
 	updateUserNoteFailure,
 	getRemoteConsultationsForPatientsSuccess,
-	getRemoteConsultationsForPatientsFailure
+	getRemoteConsultationsForPatientsFailure,
+	getUpdateMemberFailure,
+	getUpdateMemberSuccess
 } from '../actions/journal';
 
 import {
@@ -48,23 +50,34 @@ import {
 	updateDentalVisit,
 	removeDentalVisit,
 	createNote,
-	updateNote
+	updateNote,
+	updateMember
 } from '../services/journal.service';
 import FlashMessage from '../../components/global/FlashMessage';
 
 export function* fetchAddMember(action) {
-	const { data, id } = action;
+	const { data, onSuccess, onFailure } = action;
 	try {
-	const response = yield call(getMember, data, id);
-	console.log('response', response);
+		const response = yield call(getMember, data);
+		onSuccess(response);
 		yield put(getAddMemberSuccess(response));
-		// data.onSuccess(response.data);
 	} catch (e) {
-		// data.onFailure();
+		onFailure();
 		yield put(getAddMemberFailure(e));
 	}
 }
 
+export function* fetchUpdateMember(action) {
+	const { data, onSuccess, onFailure } = action;
+	try {
+		const response = yield call(updateMember, data);
+		onSuccess(response);
+		yield put(getUpdateMemberSuccess(response));
+	} catch (e) {
+		onFailure();
+		yield put(getUpdateMemberFailure(e));
+	}
+}
 export function* fetchUserList() {
 	try {
 		const response = yield call(getUsers);

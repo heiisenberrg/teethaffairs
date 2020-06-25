@@ -1,9 +1,10 @@
 import constants from '../constants/journal.constant';
 
-export const getAddMember = (data, id)  => ({
+export const getAddMember = (data, onSuccess, onFailure)  => ({
 	type: constants.GET_ADD_MEMBER,
 	data,
-	id
+	onSuccess,
+	onFailure
 });
 
 export const getAddMemberSuccess = response => ({
@@ -13,6 +14,24 @@ export const getAddMemberSuccess = response => ({
 
 export const getAddMemberFailure = error => ({
 	type: constants.GET_ADD_MEMBER_FAILURE,
+	error
+});
+
+export const getUpdateMember = (data, onSuccess, onFailure)  => ({
+	type: constants.GET_UPDATE_MEMBER,
+	data,
+	onSuccess,
+	onFailure
+});
+
+
+export const getUpdateMemberSuccess = response => ({
+	type: constants.GET_UPDATE_MEMBER_SUCCESS,
+	response
+});
+
+export const getUpdateMemberFailure = error => ({
+	type: constants.GET_UPDATE_MEMBER_FAILURE,
 	error
 });
 

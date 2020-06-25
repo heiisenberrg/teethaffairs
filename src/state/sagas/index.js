@@ -33,7 +33,8 @@ import {
 	editDentalVisit,
 	deleteDentalVisit,
 	updateUserNote,
-	fetchSendQuestion
+	fetchSendQuestion,
+	fetchUpdateMember
 } from './journal.saga';
 
 import {
@@ -100,6 +101,8 @@ export default function* saga() {
 	yield takeLatest(constants.DELETE_DENTAL_VISIT, deleteDentalVisit);
 	yield takeLatest(constants.CREATE_USER_NOTE, createUserNote);
 	yield takeLatest(constants.UPDATE_USER_NOTE, updateUserNote);
+	yield takeLatest(constants.GET_UPDATE_MEMBER, fetchUpdateMember);
+
 
 	//user
 	yield takeLatest(constants.GET_LOGIN, fetchLogin);
