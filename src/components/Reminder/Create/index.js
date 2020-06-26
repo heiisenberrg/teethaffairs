@@ -155,26 +155,48 @@ function CreateReminder(props) {
 			return;
 		}
 		let reminders = [];
-		selectedUser.map(userData => {
-			reminders.push({
-				reminder_text: reminderText,
-				reminder_day: selectedDays,
-				reminder_time:
-					selectedTime.day === 'AM'
-						? `${selectedTime.hours === '12' ? '00' : selectedTime.hours}:${
-								selectedTime.min
-						}:00`
-						: `${
-								selectedTime.hours === '12'
-									? 12
-									: parseInt(selectedTime.hours, 10) + 12
-						}:${selectedTime.min}:00`,
-				reminder_user: userData,
-				snooze: false,
-				is_muted: snooze,
-				time_zone: momentTimezone.tz.guess(true)
+		if(isCreate) {
+			selectedUser.map(userData => {
+				reminders.push({
+					reminder_text: reminderText,
+					reminder_day: selectedDays,
+					reminder_time:
+						selectedTime.day === 'AM'
+							? `${selectedTime.hours === '12' ? '00' : selectedTime.hours}:${
+									selectedTime.min
+							}:00`
+							: `${
+									selectedTime.hours === '12'
+										? 12
+										: parseInt(selectedTime.hours, 10) + 12
+							}:${selectedTime.min}:00`,
+					reminder_user: userData,
+					snooze: false,
+					is_muted: snooze,
+					time_zone: momentTimezone.tz.guess(true)
+				});
 			});
-		});
+		}
+		else {
+			selectedUser.map(() => {
+				reminders.push({
+					reminder_text: reminderText,
+					reminder_day: selectedDays,
+					reminder_time:
+						selectedTime.day === 'AM'
+							? `${selectedTime.hours === '12' ? '00' : selectedTime.hours}:${
+									selectedTime.min
+							}:00`
+							: `${
+									selectedTime.hours === '12'
+										? 12
+										: parseInt(selectedTime.hours, 10) + 12
+							}:${selectedTime.min}:00`,
+					is_muted: snooze,
+					time_zone: momentTimezone.tz.guess(true)
+				});
+			});
+		}
 		if (isCreate) {
 			createReminder({ data: reminders, navigation });
 		} else {

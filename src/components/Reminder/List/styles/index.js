@@ -207,6 +207,10 @@ const styles = StyleSheet.create({
 	expandedTitle: {
 		fontSize: 14
 	},
+	expandedTitle1: {
+		fontSize: 14,
+		fontWeight: 'bold'
+	},
 	expandedSubTitle: {
 		fontSize: 12,
 		color: '#363636'

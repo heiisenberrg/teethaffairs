@@ -8,6 +8,7 @@ import { getUserList, getDeactivateUserId } from '../../state/actions/journal';
 
 import LinearGradient from 'react-native-linear-gradient';
 import styles from './styles';
+import { useIsFocused } from '@react-navigation/native';
 
 function FamilyMembers(props) {
 	const {
@@ -23,11 +24,13 @@ function FamilyMembers(props) {
 	const [ expandedCards, setExpandedCards ] = useState([]);
 	const [ userDeactivateId, setUserDeactivateId ] = useState(false);
 
+	const isFocused = useIsFocused();
+
 	useEffect(
 		function storeResponse() {
 			getUserList();
 		},
-		[ refresh ]
+		[ refresh, isFocused ]
 	);
 
 	useEffect(() => {
@@ -225,7 +228,7 @@ function FamilyMembers(props) {
 				(user.user_type === 'PRIMARY_PATIENT' ||
 					user.user_type === 'PRIMARY-PATIENT') &&
 				usersList &&
-				usersList.length < 8 && (
+				usersList.length < 9 && (
 					<TouchableOpacity
 						style={ styles.fabButton }
 						activeOpacity={ 0.8 }

@@ -42,7 +42,7 @@ function ListReminder(props) {
 	const [ selectedReminder, setSelectedReminder ] = useState('');
 	const [ selectedUser, setSelectedUser ] = useState(
 		userDetails && userDetails.id
-			? { id: userDetails.id, username: userDetails.first_name }
+			? { id: userDetails.id, username: userDetails.username, profile_pic: userDetails.profile_pic }
 			: {}
 	);
 	const [ selectedDay, setSelectedDay ] = useState('');
@@ -58,7 +58,6 @@ function ListReminder(props) {
 			content: 'Unable to brush and floss today. Don\'t remind me again'
 		}
 	];
-
 	useEffect(() => {
 		fetchReminders();
 		if (
@@ -67,7 +66,7 @@ function ListReminder(props) {
 		) {
 			getUsers();
 		}
-	}, []);
+	}, [ ]);
 
 	useEffect(() => {
 		if (selectedContent !== '') {
@@ -191,6 +190,7 @@ function ListReminder(props) {
 					<View row center jC={ 'space-between' } style={ styles.titleContainer }>
 						<View>
 							<Text style={ styles.expandedTitle }>{item.reminder_text}</Text>
+							<Text style={ styles.expandedTitle1 }>{item.patient_name}</Text>
 						</View>
 						<View row center>
 							<TouchableOpacity>
@@ -415,18 +415,18 @@ function ListReminder(props) {
 								style={ styles.filterImage }
 								source={
 									selectedUser && selectedUser.profile_pic
-										? { uri: selectedUser.profile_pic }
+										? { uri: selectedUser.profile_pic } :
+										userList[userList.length-1] !== undefined ?
+										{ uri: userList[userList.length-1].profile_pic }
 										: require('../../../assets/profile.png')
 								}
 							/>
 						</View>
 						<View row center jC={ 'space-between' } style={ styles.filterContent }>
 							<Text style={ styles.filterText }>
-								{Object.keys(selectedUser).length === 0 &&
-								userList &&
-								userList.length > 0
-									? userList[0].username
-									: selectedUser.username}
+								{selectedUser.username !== undefined ? 
+								selectedUser.username : userList[userList.length-1] !== undefined ?
+								userList[userList.length-1].username : ''}
 							</Text>
 							<TouchableOpacity
 								style={ styles.filterArrow }

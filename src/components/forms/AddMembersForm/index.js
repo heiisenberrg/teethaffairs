@@ -155,6 +155,9 @@ function AddMembersForm(props) {
 	const [ showConfirmEye, setShowConfirmEye ] = useState(true);
 	const [ userName, setUserName ] = useState(userdata.username);
 	const [ checkExist, setCheckExist ] = useState(true);
+	const [ year, setYear ] = useState('');
+	const [ month, setMonth ] = useState('');
+	const [ day, setDay ] = useState('');
 
 	const handleSubmit = memberDetails => {
 		memberDetails.zipcode =
@@ -234,12 +237,9 @@ function AddMembersForm(props) {
 	};
 
 	const onGetAddMemberSuccess = data => {
-		addedMember = data.data.username
-			? data.data.username
-			: data[0].username
-			? data[0].username
-			: '';
-		
+		addedMember = data.username
+			? data.username
+			: data.data.username;
 		setIsModalVisible(true);
 	};
 
@@ -254,6 +254,13 @@ function AddMembersForm(props) {
 		} else {
 			setAddMember(true);
 		}
+		var date = new Date();
+		date.setDate(date.getDate() - 0);
+		date.setMonth(date.getMonth() - 0);
+		date.setFullYear(date.getFullYear() - 3);
+		setYear(date.getFullYear());
+		setDay(date.getDate());
+		setMonth(date.getMonth());
 	}, []);
 
 	const onChange = (event, selectedDate, setFieldValue) => {
@@ -666,7 +673,7 @@ function AddMembersForm(props) {
 										value={ date }
 										mode={ mode }
 										display="default"
-										maximumDate={ new Date() }
+										maximumDate={ new Date(year, month, day) }
 										onChange={ (e, value) =>
 											onChange(e, value, props.setFieldValue)
 										}
@@ -780,7 +787,7 @@ function AddMembersForm(props) {
 							/>
 							<Text style={ styles.successModalText1 }>success</Text>
 							<Text style={ styles.successModalText2 }>
-								"{addedMember}" added to your members list
+								"{addedMember}" {addMember ? 'added to your members list' : 'profile has been updated'}
 							</Text>
 						</View>
 						<TouchableOpacity
