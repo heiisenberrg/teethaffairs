@@ -47,8 +47,8 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 const keyboardVerticalOffset = Platform.OS === 'ios' ? 100 : 0;
 
 const step1Schema = yup.object({
-	title: yup.string().required(),
-	description: yup.string().required(),
+	title: yup.string().trim().required(),
+	description: yup.string().trim().required(),
 	place_of_issue: yup.string().required(),
 	side_of_issue: yup.string().required()
 });
@@ -63,11 +63,11 @@ const step2Schema = yup.object({
 });
 
 const step3Schema = yup.object({
-	issue_start_date: yup.string().required(),
+	issue_start_date: yup.string().trim().required(),
 	swelling_size: yup.string().required(),
 	bleeding: yup.string().required(),
 	pus_presence: yup.string().required(),
-	prior_history: yup.string().required(),
+	prior_history: yup.string().trim().required(),
 	tooth_loss: yup.string().required()
 });
 
@@ -161,7 +161,7 @@ function AddQuestion(props) {
 	}
 
 	const handleSubmit = details => {
-		if (referenceName === '') {
+		if (referenceName.trim() === '') {
 			FlashMessage.message('Alert', 'Please enter the reference name to save', 'red');
 			return;
 		}
