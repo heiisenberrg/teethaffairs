@@ -46,6 +46,7 @@ function ImagePreviewer(props) {
 						width: width / 1.1,
 						height: height / 1.5
 					} }
+					resizeMode="contain"
 				/>
 				<TouchableOpacity
 					activeOpacity={ 0.8 }

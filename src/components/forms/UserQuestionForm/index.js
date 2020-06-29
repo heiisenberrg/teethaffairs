@@ -46,27 +46,29 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 const keyboardVerticalOffset = Platform.OS === 'ios' ? 100 : 0;
 
-const userNoteSchema = yup.object({
-	description: yup.string().required('Required'),
-	place_of_issue: yup.string(),
-	side_of_issue: yup.string(),
-	pain_level: yup.number(),
-	sensivity_temperature: yup.string(),
-	tender: yup.string(),
-	tooth_issue_identified: yup.string(),
-	onset: yup.string(),
-	issue_start_date: yup.string(),
-	swelling_size: yup.string(),
-	bleeding: yup.string(),
-	pus_presence: yup.string(),
-	tooth_loss: yup.string(),
-	prior_history: yup.string(),
-	question: yup.string(),
-	note: yup.string(),
-	pain_type: yup.string(),
-	reference_name: yup.string(),
-	media: yup.array(),
-	title: yup.string().required('Required')
+const step1Schema = yup.object({
+	title: yup.string().trim().required(),
+	description: yup.string().trim().required(),
+	place_of_issue: yup.string().required(),
+	side_of_issue: yup.string().required()
+});
+
+const step2Schema = yup.object({
+	pain_level: yup.number().required(),
+	pain_type: yup.string().required(),
+	sensivity_temperature: yup.string().required(),
+	tender: yup.string().required(),
+	tooth_issue_identified: yup.string().required(),
+	onset: yup.string().required()
+});
+
+const step3Schema = yup.object({
+	issue_start_date: yup.string().trim().required(),
+	swelling_size: yup.string().required(),
+	bleeding: yup.string().required(),
+	pus_presence: yup.string().required(),
+	prior_history: yup.string().trim().required(),
+	tooth_loss: yup.string().required()
 });
 
 const imageOptions = {
@@ -105,6 +107,7 @@ function AddQuestion(props) {
 	const [ isDeleteModalVisible, setIsDeleteModalVisible ] = useState(false);
 	const [ updateNote, setUpdateNote ] = useState(false);
 	const [ isOptionModal, setIsOptionModal ] = useState(false);
+	const [ saveDetails, setSaveDetails ] = useState({});
 
 	let initialValues = {};
 	const doesEditEnabled = route && route.params && route.params.data;
@@ -157,7 +160,13 @@ function AddQuestion(props) {
 		};
 	}
 
-	const handleSubmit = userNotes => {
+	const handleSubmit = details => {
+		if (referenceName.trim() === '') {
+			FlashMessage.message('Alert', 'Please enter the reference name to save', 'red');
+			return;
+		}
+		let userNotes = { ...details, reference_name: referenceName };
+		console.warn('inside submit', userNotes);
 		setReferenceName(userNotes.reference_name);
 		setIsModalVisible(false);
 		const painLevel = userNotes.pain_level;
@@ -390,10 +399,12 @@ function AddQuestion(props) {
 		getDeleteNote(noteId, onGetDeleteNoteSuccess, onGetDeleteNoteFailure);
 	};
 
-	useEffect(function() {
+	useEffect(function () {
 		if (props.route.params.updateNotes === true) {
 			setUpdateNote(true);
 			setPainLevel(props.route.params.data.pain_level);
+			setSaveDetails(props.route.params.data);
+			setReferenceName(props.route.params.data.reference_name ? props.route.params.data.reference_name : '');
 		} else {
 			setUpdateNote(false);
 		}
@@ -449,41 +460,35 @@ function AddQuestion(props) {
 				) : showStep3 === true ? (
 					<Image source={ stepIndicator3 } />
 				) : (
-					<Text style={ styles.hideText } />
-				)}
+								<Text style={ styles.hideText } />
+							)}
 			</View>
-			<Formik
-				initialValues={ { ...initialValues } }
-				validationSchema={ userNoteSchema }
-				onSubmit={ (values, actions) => {
-					if (
-						values.bleeding !== '' &&
-						values.description !== '' &&
-						values.issue_start_date !== '' &&
-						values.onset !== '' &&
-						values.pain_level > 0 &&
-						values.pain_type !== '' &&
-						values.place_of_issue !== '' &&
-						values.prior_history !== '' &&
-						values.pus_presence !== '' &&
-						values.sensivity_temperature !== '' &&
-						values.side_of_issue !== '' &&
-						values.swelling_size !== '' &&
-						values.tender !== '' &&
-						values.title !== '' &&
-						values.tooth_issue_identified !== '' &&
-						values.tooth_loss !== ''
-					) {
-						actions.resetForm();
-						handleSubmit(values);
-					} else {
-						setShowStep1(true);
-						setIsModalVisible(false);
-						FlashMessage.message('Alert', 'Please fill up all fields', 'red');
-					}
-				} }>
-				{showStep1
-					? props => (
+			{
+				showStep1 && (
+					<Formik
+						initialValues={ { ...initialValues } }
+						validationSchema={ step1Schema }
+						onSubmit={ (values, actions) => {
+							if (
+								values.title !== '' &&
+								values.description !== '' &&
+								values.place_of_issue !== '' &&
+								values.side_of_issue !== ''
+							) {
+								if (imageSource.length === 0) {
+									FlashMessage.message('Alert', 'Please upload image or video to continue', 'red');
+								} else {
+									actions.resetForm();
+									setSaveDetails({ ...saveDetails, title: values.title, description: values.description, place_of_issue: values.place_of_issue, side_of_issue: values.side_of_issue });
+									showStep2Screen('two');
+								}
+							} else {
+								setShowStep1(true);
+								setIsModalVisible(false);
+								FlashMessage.message('Alert', 'Please fill up all fields', 'red');
+							}
+						} }>
+						{props => (
 							<View style={ styles.containerWrapper }>
 								<KeyboardAvoidingView
 								// behavior="position"
@@ -539,13 +544,13 @@ function AddQuestion(props) {
 												);
 											})
 										) : (
-											<View style={ styles.cameraTextPreview }>
-												<Text style={ styles.cameraText }>
-													Add Images or Video through the camera or adding it
-													from the gallery (Optional)
+												<View style={ styles.cameraTextPreview }>
+													<Text style={ styles.cameraText }>
+														Add Images or Video through the camera or adding it
+														from the gallery (Optional)
 												</Text>
-											</View>
-										)}
+												</View>
+											)}
 									</View>
 								</View>
 								<Modal transparent={ true } visible={ isVideoUpload }>
@@ -556,7 +561,7 @@ function AddQuestion(props) {
 											</TouchableOpacity>
 											<Text style={ styles.successModalText }>
 												You are not allowed to upload more than a video
-											</Text>
+										</Text>
 											<TouchableOpacity
 												style={ styles.consultButton }
 												onPress={ () => setIsVideoUpload(false) }>
@@ -599,11 +604,12 @@ function AddQuestion(props) {
 											custom_style={ true }
 										/>
 									</View>
+									{props.errors.place_of_issue && <Text style={ styles.errorMessage }> Place of issue is a required field</Text>}
 								</View>
 								<View style={ styles.symtamsContainer }>
 									<Text style={ styles.questionText }>
 										Which side check all that apply ?
-									</Text>
+								</Text>
 									<View style={ styles.questionContainer }>
 										<CustomButton
 											button={
@@ -662,11 +668,12 @@ function AddQuestion(props) {
 											secureTextEntry={ false }
 										/>
 									</View>
+									{props.errors.side_of_issue && <Text style={ styles.errorMessage }> Side of issue is a required field</Text>}
 								</View>
 								<View style={ styles.buttonContainer }>
 									<TouchableOpacity
 										style={ globalStyles.fullWidthButton }
-										onPress={ () => showStep2Screen('two') }>
+										onPress={ props.handleSubmit }>
 										<View style={ styles.arrowWrap }>
 											<Text style={ globalStyles.buttonText }>Next </Text>
 											<Image source={ arrow } style={ styles.arrow } />
@@ -674,9 +681,37 @@ function AddQuestion(props) {
 									</TouchableOpacity>
 								</View>
 							</View>
-					)
-					: showStep2
-					? props => (
+						)}
+					</Formik>
+				)
+			}
+			{
+				showStep2 && (
+					<Formik
+						initialValues={ { ...initialValues } }
+						validationSchema={ step2Schema }
+						onSubmit={ (values, actions) => {
+							if (
+								values.pain_type !== '' &&
+								values.sensivity_temperature !== '' &&
+								values.tender !== '' &&
+								values.tooth_issue_identified !== '' &&
+								values.onset !== ''
+							) {
+								if (values.pain_level === 0) {
+									FlashMessage.message('Alert', 'Please fill pain level to continue', 'red');
+								} else {
+									actions.resetForm();
+									setSaveDetails({ ...saveDetails, pain_type: values.pain_type, sensivity_temperature: values.sensivity_temperature, tender: values.tender, tooth_issue_identified: values.tooth_issue_identified, onset: values.onset, pain_level: values.pain_level });
+									showStep2Screen('three');
+								}
+							} else {
+								setShowStep1(true);
+								setIsModalVisible(false);
+								FlashMessage.message('Alert', 'Please fill up all fields', 'red');
+							}
+						} }>
+						{props => (
 							<View style={ styles.step2Styles }>
 								<View>
 									<Text style={ styles.questionText1 }>Pain level</Text>
@@ -763,13 +798,13 @@ function AddQuestion(props) {
 												custom_style={ true }
 											/>
 										</View>
+										{props.errors.pain_type && <Text style={ styles.errorMessage }> Pain type is a required field</Text>}
 									</View>
 
 									<View style={ styles.symtamsContainer }>
 										<Text style={ styles.questionText }>
 											Sensitivity to temperature
 										</Text>
-
 										<View style={ styles.questionContainer }>
 											<CustomButton
 												button={
@@ -831,6 +866,7 @@ function AddQuestion(props) {
 												secureTextEntry={ false }
 											/>
 										</View>
+										{props.errors.sensivity_temperature && <Text style={ styles.errorMessage }> Sensitivity temperature is a required field</Text>}
 									</View>
 									<View style={ styles.symtamsContainer }>
 										<Text style={ styles.questionText }>
@@ -864,6 +900,7 @@ function AddQuestion(props) {
 												/>
 											</View>
 										</View>
+										{props.errors.tender && <Text style={ styles.errorMessage }> Tender is a required field</Text>}
 									</View>
 									<View style={ styles.symtamsContainer }>
 										<Text style={ styles.questionText }>
@@ -902,6 +939,7 @@ function AddQuestion(props) {
 												/>
 											</View>
 										</View>
+										{props.errors.tooth_issue_identified && <Text style={ styles.errorMessage }> Tooth issue identification is a required field</Text>}
 									</View>
 
 									<View style={ styles.symtamsContainer }>
@@ -935,12 +973,13 @@ function AddQuestion(props) {
 												custom_style={ true }
 											/>
 										</View>
+										{props.errors.onset && <Text style={ styles.errorMessage }> Onset is a required field</Text>}
 									</View>
 								</View>
 								<View style={ styles.buttonContainer }>
 									<TouchableOpacity
 										style={ globalStyles.fullWidthButton }
-										onPress={ () => showStep2Screen('three') }>
+										onPress={ props.handleSubmit }>
 										<View style={ styles.arrowWrap }>
 											<Text style={ globalStyles.buttonText }>Next </Text>
 											<Image source={ arrow } style={ styles.arrow } />
@@ -948,8 +987,35 @@ function AddQuestion(props) {
 									</TouchableOpacity>
 								</View>
 							</View>
-					)
-					: props => (
+						)}
+					</Formik>
+				)
+			}
+			{
+				showStep3 && (
+					<Formik
+						initialValues={ { ...initialValues } }
+						validationSchema={ step3Schema }
+						onSubmit={ (values, actions) => {
+							console.warn('inside step3', values);
+							if (
+								values.issue_start_date !== '' &&
+								values.swelling_size !== '' &&
+								values.bleeding !== '' &&
+								values.pus_presence !== '' &&
+								values.prior_history !== '' &&
+								values.tooth_loss !== ''
+							) {
+								actions.resetForm();
+								setSaveDetails({ ...saveDetails, issue_start_date: values.issue_start_date, swelling_size: values.swelling_size, bleeding: values.bleeding, pus_presence: values.pus_presence, prior_history: values.prior_history, tooth_loss: values.tooth_loss });
+								setIsModalVisible(true);
+							} else {
+								setShowStep1(true);
+								setIsModalVisible(false);
+								FlashMessage.message('Alert', 'Please fill up all fields', 'red');
+							}
+						} }>
+						{props => (
 							<View style={ styles.keyboard }>
 								<KeyboardAvoidingView
 									behavior={ Platform.OS === 'ios' ? 'padding' : '' }
@@ -957,52 +1023,7 @@ function AddQuestion(props) {
 									<ScrollView
 										showsHorizontalScrollIndicator={ false }
 										contentContainerStyle={ styles.keyboard1 }>
-										{isSuccessModalVisible || isModalVisible ? (
-											<Modal transparent={ true } visible={ true }>
-												<View style={ styles.modalWrap }>
-													<View style={ styles.modalTextWrap }>
-														<TouchableOpacity onPress={ goHome }>
-															<Image
-																source={ crossIcon }
-																style={ styles.closeIcon }
-															/>
-														</TouchableOpacity>
-														<Text style={ styles.modalText }>save as</Text>
-														<NormalTextInput
-															saveas="saveas"
-															lable="Give it a name for future reference"
-															onChangeText={ props.handleChange(
-																'reference_name'
-															) }
-															value={
-																props.values.reference_name === ''
-																	? referenceName
-																	: props.values.reference_name
-															}
-															onBlur={ props.handleBlur('reference_name') }
-															secureTextEntry={ false }
-															error={ props.errors.reference_name }
-														/>
 
-														{isSuccessModalVisible ? (
-															<TouchableOpacity style={ styles.savedButton }>
-																<Text style={ styles.savedButtonText }>
-																	saved!
-																</Text>
-															</TouchableOpacity>
-														) : (
-															<TouchableOpacity
-																style={ styles.consultButton }
-																onPress={ props.handleSubmit }>
-																<Text style={ styles.loginText }>save</Text>
-															</TouchableOpacity>
-														)}
-													</View>
-												</View>
-											</Modal>
-										) : (
-											<Text style={ styles.hideText } />
-										)}
 										<View style={ styles.symtamsContainer }>
 											<Text style={ styles.questionText }>
 												When did the issue start
@@ -1013,15 +1034,11 @@ function AddQuestion(props) {
 												onBlur={ props.handleBlur('issue_start_date') }
 												value={ props.values.issue_start_date }
 												placeholder="2 days ago"
-												error={
-													props.touched.issue_start_date &&
-													props.errors.issue_start_date
-												}
 												underlineColorAndroid="transparent"
 												placeholderTextColor="grey"
 											/>
+											{props.errors.issue_start_date && <Text style={ styles.errorMessage }> Issue start date is a required field</Text>}
 										</View>
-
 										<View style={ styles.symtamsContainer }>
 											<Text style={ styles.questionText }>Swelling size</Text>
 											<View style={ styles.questionContainer }>
@@ -1082,6 +1099,7 @@ function AddQuestion(props) {
 													secureTextEntry={ false }
 												/>
 											</View>
+											{props.errors.swelling_size && <Text style={ styles.errorMessage }> Swelling size is a required field</Text>}
 										</View>
 										<View style={ styles.symtamsContainer }>
 											<Text style={ styles.questionText }>Bleeding</Text>
@@ -1117,6 +1135,7 @@ function AddQuestion(props) {
 													/>
 												</View>
 											</View>
+											{props.errors.bleeding && <Text style={ styles.errorMessage }> Bleeding is a required field</Text>}
 										</View>
 										<View style={ styles.symtamsContainer }>
 											<Text style={ styles.questionText }>Presence of pus ?</Text>
@@ -1152,6 +1171,7 @@ function AddQuestion(props) {
 													/>
 												</View>
 											</View>
+											{props.errors.pus_presence && <Text style={ styles.errorMessage }> Pus presence is a required field</Text>}
 										</View>
 										<View style={ styles.symtamsContainer }>
 											<Text style={ styles.questionText }>Loose Tooth</Text>
@@ -1214,6 +1234,7 @@ function AddQuestion(props) {
 													secureTextEntry={ false }
 												/>
 											</View>
+											{props.errors.tooth_loss && <Text style={ styles.errorMessage }> Tooth loss is a required field</Text>}
 										</View>
 										<Loader loading={ loading } />
 
@@ -1225,9 +1246,10 @@ function AddQuestion(props) {
 											onBlur={ props.handleBlur('prior_history') }
 											secureTextEntry={ false }
 										/>
+										{props.errors.prior_history && <Text style={ styles.errorMessage }> Prior history is a required field</Text>}
 										<TouchableOpacity
 											style={ styles.consultButton }
-											onPress={ () => setIsModalVisible(true) }>
+											onPress={ props.handleSubmit }>
 											<View style={ styles.arrowWrap }>
 												<Text style={ globalStyles.buttonText }>Next </Text>
 												<Image source={ arrow } style={ styles.arrow } />
@@ -1236,8 +1258,49 @@ function AddQuestion(props) {
 									</ScrollView>
 								</KeyboardAvoidingView>
 							</View>
-					)}
-			</Formik>
+						)}
+					</Formik>
+				)
+			}
+			{isSuccessModalVisible || isModalVisible ? (
+				<Modal transparent={ true } visible={ true }>
+					<View style={ styles.modalWrap }>
+						<View style={ styles.modalTextWrap }>
+							<TouchableOpacity onPress={ goHome }>
+								<Image
+									source={ crossIcon }
+									style={ styles.closeIcon }
+								/>
+							</TouchableOpacity>
+							<Text style={ styles.modalText }>save as</Text>
+							<NormalTextInput
+								saveas="saveas"
+								lable="Give it a name for future reference"
+								onChangeText={ (text) => setReferenceName(text) }
+								value={ referenceName }
+								secureTextEntry={ false }
+							/>
+
+							{isSuccessModalVisible ? (
+								<TouchableOpacity style={ styles.savedButton }>
+									<Text style={ styles.savedButtonText }>
+										saved!
+									</Text>
+								</TouchableOpacity>
+							) : (
+									<TouchableOpacity
+										style={ styles.consultButton }
+										onPress={ () => handleSubmit(saveDetails) }>
+										<Text style={ styles.loginText }>save</Text>
+									</TouchableOpacity>
+								)}
+						</View>
+					</View>
+				</Modal>
+			) : (
+					<Text style={ styles.hideText } />
+				)}
+
 			<Modal transparent={ true } visible={ isDeleteModalVisible }>
 				<View style={ styles.modalWrap }>
 					<LinearGradient

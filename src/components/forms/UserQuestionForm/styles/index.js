@@ -446,6 +446,11 @@ const styles = StyleSheet.create({
 	backButton: {
 		position: 'relative',
 		left: 10
+	},
+	errorMessage: {
+		color: '#CD534D',
+		fontSize: 12,
+		fontWeight: '600'
 	}
 });
 
