@@ -65,10 +65,7 @@ function Profile(props) {
 	}, []);
 
 	return (
-		<KeyboardAwareScrollView showsVerticalScrollIndicator={ false }>
-			<ScrollView
-				showsVerticalScrollIndicator={ false }
-				contentContainerStyle={ styles.container }>
+		<KeyboardAwareScrollView contentContainerStyle={ styles.container } showsVerticalScrollIndicator={ false }>
 				<Text style={ styles.profileNameContainer }>
 					<Text style={ styles.profileName }>hi! </Text>
 					<Text style={ styles.userName }>
@@ -176,7 +173,6 @@ function Profile(props) {
 						)}
 					</Formik>
 				</View>
-			</ScrollView>
 		</KeyboardAwareScrollView>
 	);
 }

@@ -13,14 +13,15 @@ const contactSchema = yup.object({
 	name: yup
 		.string()
 		.min(1)
-		.required('Required')
-		.trim(),
+		.trim()
+		.required(),
 	description: yup
 		.string()
-		.required('Required')
-		.trim(),
+		.trim()
+		.required(),
 	email: yup
 		.string()
+		.trim()
 		.email()
 		.required('Invalid Email')
 		.matches(
