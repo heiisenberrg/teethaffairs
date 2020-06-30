@@ -3,7 +3,6 @@ import {
 	Image,
 	Text,
 	TouchableOpacity,
-	ScrollView,
 	Platform
 } from 'react-native';
 import View from '../global/View';
@@ -23,6 +22,7 @@ import styles from './styles';
 import globalStyles from '../../globalStyles/index';
 import TextInputField from '../textInputs/TextInputField';
 import calender from '../../assets/calender.png';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const profileSchema = yup.object({
 	first_name: yup.string().required('Required'),
@@ -120,16 +120,18 @@ const UpdateProfile = props => {
 	};
 
 	const handleSubmit = values => {
+		console.warn('inside save ', values);
 		editUser(values);
 	};
 
-	const onChange = (event, selectedDate) => {
+	const onChange = (event, selectedDate, setFieldValue) => {
 		setShow(Platform.OS === 'ios');
 
 		var currentDate = '';
 		if (selectedDate !== undefined && selectedDate !== '') {
 			var date = new Date(selectedDate).toISOString();
 			setBirthDate(date);
+			setFieldValue('date_of_birth', date);
 			currentDate = selectedDate;
 		} else {
 			setBirthDate('');
@@ -149,7 +151,7 @@ const UpdateProfile = props => {
 	};
 
 	return (
-		<ScrollView
+		<KeyboardAwareScrollView
 			showsVerticalScrollIndicator={ false }
 			contentContainerStyle={ styles.background }>
 			<TouchableOpacity
@@ -231,7 +233,9 @@ const UpdateProfile = props => {
 									mode={ mode }
 									display="default"
 									maximumDate={ new Date() }
-									onChange={ onChange }
+									onChange={ (e, value) =>
+										onChange(e, value, props.setFieldValue)
+									}
 									neutralButtonLabel="clear"
 								/>
 							)}
@@ -245,7 +249,7 @@ const UpdateProfile = props => {
 					</View>
 				)}
 			</Formik>
-		</ScrollView>
+		</KeyboardAwareScrollView>
 	);
 };
 

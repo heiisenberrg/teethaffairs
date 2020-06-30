@@ -209,6 +209,7 @@ function RemoteConsultationRequest(props) {
 				medicationsList.length > 0
 			) {
 				if (type === 'answer') {
+					medications_array = [];
 					let answerData = {
 						resp_status: true,
 						response_text: 'Follow the treatment',

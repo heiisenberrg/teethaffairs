@@ -75,7 +75,7 @@ function Settings(props) {
 									: 'you are using the basic plan !'}
 							</Text>
 							<Text style={ styles.paymentText1 }>
-								{user.upgraded
+								{user.upgraded || upgraded
 									? 'Now you can store all the data permanently.'
 									: 'Upgrade Your App with Just $10'}
 							</Text>

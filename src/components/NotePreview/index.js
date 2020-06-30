@@ -221,9 +221,16 @@ function NotePreview(props) {
 							<View style={ styles.queryWrapper }>
 								<Text style={ styles.queryText }>Where is the issue ?</Text>
 								{previewNote.place_of_issue !== '' ? (
-									<Text style={ styles.patientDetails }>
-										{previewNote.place_of_issue}
-									</Text>
+									previewNote.place_of_issue !== undefined ? (
+										<Text style={ styles.patientDetails }>
+											{previewNote.place_of_issue[0].slice(
+												1,
+												previewNote.place_of_issue[0].length - 1
+											)}
+										</Text>
+									) : (
+										<Text style={ styles.patientDetails }>NA</Text>
+									)
 								) : (
 									<Text style={ styles.patientDetails }>NA</Text>
 								)}
@@ -231,9 +238,16 @@ function NotePreview(props) {
 							<View style={ styles.queryWrapper }>
 								<Text style={ styles.queryText }>Which side ?</Text>
 								{previewNote.side_of_issue !== '' ? (
-									<Text style={ styles.patientDetails }>
-										{previewNote.side_of_issue}
-									</Text>
+									previewNote.side_of_issue !== undefined ? (
+										<Text style={ styles.patientDetails }>
+											{previewNote.side_of_issue[0].slice(
+												1,
+												previewNote.side_of_issue[0].length - 1
+											)}
+										</Text>
+									) : (
+										<Text style={ styles.patientDetails }>NA</Text>
+									)
 								) : (
 									<Text style={ styles.patientDetails }>NA</Text>
 								)}

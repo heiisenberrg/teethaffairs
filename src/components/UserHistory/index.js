@@ -17,12 +17,11 @@ import { getHistory } from '../../state/actions/history';
 import { getUsers } from '../../state/actions/user';
 
 function UserHistory(props) {
-	const { getHistory, getUsers, userList, userDetails, history } = props;
+	const { getHistory, getUsers, userList, userDetails, history, navigation } = props;
 	const [ list, setlist ] = useState([]);
 	const [ isVisible, setVisible ] = useState(false);
 	const [ showModal, setShowModal ] = useState(false);
 	const [ filterBy, setFilterBy ] = useState(null);
-
 	const [ user, setUser ] = useState(
 		userDetails &&
 			(userDetails.user_type !== 'PRIMARY_PATIENT' ||
@@ -38,6 +37,12 @@ function UserHistory(props) {
 					avatar: null
 			}
 	);
+
+	useEffect(() => {
+		navigation.addListener('focus', () => {
+			setFilterBy(null);
+		});
+	}, [ navigation ]);
 
 	useEffect(() => {
 		if (

@@ -28,12 +28,12 @@ import styles from './styles';
 import globalStyles from '../../../globalStyles';
 
 const dentalVisitSchema = yup.object({
-	visit_reason: yup.string().required('Required'),
-	visit_description: yup.string().required('Required'),
-	visit_experience: yup.string().required('Required'),
-	fees_paid: yup.string().required('Required'),
-	doctor: yup.string().required('Required'),
-	insurance_used: yup.string().required('Required'),
+	visit_reason: yup.string().trim().required('Required'),
+	visit_description: yup.string().trim().required('Required'),
+	visit_experience: yup.string().trim().required('Required'),
+	fees_paid: yup.string().trim().required('Required'),
+	doctor: yup.string().trim().required('Required'),
+	insurance_used: yup.string().trim().required('Required'),
 	media: yup.array()
 });
 
@@ -154,6 +154,7 @@ function DentalVisitForm(props) {
 
 	const takeImageHandler = () => {
 		ImagePicker.showImagePicker(imageOptions, response => {
+			console.warn('image upload response', response);
 			if (response.didCancel) {
 			} else if (response.error) {
 			} else if (response.customButton) {
@@ -199,7 +200,7 @@ function DentalVisitForm(props) {
 						}
 					}
 				);
-			} else {
+			} else if (response.uri && response.uri !== '') {
 				let source = {
 					...response,
 					media: response.uri

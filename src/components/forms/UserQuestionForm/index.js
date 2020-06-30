@@ -47,10 +47,16 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 const keyboardVerticalOffset = Platform.OS === 'ios' ? 100 : 0;
 
 const step1Schema = yup.object({
-	title: yup.string().trim().required(),
-	description: yup.string().trim().required(),
-	place_of_issue: yup.string().required(),
-	side_of_issue: yup.string().required()
+	title: yup
+		.string()
+		.trim()
+		.required(),
+	description: yup
+		.string()
+		.trim()
+		.required()
+	// place_of_issue: yup.array().required(),
+	// side_of_issue: yup.string().required()
 });
 
 const step2Schema = yup.object({
@@ -63,11 +69,17 @@ const step2Schema = yup.object({
 });
 
 const step3Schema = yup.object({
-	issue_start_date: yup.string().trim().required(),
+	issue_start_date: yup
+		.string()
+		.trim()
+		.required(),
 	swelling_size: yup.string().required(),
 	bleeding: yup.string().required(),
 	pus_presence: yup.string().required(),
-	prior_history: yup.string().trim().required(),
+	prior_history: yup
+		.string()
+		.trim()
+		.required(),
 	tooth_loss: yup.string().required()
 });
 
@@ -108,6 +120,8 @@ function AddQuestion(props) {
 	const [ updateNote, setUpdateNote ] = useState(false);
 	const [ isOptionModal, setIsOptionModal ] = useState(false);
 	const [ saveDetails, setSaveDetails ] = useState({});
+	const [ placeOfIssue, setPlaceOfIssue ] = useState([]);
+	const [ sideOfIssue, setSideOfIssue ] = useState([]);
 
 	let initialValues = {};
 	const doesEditEnabled = route && route.params && route.params.data;
@@ -116,8 +130,8 @@ function AddQuestion(props) {
 		initialValues = {
 			pain_level: data.pain_level ? data.pain_level : 0,
 			description: data.description ? data.description : '',
-			place_of_issue: data.place_of_issue ? data.place_of_issue : '',
-			side_of_issue: data.side_of_issue ? data.side_of_issue : '',
+			// place_of_issue: data.place_of_issue ? data.place_of_issue : [],
+			// side_of_issue: data.side_of_issue ? data.side_of_issue : '',
 			sensivity_temperature: data.sensivity_temperature
 				? data.sensivity_temperature
 				: '',
@@ -141,8 +155,8 @@ function AddQuestion(props) {
 		initialValues = {
 			pain_level: 0,
 			description: '',
-			place_of_issue: '',
-			side_of_issue: '',
+			// place_of_issue: [],
+			// side_of_issue: '',
 			sensivity_temperature: '',
 			tender: '',
 			tooth_issue_identified: '',
@@ -162,10 +176,19 @@ function AddQuestion(props) {
 
 	const handleSubmit = details => {
 		if (referenceName.trim() === '') {
-			FlashMessage.message('Alert', 'Please enter the reference name to save', 'red');
+			FlashMessage.message(
+				'Alert',
+				'Please enter the reference name to save',
+				'red'
+			);
 			return;
 		}
-		let userNotes = { ...details, reference_name: referenceName };
+		let userNotes = {
+			...details,
+			reference_name: referenceName,
+			place_of_issue: placeOfIssue,
+			side_of_issue: sideOfIssue
+		};
 		console.warn('inside submit', userNotes);
 		setReferenceName(userNotes.reference_name);
 		setIsModalVisible(false);
@@ -399,12 +422,26 @@ function AddQuestion(props) {
 		getDeleteNote(noteId, onGetDeleteNoteSuccess, onGetDeleteNoteFailure);
 	};
 
-	useEffect(function () {
+	useEffect(function() {
 		if (props.route.params.updateNotes === true) {
 			setUpdateNote(true);
 			setPainLevel(props.route.params.data.pain_level);
 			setSaveDetails(props.route.params.data);
-			setReferenceName(props.route.params.data.reference_name ? props.route.params.data.reference_name : '');
+			setReferenceName(
+				props.route.params.data.reference_name
+					? props.route.params.data.reference_name
+					: ''
+			);
+			setPlaceOfIssue(
+				props.route.params.data.place_of_issue
+					? props.route.params.data.place_of_issue
+					: []
+			);
+			setSideOfIssue(
+				props.route.params.data.side_of_issue
+					? props.route.params.data.side_of_issue
+					: []
+			);
 		} else {
 			setUpdateNote(false);
 		}
@@ -435,6 +472,28 @@ function AddQuestion(props) {
 		});
 	}, [ showStep3, showStep2, showStep1 ]);
 
+	const changePlaceOfIssue = issue => {
+		let data = [ ...placeOfIssue ];
+		if (placeOfIssue.indexOf(issue) !== -1) {
+			data.splice(placeOfIssue.indexOf(issue), 1);
+			setPlaceOfIssue(data);
+		} else {
+			data.push(issue);
+			setPlaceOfIssue(data);
+		}
+	};
+
+	const changeSideOfIssue = issue => {
+		let data = [ ...sideOfIssue ];
+		if (sideOfIssue.indexOf(issue) !== -1) {
+			data.splice(sideOfIssue.indexOf(issue), 1);
+			setSideOfIssue(data);
+		} else {
+			data.push(issue);
+			setSideOfIssue(data);
+		}
+	};
+
 	const handleBackNavigation = () => {
 		if (showStep1) {
 			navigation.goBack();
@@ -460,846 +519,901 @@ function AddQuestion(props) {
 				) : showStep3 === true ? (
 					<Image source={ stepIndicator3 } />
 				) : (
-								<Text style={ styles.hideText } />
-							)}
+					<Text style={ styles.hideText } />
+				)}
 			</View>
-			{
-				showStep1 && (
-					<Formik
-						initialValues={ { ...initialValues } }
-						validationSchema={ step1Schema }
-						onSubmit={ (values, actions) => {
-							if (
-								values.title !== '' &&
-								values.description !== '' &&
-								values.place_of_issue !== '' &&
-								values.side_of_issue !== ''
-							) {
-								if (imageSource.length === 0) {
-									FlashMessage.message('Alert', 'Please upload image or video to continue', 'red');
-								} else {
-									actions.resetForm();
-									setSaveDetails({ ...saveDetails, title: values.title, description: values.description, place_of_issue: values.place_of_issue, side_of_issue: values.side_of_issue });
-									showStep2Screen('two');
-								}
+			{showStep1 && (
+				<Formik
+					initialValues={ { ...initialValues } }
+					validationSchema={ step1Schema }
+					onSubmit={ (values, actions) => {
+						if (values.title !== '' && values.description !== '') {
+							// if (imageSource.length === 0) {
+							// 	FlashMessage.message('Alert', 'Please upload image or video to continue', 'red');
+							// }
+							//  else
+							if (placeOfIssue.length === 0) {
+								FlashMessage.message(
+									'Alert',
+									'Please select place of issue',
+									'red'
+								);
+							} else if (sideOfIssue.length === 0) {
+								FlashMessage.message(
+									'Alert',
+									'Please select side of issue',
+									'red'
+								);
 							} else {
-								setShowStep1(true);
-								setIsModalVisible(false);
-								FlashMessage.message('Alert', 'Please fill up all fields', 'red');
+								actions.resetForm();
+								setSaveDetails({
+									...saveDetails,
+									title: values.title,
+									description: values.description
+								});
+								showStep2Screen('two');
 							}
-						} }>
-						{props => (
-							<View style={ styles.containerWrapper }>
-								<KeyboardAvoidingView
-								// behavior="position"
-								// keyboardVerticalOffset={keyboardVerticalOffset1}
-								>
-									<TextInputBoxField
-										multiline
-										lable="Enter your Dental/Oral issue"
-										placeholder={
-											'Example: I have a swelling that is painful, started last night.'
-										}
-										onChangeText={ props.handleChange('title') }
-										value={ props.values.title }
-										onBlur={ props.handleBlur('title') }
-										secureTextEntry={ false }
-										error={ props.touched.title && props.errors.title }
-									/>
-									<TextInputBoxField
-										multiline
-										lable="Notes"
-										placeholder={
-											'Example: busy with office project and deadline, would like to come in next month unless its an emergency or if this can be resolved with meds'
-										}
-										onChangeText={ props.handleChange('description') }
-										value={ props.values.description }
-										onBlur={ props.handleBlur('description') }
-										secureTextEntry={ false }
-										error={
-											props.touched.description && props.errors.description
-										}
-									/>
-								</KeyboardAvoidingView>
-								<View style={ styles.imageWrap }>
-									<Text style={ styles.addFiles }>Add Files</Text>
-									<View style={ styles.imageContainer }>
-										{imageSource.length < 5 && (
-											<View style={ styles.imagePreview1 }>
-												<TouchableOpacity onPress={ takeImageHandler }>
-													<SimpleLineIcons
-														name="plus"
-														size={ 20 }
-														color="#0A8A7B"
-													/>
-												</TouchableOpacity>
-											</View>
-										)}
-										{imageSource.length > 0 ? (
-											imageSource.map((img, index) => {
-												return (
-													<View key={ index } style={ styles.imagePreview2 }>
-														<Image source={ img } style={ styles.image } />
-													</View>
-												);
-											})
-										) : (
-												<View style={ styles.cameraTextPreview }>
-													<Text style={ styles.cameraText }>
-														Add Images or Video through the camera or adding it
-														from the gallery (Optional)
-												</Text>
-												</View>
-											)}
-									</View>
-								</View>
-								<Modal transparent={ true } visible={ isVideoUpload }>
-									<View style={ styles.modalWrap }>
-										<View style={ styles.modalTextWrap }>
-											<TouchableOpacity onPress={ () => setIsVideoUpload(false) }>
-												<Image source={ crossIcon } style={ styles.closeIcon } />
-											</TouchableOpacity>
-											<Text style={ styles.successModalText }>
-												You are not allowed to upload more than a video
-										</Text>
-											<TouchableOpacity
-												style={ styles.consultButton }
-												onPress={ () => setIsVideoUpload(false) }>
-												<Text style={ styles.loginText }>Okay</Text>
+						} else {
+							setShowStep1(true);
+							setIsModalVisible(false);
+							FlashMessage.message('Alert', 'Please fill up all fields', 'red');
+						}
+					} }>
+					{props => (
+						<View style={ styles.containerWrapper }>
+							<KeyboardAvoidingView
+							// behavior="position"
+							// keyboardVerticalOffset={keyboardVerticalOffset1}
+							>
+								<TextInputBoxField
+									multiline
+									lable="Enter your Dental/Oral issue"
+									placeholder={
+										'Example: I have a swelling that is painful, started last night.'
+									}
+									onChangeText={ props.handleChange('title') }
+									value={ props.values.title }
+									onBlur={ props.handleBlur('title') }
+									secureTextEntry={ false }
+									error={ props.touched.title && props.errors.title }
+								/>
+								<TextInputBoxField
+									multiline
+									lable="Notes"
+									placeholder={
+										'Example: busy with office project and deadline, would like to come in next month unless its an emergency or if this can be resolved with meds'
+									}
+									onChangeText={ props.handleChange('description') }
+									value={ props.values.description }
+									onBlur={ props.handleBlur('description') }
+									secureTextEntry={ false }
+									error={ props.touched.description && props.errors.description }
+								/>
+							</KeyboardAvoidingView>
+							<View style={ styles.imageWrap }>
+								<Text style={ styles.addFiles }>Add Files</Text>
+								<View style={ styles.imageContainer }>
+									{imageSource.length < 5 && (
+										<View style={ styles.imagePreview1 }>
+											<TouchableOpacity onPress={ takeImageHandler }>
+												<SimpleLineIcons
+													name="plus"
+													size={ 20 }
+													color="#0A8A7B"
+												/>
 											</TouchableOpacity>
 										</View>
+									)}
+									{imageSource.length > 0 ? (
+										imageSource.map((img, index) => {
+											return (
+												<View key={ index } style={ styles.imagePreview2 }>
+													<Image source={ img } style={ styles.image } />
+												</View>
+											);
+										})
+									) : (
+										<View style={ styles.cameraTextPreview }>
+											<Text style={ styles.cameraText }>
+												Add Images or Video through the camera or adding it from
+												the gallery (Optional)
+											</Text>
+										</View>
+									)}
+								</View>
+							</View>
+							<Modal transparent={ true } visible={ isVideoUpload }>
+								<View style={ styles.modalWrap }>
+									<View style={ styles.modalTextWrap }>
+										<TouchableOpacity onPress={ () => setIsVideoUpload(false) }>
+											<Image source={ crossIcon } style={ styles.closeIcon } />
+										</TouchableOpacity>
+										<Text style={ styles.successModalText }>
+											You are not allowed to upload more than a video
+										</Text>
+										<TouchableOpacity
+											style={ styles.consultButton }
+											onPress={ () => setIsVideoUpload(false) }>
+											<Text style={ styles.loginText }>Okay</Text>
+										</TouchableOpacity>
 									</View>
-								</Modal>
+								</View>
+							</Modal>
+							<View style={ styles.symtamsContainer }>
+								<Text style={ styles.questionText }>Where is the issue ?</Text>
+								<View style={ styles.questionContainer }>
+									<CustomButton
+										button={
+											placeOfIssue.indexOf('teeth') !== -1
+												? 'activeButton'
+												: 'issueButton'
+										}
+										place_of_issue="teeth"
+										onPress={ () => changePlaceOfIssue('teeth') }
+										value={ placeOfIssue.indexOf('teeth') !== -1 ? 'teeth' : '' }
+										secureTextEntry={ false }
+										custom_style={ true }
+									/>
+									<CustomButton
+										button={
+											placeOfIssue.indexOf('gums') !== -1
+												? 'activeButton'
+												: 'issueButton'
+										}
+										place_of_issue="gums"
+										onPress={ () => changePlaceOfIssue('gums') }
+										value={ placeOfIssue.indexOf('gums') !== -1 ? 'gums' : '' }
+										secureTextEntry={ false }
+										custom_style={ true }
+									/>
+								</View>
+								{props.errors.place_of_issue && (
+									<Text style={ styles.errorMessage }>
+										{' '}
+										Place of issue is a required field
+									</Text>
+								)}
+							</View>
+							<View style={ styles.symtamsContainer }>
+								<Text style={ styles.questionText }>
+									Which side check all that apply ?
+								</Text>
+								<View style={ styles.questionContainer }>
+									<CustomButton
+										button={
+											sideOfIssue.indexOf('upper') !== -1
+												? 'activeButton'
+												: 'issueButton'
+										}
+										place_of_issue="upper"
+										onPress={ () => changeSideOfIssue('upper') }
+										value={ sideOfIssue.indexOf('upper') !== -1 ? 'upper' : '' }
+										secureTextEntry={ false }
+									/>
+									<CustomButton
+										button={
+											sideOfIssue.indexOf('lower') !== -1
+												? 'activeButton'
+												: 'issueButton'
+										}
+										place_of_issue="lower"
+										onPress={ () => changeSideOfIssue('lower') }
+										value={ sideOfIssue.indexOf('lower') !== -1 ? 'lower' : '' }
+										secureTextEntry={ false }
+									/>
+									<CustomButton
+										button={
+											sideOfIssue.indexOf('left') !== -1
+												? 'activeButton'
+												: 'issueButton'
+										}
+										place_of_issue="left"
+										onPress={ () => changeSideOfIssue('left') }
+										value={ sideOfIssue.indexOf('left') !== -1 ? 'left' : '' }
+										secureTextEntry={ false }
+									/>
+									<CustomButton
+										button={
+											sideOfIssue.indexOf('right') !== -1
+												? 'activeButton'
+												: 'issueButton'
+										}
+										place_of_issue="right"
+										onPress={ () => changeSideOfIssue('right') }
+										value={ sideOfIssue.indexOf('right') !== -1 ? 'right' : '' }
+										secureTextEntry={ false }
+									/>
+								</View>
+								{props.errors.side_of_issue && (
+									<Text style={ styles.errorMessage }>
+										{' '}
+										Side of issue is a required field
+									</Text>
+								)}
+							</View>
+							<View style={ styles.buttonContainer }>
+								<TouchableOpacity
+									style={ globalStyles.fullWidthButton }
+									onPress={ props.handleSubmit }>
+									<View style={ styles.arrowWrap }>
+										<Text style={ globalStyles.buttonText }>Next </Text>
+										<Image source={ arrow } style={ styles.arrow } />
+									</View>
+								</TouchableOpacity>
+							</View>
+						</View>
+					)}
+				</Formik>
+			)}
+			{showStep2 && (
+				<Formik
+					initialValues={ { ...initialValues } }
+					validationSchema={ step2Schema }
+					onSubmit={ (values, actions) => {
+						if (
+							values.pain_type !== '' &&
+							values.sensivity_temperature !== '' &&
+							values.tender !== '' &&
+							values.tooth_issue_identified !== '' &&
+							values.onset !== ''
+						) {
+							// if (values.pain_level === 0) {
+							// 	FlashMessage.message(
+							// 		'Alert',
+							// 		'Please fill pain level to continue',
+							// 		'red'
+							// 	);
+							// }
+							// else {
+							actions.resetForm();
+							setSaveDetails({
+								...saveDetails,
+								pain_type: values.pain_type,
+								sensivity_temperature: values.sensivity_temperature,
+								tender: values.tender,
+								tooth_issue_identified: values.tooth_issue_identified,
+								onset: values.onset,
+								pain_level: values.pain_level
+							});
+							showStep2Screen('three');
+							// }
+						} else {
+							setShowStep1(true);
+							setIsModalVisible(false);
+							FlashMessage.message('Alert', 'Please fill up all fields', 'red');
+						}
+					} }>
+					{props => (
+						<View style={ styles.step2Styles }>
+							<View>
+								<Text style={ styles.questionText1 }>Pain level</Text>
+								<View style={ styles.painContainer }>
+									<View style={ styles.choices }>
+										<TouchableOpacity style={ styles.activeButton }>
+											<Text style={ styles.activeButtonText }>No Pain</Text>
+										</TouchableOpacity>
+									</View>
+									<View style={ styles.slider }>
+										<Slider
+											step={ 1 }
+											value={ painLevel }
+											minimumValue={ 0 }
+											maximumValue={ 9 }
+											onValueChange={ range =>
+												props.setFieldValue(
+													'pain_level',
+													range,
+													setPainLevel(range)
+												)
+											}
+											thumbTintColor={ painLevel < 5 ? '#00C1F8' : '#00C1F8' }
+											maximumTrackTintColor={
+												painLevel < 5 ? '#00C1F8' : '#00C1F8'
+											}
+											minimumTrackTintColor={
+												painLevel < 5 ? '#00C1F8' : '#00C1F8'
+											}
+										/>
+										<Text style={ styles.rangeText }>{painLevel}</Text>
+									</View>
+									<View style={ styles.choices }>
+										<TouchableOpacity
+											style={
+												painLevel > 4 ? styles.worstButton : styles.activeButton
+											}>
+											<Text
+												style={
+													painLevel > 4
+														? styles.worstButtonText
+														: styles.activeButtonText
+												}>
+												worst pain
+											</Text>
+										</TouchableOpacity>
+									</View>
+								</View>
+							</View>
+							<View style={ styles.centerContainer }>
 								<View style={ styles.symtamsContainer }>
-									<Text style={ styles.questionText }>Where is the issue ?</Text>
+									<Text style={ styles.questionText }>Pain Type</Text>
 									<View style={ styles.questionContainer }>
 										<CustomButton
 											button={
-												props.values.place_of_issue === 'teeth'
+												props.values.pain_type === 'throbbing'
 													? 'activeButton'
 													: 'issueButton'
 											}
-											place_of_issue="teeth"
+											place_of_issue="throbbing"
 											onPress={ () =>
-												props.setFieldValue('place_of_issue', 'teeth')
+												props.setFieldValue('pain_type', 'throbbing')
 											}
-											value={ props.values.place_of_issue }
-											onBlur={ props.handleBlur('place_of_issue') }
+											value={ props.values.pain_type }
+											onBlur={ props.handleBlur('pain_type') }
 											secureTextEntry={ false }
 											custom_style={ true }
 										/>
 										<CustomButton
 											button={
-												props.values.place_of_issue === 'gums'
+												props.values.pain_type === 'constant'
 													? 'activeButton'
 													: 'issueButton'
 											}
-											place_of_issue="gums"
+											place_of_issue="constant"
 											onPress={ () =>
-												props.setFieldValue('place_of_issue', 'gums')
+												props.setFieldValue('pain_type', 'constant')
 											}
-											value={ props.values.place_of_issue }
-											onBlur={ props.handleBlur('place_of_issue') }
+											value={ props.values.pain_type }
+											onBlur={ props.handleBlur('pain_type') }
 											secureTextEntry={ false }
 											custom_style={ true }
 										/>
 									</View>
-									{props.errors.place_of_issue && <Text style={ styles.errorMessage }> Place of issue is a required field</Text>}
+									{props.errors.pain_type && (
+										<Text style={ styles.errorMessage }>
+											{' '}
+											Pain type is a required field
+										</Text>
+									)}
+								</View>
+
+								<View style={ styles.symtamsContainer }>
+									<Text style={ styles.questionText }>
+										Sensitivity to temperature
+									</Text>
+									<View style={ styles.questionContainer }>
+										<CustomButton
+											button={
+												props.values.sensivity_temperature === 'mild'
+													? 'activeButton'
+													: 'issueButton'
+											}
+											place_of_issue="mild"
+											onPress={ () =>
+												props.setFieldValue('sensivity_temperature', 'mild')
+											}
+											value={ props.values.sensivity_temperature }
+											onBlur={ props.handleBlur('sensivity_temperature') }
+											secureTextEntry={ false }
+										/>
+										<CustomButton
+											button={
+												props.values.sensivity_temperature === 'moderate'
+													? 'activeButton'
+													: 'issueButton'
+											}
+											place_of_issue="moderate"
+											onPress={ () =>
+												props.setFieldValue('sensivity_temperature', 'moderate')
+											}
+											value={ props.values.sensivity_temperature }
+											onBlur={ props.handleBlur('sensivity_temperature') }
+											secureTextEntry={ false }
+										/>
+										<CustomButton
+											button={
+												props.values.sensivity_temperature === 'severe'
+													? 'activeButton'
+													: 'issueButton'
+											}
+											place_of_issue="severe"
+											onPress={ () =>
+												props.setFieldValue('sensivity_temperature', 'severe')
+											}
+											value={ props.values.sensivity_temperature }
+											onBlur={ props.handleBlur('sensivity_temperature') }
+											secureTextEntry={ false }
+										/>
+										<CustomButton
+											button={
+												props.values.sensivity_temperature === 'none'
+													? 'activeButton'
+													: 'issueButton'
+											}
+											place_of_issue="none"
+											onPress={ () =>
+												props.setFieldValue('sensivity_temperature', 'none')
+											}
+											value={ props.values.sensivity_temperature }
+											onBlur={ props.handleBlur('sensivity_temperature') }
+											secureTextEntry={ false }
+										/>
+									</View>
+									{props.errors.sensivity_temperature && (
+										<Text style={ styles.errorMessage }>
+											{' '}
+											Sensitivity temperature is a required field
+										</Text>
+									)}
 								</View>
 								<View style={ styles.symtamsContainer }>
 									<Text style={ styles.questionText }>
-										Which side check all that apply ?
-								</Text>
+										Tender (Painful to touch/bite)
+									</Text>
+									<View style={ styles.questionContainer }>
+										<View style={ styles.radioContainer }>
+											<RadioButton
+												button={
+													props.values.tender === true
+														? 'activeButton'
+														: 'issueButton'
+												}
+												type="Yes"
+												onPress={ () => props.setFieldValue('tender', true) }
+												value={ props.values.tender }
+												onBlur={ props.handleBlur('tender') }
+												secureTextEntry={ false }
+											/>
+											<RadioButton
+												button={
+													props.values.tender === false
+														? 'activeButton'
+														: 'issueButton'
+												}
+												type="No"
+												onPress={ () => props.setFieldValue('tender', false) }
+												value={ props.values.tender }
+												onBlur={ props.handleBlur('tender') }
+												secureTextEntry={ false }
+											/>
+										</View>
+									</View>
+									{props.errors.tender && (
+										<Text style={ styles.errorMessage }>
+											{' '}
+											Tender is a required field
+										</Text>
+									)}
+								</View>
+								<View style={ styles.symtamsContainer }>
+									<Text style={ styles.questionText }>
+										Are you able to identify the exact tooth that has the issue?
+									</Text>
+									<View style={ styles.questionContainer }>
+										<View style={ styles.radioContainer }>
+											<RadioButton
+												button={
+													props.values.tooth_issue_identified === true
+														? 'activeButton'
+														: 'issueButton'
+												}
+												type="Yes"
+												onPress={ () =>
+													props.setFieldValue('tooth_issue_identified', true)
+												}
+												value={ props.values.tooth_issue_identified }
+												onBlur={ props.handleBlur('tooth_issue_identified') }
+												secureTextEntry={ false }
+											/>
+											<RadioButton
+												button={
+													props.values.tooth_issue_identified === false
+														? 'activeButton'
+														: 'issueButton'
+												}
+												type="No"
+												onPress={ () =>
+													props.setFieldValue('tooth_issue_identified', false)
+												}
+												value={ props.values.tooth_issue_identified }
+												onBlur={ props.handleBlur('tooth_issue_identified') }
+												secureTextEntry={ false }
+											/>
+										</View>
+									</View>
+									{props.errors.tooth_issue_identified && (
+										<Text style={ styles.errorMessage }>
+											{' '}
+											Tooth issue identification is a required field
+										</Text>
+									)}
+								</View>
+
+								<View style={ styles.symtamsContainer }>
+									<Text style={ styles.questionText }>Onset</Text>
+
 									<View style={ styles.questionContainer }>
 										<CustomButton
 											button={
-												props.values.side_of_issue === 'upper'
+												props.values.onset === 'sudden'
 													? 'activeButton'
 													: 'issueButton'
 											}
-											place_of_issue="upper"
-											onPress={ () =>
-												props.setFieldValue('side_of_issue', 'upper')
-											}
-											value={ props.values.side_of_issue }
-											onBlur={ props.handleBlur('side_of_issue') }
+											place_of_issue="sudden"
+											onPress={ () => props.setFieldValue('onset', 'sudden') }
+											value={ props.values.onset }
+											onBlur={ props.handleBlur('onset') }
 											secureTextEntry={ false }
+											custom_style={ true }
 										/>
 										<CustomButton
 											button={
-												props.values.side_of_issue === 'lower'
+												props.values.onset === 'gradual'
 													? 'activeButton'
 													: 'issueButton'
 											}
-											place_of_issue="lower"
-											onPress={ () =>
-												props.setFieldValue('side_of_issue', 'lower')
-											}
-											value={ props.values.side_of_issue }
-											onBlur={ props.handleBlur('side_of_issue') }
+											place_of_issue="gradual"
+											onPress={ () => props.setFieldValue('onset', 'gradual') }
+											value={ props.values.onset }
+											onBlur={ props.handleBlur('onset') }
 											secureTextEntry={ false }
-										/>
-										<CustomButton
-											button={
-												props.values.side_of_issue === 'left'
-													? 'activeButton'
-													: 'issueButton'
-											}
-											place_of_issue="left"
-											onPress={ () =>
-												props.setFieldValue('side_of_issue', 'left')
-											}
-											value={ props.values.side_of_issue }
-											onBlur={ props.handleBlur('side_of_issue') }
-											secureTextEntry={ false }
-										/>
-										<CustomButton
-											button={
-												props.values.side_of_issue === 'right'
-													? 'activeButton'
-													: 'issueButton'
-											}
-											place_of_issue="right"
-											onPress={ () =>
-												props.setFieldValue('side_of_issue', 'right')
-											}
-											value={ props.values.side_of_issue }
-											onBlur={ props.handleBlur('side_of_issue') }
-											secureTextEntry={ false }
+											custom_style={ true }
 										/>
 									</View>
-									{props.errors.side_of_issue && <Text style={ styles.errorMessage }> Side of issue is a required field</Text>}
-								</View>
-								<View style={ styles.buttonContainer }>
-									<TouchableOpacity
-										style={ globalStyles.fullWidthButton }
-										onPress={ props.handleSubmit }>
-										<View style={ styles.arrowWrap }>
-											<Text style={ globalStyles.buttonText }>Next </Text>
-											<Image source={ arrow } style={ styles.arrow } />
-										</View>
-									</TouchableOpacity>
+									{props.errors.onset && (
+										<Text style={ styles.errorMessage }>
+											{' '}
+											Onset is a required field
+										</Text>
+									)}
 								</View>
 							</View>
-						)}
-					</Formik>
-				)
-			}
-			{
-				showStep2 && (
-					<Formik
-						initialValues={ { ...initialValues } }
-						validationSchema={ step2Schema }
-						onSubmit={ (values, actions) => {
-							if (
-								values.pain_type !== '' &&
-								values.sensivity_temperature !== '' &&
-								values.tender !== '' &&
-								values.tooth_issue_identified !== '' &&
-								values.onset !== ''
-							) {
-								if (values.pain_level === 0) {
-									FlashMessage.message('Alert', 'Please fill pain level to continue', 'red');
-								} else {
-									actions.resetForm();
-									setSaveDetails({ ...saveDetails, pain_type: values.pain_type, sensivity_temperature: values.sensivity_temperature, tender: values.tender, tooth_issue_identified: values.tooth_issue_identified, onset: values.onset, pain_level: values.pain_level });
-									showStep2Screen('three');
-								}
-							} else {
-								setShowStep1(true);
-								setIsModalVisible(false);
-								FlashMessage.message('Alert', 'Please fill up all fields', 'red');
-							}
-						} }>
-						{props => (
-							<View style={ styles.step2Styles }>
-								<View>
-									<Text style={ styles.questionText1 }>Pain level</Text>
-									<View style={ styles.painContainer }>
-										<View style={ styles.choices }>
-											<TouchableOpacity style={ styles.activeButton }>
-												<Text style={ styles.activeButtonText }>No Pain</Text>
-											</TouchableOpacity>
-										</View>
-										<View style={ styles.slider }>
-											<Slider
-												step={ 1 }
-												value={ painLevel }
-												minimumValue={ 0 }
-												maximumValue={ 9 }
-												onValueChange={ range =>
-													props.setFieldValue(
-														'pain_level',
-														range,
-														setPainLevel(range)
-													)
-												}
-												thumbTintColor={ painLevel < 5 ? '#00C1F8' : '#00C1F8' }
-												maximumTrackTintColor={
-													painLevel < 5 ? '#00C1F8' : '#00C1F8'
-												}
-												minimumTrackTintColor={
-													painLevel < 5 ? '#00C1F8' : '#00C1F8'
-												}
-											/>
-											<Text style={ styles.rangeText }>{painLevel}</Text>
-										</View>
-										<View style={ styles.choices }>
-											<TouchableOpacity
-												style={
-													painLevel > 4
-														? styles.worstButton
-														: styles.activeButton
-												}>
-												<Text
-													style={
-														painLevel > 4
-															? styles.worstButtonText
-															: styles.activeButtonText
-													}>
-													worst pain
-												</Text>
-											</TouchableOpacity>
-										</View>
+							<View style={ styles.buttonContainer }>
+								<TouchableOpacity
+									style={ globalStyles.fullWidthButton }
+									onPress={ props.handleSubmit }>
+									<View style={ styles.arrowWrap }>
+										<Text style={ globalStyles.buttonText }>Next </Text>
+										<Image source={ arrow } style={ styles.arrow } />
 									</View>
-								</View>
-								<View style={ styles.centerContainer }>
-									<View style={ styles.symtamsContainer }>
-										<Text style={ styles.questionText }>Pain Type</Text>
-										<View style={ styles.questionContainer }>
-											<CustomButton
-												button={
-													props.values.pain_type === 'throbbing'
-														? 'activeButton'
-														: 'issueButton'
-												}
-												place_of_issue="throbbing"
-												onPress={ () =>
-													props.setFieldValue('pain_type', 'throbbing')
-												}
-												value={ props.values.pain_type }
-												onBlur={ props.handleBlur('pain_type') }
-												secureTextEntry={ false }
-												custom_style={ true }
-											/>
-											<CustomButton
-												button={
-													props.values.pain_type === 'constant'
-														? 'activeButton'
-														: 'issueButton'
-												}
-												place_of_issue="constant"
-												onPress={ () =>
-													props.setFieldValue('pain_type', 'constant')
-												}
-												value={ props.values.pain_type }
-												onBlur={ props.handleBlur('pain_type') }
-												secureTextEntry={ false }
-												custom_style={ true }
-											/>
-										</View>
-										{props.errors.pain_type && <Text style={ styles.errorMessage }> Pain type is a required field</Text>}
-									</View>
-
+								</TouchableOpacity>
+							</View>
+						</View>
+					)}
+				</Formik>
+			)}
+			{showStep3 && (
+				<Formik
+					initialValues={ { ...initialValues } }
+					validationSchema={ step3Schema }
+					onSubmit={ (values, actions) => {
+						console.warn('inside step3', values);
+						if (
+							values.issue_start_date !== '' &&
+							values.swelling_size !== '' &&
+							values.bleeding !== '' &&
+							values.pus_presence !== '' &&
+							values.prior_history !== '' &&
+							values.tooth_loss !== ''
+						) {
+							actions.resetForm();
+							setSaveDetails({
+								...saveDetails,
+								issue_start_date: values.issue_start_date,
+								swelling_size: values.swelling_size,
+								bleeding: values.bleeding,
+								pus_presence: values.pus_presence,
+								prior_history: values.prior_history,
+								tooth_loss: values.tooth_loss
+							});
+							setIsModalVisible(true);
+						} else {
+							setShowStep1(true);
+							setIsModalVisible(false);
+							FlashMessage.message('Alert', 'Please fill up all fields', 'red');
+						}
+					} }>
+					{props => (
+						<View style={ styles.keyboard }>
+							<KeyboardAvoidingView
+								behavior={ Platform.OS === 'ios' ? 'padding' : '' }
+								keyboardVerticalOffset={ keyboardVerticalOffset }>
+								<ScrollView
+									showsHorizontalScrollIndicator={ false }
+									contentContainerStyle={ styles.keyboard1 }>
 									<View style={ styles.symtamsContainer }>
 										<Text style={ styles.questionText }>
-											Sensitivity to temperature
+											When did the issue start
 										</Text>
+										<TextInput
+											style={ styles.inputText }
+											onChangeText={ props.handleChange('issue_start_date') }
+											onBlur={ props.handleBlur('issue_start_date') }
+											value={ props.values.issue_start_date }
+											placeholder="2 days ago"
+											underlineColorAndroid="transparent"
+											placeholderTextColor="grey"
+										/>
+										{props.errors.issue_start_date && (
+											<Text style={ styles.errorMessage }>
+												{' '}
+												Issue start date is a required field
+											</Text>
+										)}
+									</View>
+									<View style={ styles.symtamsContainer }>
+										<Text style={ styles.questionText }>Swelling size</Text>
 										<View style={ styles.questionContainer }>
 											<CustomButton
 												button={
-													props.values.sensivity_temperature === 'mild'
-														? 'activeButton'
-														: 'issueButton'
-												}
-												place_of_issue="mild"
-												onPress={ () =>
-													props.setFieldValue('sensivity_temperature', 'mild')
-												}
-												value={ props.values.sensivity_temperature }
-												onBlur={ props.handleBlur('sensivity_temperature') }
-												secureTextEntry={ false }
-											/>
-											<CustomButton
-												button={
-													props.values.sensivity_temperature === 'moderate'
-														? 'activeButton'
-														: 'issueButton'
-												}
-												place_of_issue="moderate"
-												onPress={ () =>
-													props.setFieldValue(
-														'sensivity_temperature',
-														'moderate'
-													)
-												}
-												value={ props.values.sensivity_temperature }
-												onBlur={ props.handleBlur('sensivity_temperature') }
-												secureTextEntry={ false }
-											/>
-											<CustomButton
-												button={
-													props.values.sensivity_temperature === 'severe'
-														? 'activeButton'
-														: 'issueButton'
-												}
-												place_of_issue="severe"
-												onPress={ () =>
-													props.setFieldValue('sensivity_temperature', 'severe')
-												}
-												value={ props.values.sensivity_temperature }
-												onBlur={ props.handleBlur('sensivity_temperature') }
-												secureTextEntry={ false }
-											/>
-											<CustomButton
-												button={
-													props.values.sensivity_temperature === 'none'
+													props.values.swelling_size === 'none'
 														? 'activeButton'
 														: 'issueButton'
 												}
 												place_of_issue="none"
 												onPress={ () =>
-													props.setFieldValue('sensivity_temperature', 'none')
+													props.setFieldValue('swelling_size', 'none')
 												}
-												value={ props.values.sensivity_temperature }
-												onBlur={ props.handleBlur('sensivity_temperature') }
+												value={ props.values.swelling_size }
+												onBlur={ props.handleBlur('swelling_size') }
+												secureTextEntry={ false }
+											/>
+											<CustomButton
+												button={
+													props.values.swelling_size === 'small'
+														? 'activeButton'
+														: 'issueButton'
+												}
+												place_of_issue="small"
+												onPress={ () =>
+													props.setFieldValue('swelling_size', 'small')
+												}
+												value={ props.values.swelling_size }
+												onBlur={ props.handleBlur('swelling_size') }
+												secureTextEntry={ false }
+											/>
+											<CustomButton
+												button={
+													props.values.swelling_size === 'medium'
+														? 'activeButton'
+														: 'issueButton'
+												}
+												place_of_issue="medium"
+												onPress={ () =>
+													props.setFieldValue('swelling_size', 'medium')
+												}
+												value={ props.values.swelling_size }
+												onBlur={ props.handleBlur('swelling_size') }
+												secureTextEntry={ false }
+											/>
+											<CustomButton
+												button={
+													props.values.swelling_size === 'large'
+														? 'activeButton'
+														: 'issueButton'
+												}
+												place_of_issue="large"
+												onPress={ () =>
+													props.setFieldValue('swelling_size', 'large')
+												}
+												value={ props.values.swelling_size }
+												onBlur={ props.handleBlur('swelling_size') }
 												secureTextEntry={ false }
 											/>
 										</View>
-										{props.errors.sensivity_temperature && <Text style={ styles.errorMessage }> Sensitivity temperature is a required field</Text>}
+										{props.errors.swelling_size && (
+											<Text style={ styles.errorMessage }>
+												{' '}
+												Swelling size is a required field
+											</Text>
+										)}
 									</View>
 									<View style={ styles.symtamsContainer }>
-										<Text style={ styles.questionText }>
-											Tender (Painful to touch/bite)
-										</Text>
+										<Text style={ styles.questionText }>Bleeding</Text>
 										<View style={ styles.questionContainer }>
 											<View style={ styles.radioContainer }>
 												<RadioButton
 													button={
-														props.values.tender === true
+														props.values.bleeding === true
 															? 'activeButton'
 															: 'issueButton'
 													}
 													type="Yes"
-													onPress={ () => props.setFieldValue('tender', true) }
-													value={ props.values.tender }
-													onBlur={ props.handleBlur('tender') }
+													onPress={ () => props.setFieldValue('bleeding', true) }
+													value={ props.values.bleeding }
+													onBlur={ props.handleBlur('bleeding') }
 													secureTextEntry={ false }
 												/>
 												<RadioButton
 													button={
-														props.values.tender === false
+														props.values.bleeding === false
 															? 'activeButton'
 															: 'issueButton'
 													}
 													type="No"
-													onPress={ () => props.setFieldValue('tender', false) }
-													value={ props.values.tender }
-													onBlur={ props.handleBlur('tender') }
+													onPress={ () => props.setFieldValue('bleeding', false) }
+													value={ props.values.bleeding }
+													onBlur={ props.handleBlur('bleeding') }
 													secureTextEntry={ false }
 												/>
 											</View>
 										</View>
-										{props.errors.tender && <Text style={ styles.errorMessage }> Tender is a required field</Text>}
+										{props.errors.bleeding && (
+											<Text style={ styles.errorMessage }>
+												{' '}
+												Bleeding is a required field
+											</Text>
+										)}
 									</View>
 									<View style={ styles.symtamsContainer }>
-										<Text style={ styles.questionText }>
-											Are you able to identify the exact tooth that has the
-											issue?
-										</Text>
+										<Text style={ styles.questionText }>Presence of pus ?</Text>
 										<View style={ styles.questionContainer }>
 											<View style={ styles.radioContainer }>
 												<RadioButton
 													button={
-														props.values.tooth_issue_identified === true
+														props.values.pus_presence === true
 															? 'activeButton'
 															: 'issueButton'
 													}
 													type="Yes"
 													onPress={ () =>
-														props.setFieldValue('tooth_issue_identified', true)
+														props.setFieldValue('pus_presence', true)
 													}
-													value={ props.values.tooth_issue_identified }
-													onBlur={ props.handleBlur('tooth_issue_identified') }
+													value={ props.values.pus_presence }
+													onBlur={ props.handleBlur('pus_presence') }
 													secureTextEntry={ false }
 												/>
 												<RadioButton
 													button={
-														props.values.tooth_issue_identified === false
+														props.values.pus_presence === false
 															? 'activeButton'
 															: 'issueButton'
 													}
 													type="No"
 													onPress={ () =>
-														props.setFieldValue('tooth_issue_identified', false)
+														props.setFieldValue('pus_presence', false)
 													}
-													value={ props.values.tooth_issue_identified }
-													onBlur={ props.handleBlur('tooth_issue_identified') }
+													value={ props.values.pus_presence }
+													onBlur={ props.handleBlur('pus_presence') }
 													secureTextEntry={ false }
 												/>
 											</View>
 										</View>
-										{props.errors.tooth_issue_identified && <Text style={ styles.errorMessage }> Tooth issue identification is a required field</Text>}
+										{props.errors.pus_presence && (
+											<Text style={ styles.errorMessage }>
+												{' '}
+												Pus presence is a required field
+											</Text>
+										)}
 									</View>
-
 									<View style={ styles.symtamsContainer }>
-										<Text style={ styles.questionText }>Onset</Text>
+										<Text style={ styles.questionText }>Loose Tooth</Text>
 
 										<View style={ styles.questionContainer }>
 											<CustomButton
 												button={
-													props.values.onset === 'sudden'
+													props.values.tooth_loss === 'no'
 														? 'activeButton'
 														: 'issueButton'
 												}
-												place_of_issue="sudden"
-												onPress={ () => props.setFieldValue('onset', 'sudden') }
-												value={ props.values.onset }
-												onBlur={ props.handleBlur('onset') }
+												place_of_issue="no"
+												onPress={ () => props.setFieldValue('tooth_loss', 'no') }
+												value={ props.values.tooth_loss }
+												onBlur={ props.handleBlur('tooth_loss') }
 												secureTextEntry={ false }
-												custom_style={ true }
 											/>
 											<CustomButton
 												button={
-													props.values.onset === 'gradual'
+													props.values.tooth_loss === 'slight'
 														? 'activeButton'
 														: 'issueButton'
 												}
-												place_of_issue="gradual"
-												onPress={ () => props.setFieldValue('onset', 'gradual') }
-												value={ props.values.onset }
-												onBlur={ props.handleBlur('onset') }
+												place_of_issue="slight"
+												onPress={ () =>
+													props.setFieldValue('tooth_loss', 'slight')
+												}
+												value={ props.values.tooth_loss }
+												onBlur={ props.handleBlur('tooth_loss') }
 												secureTextEntry={ false }
-												custom_style={ true }
+											/>
+											<CustomButton
+												button={
+													props.values.tooth_loss === 'moderate'
+														? 'activeButton'
+														: 'issueButton'
+												}
+												place_of_issue="moderate"
+												onPress={ () =>
+													props.setFieldValue('tooth_loss', 'moderate')
+												}
+												value={ props.values.tooth_loss }
+												onBlur={ props.handleBlur('place_of_issue') }
+												secureTextEntry={ false }
+											/>
+											<CustomButton
+												button={
+													props.values.tooth_loss === 'veryloose'
+														? 'activeButton'
+														: 'issueButton'
+												}
+												place_of_issue="very loose"
+												onPress={ () =>
+													props.setFieldValue('tooth_loss', 'veryloose')
+												}
+												value={ props.values.tooth_loss }
+												onBlur={ props.handleBlur('tooth_loss') }
+												secureTextEntry={ false }
 											/>
 										</View>
-										{props.errors.onset && <Text style={ styles.errorMessage }> Onset is a required field</Text>}
+										{props.errors.tooth_loss && (
+											<Text style={ styles.errorMessage }>
+												{' '}
+												Tooth loss is a required field
+											</Text>
+										)}
 									</View>
-								</View>
-								<View style={ styles.buttonContainer }>
+									<Loader loading={ loading } />
+
+									<NormalTextInput
+										multiline
+										lable="Prior history if any or other information"
+										onChangeText={ props.handleChange('prior_history') }
+										value={ props.values.prior_history }
+										onBlur={ props.handleBlur('prior_history') }
+										secureTextEntry={ false }
+									/>
+									{props.errors.prior_history && (
+										<Text style={ styles.errorMessage }>
+											{' '}
+											Prior history is a required field
+										</Text>
+									)}
 									<TouchableOpacity
-										style={ globalStyles.fullWidthButton }
+										style={ styles.consultButton }
 										onPress={ props.handleSubmit }>
 										<View style={ styles.arrowWrap }>
 											<Text style={ globalStyles.buttonText }>Next </Text>
 											<Image source={ arrow } style={ styles.arrow } />
 										</View>
 									</TouchableOpacity>
-								</View>
-							</View>
-						)}
-					</Formik>
-				)
-			}
-			{
-				showStep3 && (
-					<Formik
-						initialValues={ { ...initialValues } }
-						validationSchema={ step3Schema }
-						onSubmit={ (values, actions) => {
-							console.warn('inside step3', values);
-							if (
-								values.issue_start_date !== '' &&
-								values.swelling_size !== '' &&
-								values.bleeding !== '' &&
-								values.pus_presence !== '' &&
-								values.prior_history !== '' &&
-								values.tooth_loss !== ''
-							) {
-								actions.resetForm();
-								setSaveDetails({ ...saveDetails, issue_start_date: values.issue_start_date, swelling_size: values.swelling_size, bleeding: values.bleeding, pus_presence: values.pus_presence, prior_history: values.prior_history, tooth_loss: values.tooth_loss });
-								setIsModalVisible(true);
-							} else {
-								setShowStep1(true);
-								setIsModalVisible(false);
-								FlashMessage.message('Alert', 'Please fill up all fields', 'red');
-							}
-						} }>
-						{props => (
-							<View style={ styles.keyboard }>
-								<KeyboardAvoidingView
-									behavior={ Platform.OS === 'ios' ? 'padding' : '' }
-									keyboardVerticalOffset={ keyboardVerticalOffset }>
-									<ScrollView
-										showsHorizontalScrollIndicator={ false }
-										contentContainerStyle={ styles.keyboard1 }>
-
-										<View style={ styles.symtamsContainer }>
-											<Text style={ styles.questionText }>
-												When did the issue start
-											</Text>
-											<TextInput
-												style={ styles.inputText }
-												onChangeText={ props.handleChange('issue_start_date') }
-												onBlur={ props.handleBlur('issue_start_date') }
-												value={ props.values.issue_start_date }
-												placeholder="2 days ago"
-												underlineColorAndroid="transparent"
-												placeholderTextColor="grey"
-											/>
-											{props.errors.issue_start_date && <Text style={ styles.errorMessage }> Issue start date is a required field</Text>}
-										</View>
-										<View style={ styles.symtamsContainer }>
-											<Text style={ styles.questionText }>Swelling size</Text>
-											<View style={ styles.questionContainer }>
-												<CustomButton
-													button={
-														props.values.swelling_size === 'none'
-															? 'activeButton'
-															: 'issueButton'
-													}
-													place_of_issue="none"
-													onPress={ () =>
-														props.setFieldValue('swelling_size', 'none')
-													}
-													value={ props.values.swelling_size }
-													onBlur={ props.handleBlur('swelling_size') }
-													secureTextEntry={ false }
-												/>
-												<CustomButton
-													button={
-														props.values.swelling_size === 'small'
-															? 'activeButton'
-															: 'issueButton'
-													}
-													place_of_issue="small"
-													onPress={ () =>
-														props.setFieldValue('swelling_size', 'small')
-													}
-													value={ props.values.swelling_size }
-													onBlur={ props.handleBlur('swelling_size') }
-													secureTextEntry={ false }
-												/>
-												<CustomButton
-													button={
-														props.values.swelling_size === 'medium'
-															? 'activeButton'
-															: 'issueButton'
-													}
-													place_of_issue="medium"
-													onPress={ () =>
-														props.setFieldValue('swelling_size', 'medium')
-													}
-													value={ props.values.swelling_size }
-													onBlur={ props.handleBlur('swelling_size') }
-													secureTextEntry={ false }
-												/>
-												<CustomButton
-													button={
-														props.values.swelling_size === 'large'
-															? 'activeButton'
-															: 'issueButton'
-													}
-													place_of_issue="large"
-													onPress={ () =>
-														props.setFieldValue('swelling_size', 'large')
-													}
-													value={ props.values.swelling_size }
-													onBlur={ props.handleBlur('swelling_size') }
-													secureTextEntry={ false }
-												/>
-											</View>
-											{props.errors.swelling_size && <Text style={ styles.errorMessage }> Swelling size is a required field</Text>}
-										</View>
-										<View style={ styles.symtamsContainer }>
-											<Text style={ styles.questionText }>Bleeding</Text>
-											<View style={ styles.questionContainer }>
-												<View style={ styles.radioContainer }>
-													<RadioButton
-														button={
-															props.values.bleeding === true
-																? 'activeButton'
-																: 'issueButton'
-														}
-														type="Yes"
-														onPress={ () =>
-															props.setFieldValue('bleeding', true)
-														}
-														value={ props.values.bleeding }
-														onBlur={ props.handleBlur('bleeding') }
-														secureTextEntry={ false }
-													/>
-													<RadioButton
-														button={
-															props.values.bleeding === false
-																? 'activeButton'
-																: 'issueButton'
-														}
-														type="No"
-														onPress={ () =>
-															props.setFieldValue('bleeding', false)
-														}
-														value={ props.values.bleeding }
-														onBlur={ props.handleBlur('bleeding') }
-														secureTextEntry={ false }
-													/>
-												</View>
-											</View>
-											{props.errors.bleeding && <Text style={ styles.errorMessage }> Bleeding is a required field</Text>}
-										</View>
-										<View style={ styles.symtamsContainer }>
-											<Text style={ styles.questionText }>Presence of pus ?</Text>
-											<View style={ styles.questionContainer }>
-												<View style={ styles.radioContainer }>
-													<RadioButton
-														button={
-															props.values.pus_presence === true
-																? 'activeButton'
-																: 'issueButton'
-														}
-														type="Yes"
-														onPress={ () =>
-															props.setFieldValue('pus_presence', true)
-														}
-														value={ props.values.pus_presence }
-														onBlur={ props.handleBlur('pus_presence') }
-														secureTextEntry={ false }
-													/>
-													<RadioButton
-														button={
-															props.values.pus_presence === false
-																? 'activeButton'
-																: 'issueButton'
-														}
-														type="No"
-														onPress={ () =>
-															props.setFieldValue('pus_presence', false)
-														}
-														value={ props.values.pus_presence }
-														onBlur={ props.handleBlur('pus_presence') }
-														secureTextEntry={ false }
-													/>
-												</View>
-											</View>
-											{props.errors.pus_presence && <Text style={ styles.errorMessage }> Pus presence is a required field</Text>}
-										</View>
-										<View style={ styles.symtamsContainer }>
-											<Text style={ styles.questionText }>Loose Tooth</Text>
-
-											<View style={ styles.questionContainer }>
-												<CustomButton
-													button={
-														props.values.tooth_loss === 'no'
-															? 'activeButton'
-															: 'issueButton'
-													}
-													place_of_issue="no"
-													onPress={ () =>
-														props.setFieldValue('tooth_loss', 'no')
-													}
-													value={ props.values.tooth_loss }
-													onBlur={ props.handleBlur('tooth_loss') }
-													secureTextEntry={ false }
-												/>
-												<CustomButton
-													button={
-														props.values.tooth_loss === 'slight'
-															? 'activeButton'
-															: 'issueButton'
-													}
-													place_of_issue="slight"
-													onPress={ () =>
-														props.setFieldValue('tooth_loss', 'slight')
-													}
-													value={ props.values.tooth_loss }
-													onBlur={ props.handleBlur('tooth_loss') }
-													secureTextEntry={ false }
-												/>
-												<CustomButton
-													button={
-														props.values.tooth_loss === 'moderate'
-															? 'activeButton'
-															: 'issueButton'
-													}
-													place_of_issue="moderate"
-													onPress={ () =>
-														props.setFieldValue('tooth_loss', 'moderate')
-													}
-													value={ props.values.tooth_loss }
-													onBlur={ props.handleBlur('place_of_issue') }
-													secureTextEntry={ false }
-												/>
-												<CustomButton
-													button={
-														props.values.tooth_loss === 'veryloose'
-															? 'activeButton'
-															: 'issueButton'
-													}
-													place_of_issue="very loose"
-													onPress={ () =>
-														props.setFieldValue('tooth_loss', 'veryloose')
-													}
-													value={ props.values.tooth_loss }
-													onBlur={ props.handleBlur('tooth_loss') }
-													secureTextEntry={ false }
-												/>
-											</View>
-											{props.errors.tooth_loss && <Text style={ styles.errorMessage }> Tooth loss is a required field</Text>}
-										</View>
-										<Loader loading={ loading } />
-
-										<NormalTextInput
-											multiline
-											lable="Prior history if any or other information"
-											onChangeText={ props.handleChange('prior_history') }
-											value={ props.values.prior_history }
-											onBlur={ props.handleBlur('prior_history') }
-											secureTextEntry={ false }
-										/>
-										{props.errors.prior_history && <Text style={ styles.errorMessage }> Prior history is a required field</Text>}
-										<TouchableOpacity
-											style={ styles.consultButton }
-											onPress={ props.handleSubmit }>
-											<View style={ styles.arrowWrap }>
-												<Text style={ globalStyles.buttonText }>Next </Text>
-												<Image source={ arrow } style={ styles.arrow } />
-											</View>
-										</TouchableOpacity>
-									</ScrollView>
-								</KeyboardAvoidingView>
-							</View>
-						)}
-					</Formik>
-				)
-			}
+								</ScrollView>
+							</KeyboardAvoidingView>
+						</View>
+					)}
+				</Formik>
+			)}
 			{isSuccessModalVisible || isModalVisible ? (
 				<Modal transparent={ true } visible={ true }>
 					<View style={ styles.modalWrap }>
 						<View style={ styles.modalTextWrap }>
 							<TouchableOpacity onPress={ goHome }>
-								<Image
-									source={ crossIcon }
-									style={ styles.closeIcon }
-								/>
+								<Image source={ crossIcon } style={ styles.closeIcon } />
 							</TouchableOpacity>
 							<Text style={ styles.modalText }>save as</Text>
 							<NormalTextInput
 								saveas="saveas"
 								lable="Give it a name for future reference"
-								onChangeText={ (text) => setReferenceName(text) }
+								onChangeText={ text => setReferenceName(text) }
 								value={ referenceName }
 								secureTextEntry={ false }
 							/>
 
 							{isSuccessModalVisible ? (
 								<TouchableOpacity style={ styles.savedButton }>
-									<Text style={ styles.savedButtonText }>
-										saved!
-									</Text>
+									<Text style={ styles.savedButtonText }>saved!</Text>
 								</TouchableOpacity>
 							) : (
-									<TouchableOpacity
-										style={ styles.consultButton }
-										onPress={ () => handleSubmit(saveDetails) }>
-										<Text style={ styles.loginText }>save</Text>
-									</TouchableOpacity>
-								)}
+								<TouchableOpacity
+									style={ styles.consultButton }
+									onPress={ () => handleSubmit(saveDetails) }>
+									<Text style={ styles.loginText }>save</Text>
+								</TouchableOpacity>
+							)}
 						</View>
 					</View>
 				</Modal>
 			) : (
-					<Text style={ styles.hideText } />
-				)}
+				<Text style={ styles.hideText } />
+			)}
 
 			<Modal transparent={ true } visible={ isDeleteModalVisible }>
 				<View style={ styles.modalWrap }>
