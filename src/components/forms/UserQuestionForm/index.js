@@ -49,8 +49,8 @@ const keyboardVerticalOffset = Platform.OS === 'ios' ? 100 : 0;
 const step1Schema = yup.object({
 	title: yup.string().trim().required(),
 	description: yup.string().trim().required(),
-	place_of_issue: yup.string().required(),
-	side_of_issue: yup.string().required()
+	// place_of_issue: yup.array().required(),
+	// side_of_issue: yup.string().required()
 });
 
 const step2Schema = yup.object({
@@ -108,6 +108,8 @@ function AddQuestion(props) {
 	const [ updateNote, setUpdateNote ] = useState(false);
 	const [ isOptionModal, setIsOptionModal ] = useState(false);
 	const [ saveDetails, setSaveDetails ] = useState({});
+	const [ placeOfIssue, setPlaceOfIssue ] = useState([]);
+	const [ sideOfIssue, setSideOfIssue ] = useState([]);
 
 	let initialValues = {};
 	const doesEditEnabled = route && route.params && route.params.data;
@@ -116,8 +118,8 @@ function AddQuestion(props) {
 		initialValues = {
 			pain_level: data.pain_level ? data.pain_level : 0,
 			description: data.description ? data.description : '',
-			place_of_issue: data.place_of_issue ? data.place_of_issue : '',
-			side_of_issue: data.side_of_issue ? data.side_of_issue : '',
+			// place_of_issue: data.place_of_issue ? data.place_of_issue : [],
+			// side_of_issue: data.side_of_issue ? data.side_of_issue : '',
 			sensivity_temperature: data.sensivity_temperature
 				? data.sensivity_temperature
 				: '',
@@ -141,8 +143,8 @@ function AddQuestion(props) {
 		initialValues = {
 			pain_level: 0,
 			description: '',
-			place_of_issue: '',
-			side_of_issue: '',
+			// place_of_issue: [],
+			// side_of_issue: '',
 			sensivity_temperature: '',
 			tender: '',
 			tooth_issue_identified: '',
@@ -165,7 +167,7 @@ function AddQuestion(props) {
 			FlashMessage.message('Alert', 'Please enter the reference name to save', 'red');
 			return;
 		}
-		let userNotes = { ...details, reference_name: referenceName };
+		let userNotes = { ...details, reference_name: referenceName , place_of_issue: placeOfIssue, side_of_issue: sideOfIssue };
 		console.warn('inside submit', userNotes);
 		setReferenceName(userNotes.reference_name);
 		setIsModalVisible(false);
@@ -405,6 +407,8 @@ function AddQuestion(props) {
 			setPainLevel(props.route.params.data.pain_level);
 			setSaveDetails(props.route.params.data);
 			setReferenceName(props.route.params.data.reference_name ? props.route.params.data.reference_name : '');
+			setPlaceOfIssue(props.route.params.data.place_of_issue ? props.route.params.data.place_of_issue : []);
+			setSideOfIssue(props.route.params.data.side_of_issue ? props.route.params.data.side_of_issue : [])
 		} else {
 			setUpdateNote(false);
 		}
@@ -434,6 +438,28 @@ function AddQuestion(props) {
 			)
 		});
 	}, [ showStep3, showStep2, showStep1 ]);
+
+	const changePlaceOfIssue = (issue) => {
+		let data = [ ...placeOfIssue ];
+        if (placeOfIssue.indexOf(issue) !== -1) {
+			data.splice(placeOfIssue.indexOf(issue), 1);
+			setPlaceOfIssue(data);
+		} else {
+			data.push(issue);
+			setPlaceOfIssue(data);
+		}
+	};
+
+	const changeSideOfIssue = (issue) => {
+		let data = [ ...sideOfIssue ];
+        if (sideOfIssue.indexOf(issue) !== -1) {
+			data.splice(sideOfIssue.indexOf(issue), 1);
+			setSideOfIssue(data);
+		} else {
+			data.push(issue);
+			setSideOfIssue(data);
+		}
+	};
 
 	const handleBackNavigation = () => {
 		if (showStep1) {
@@ -471,15 +497,17 @@ function AddQuestion(props) {
 						onSubmit={ (values, actions) => {
 							if (
 								values.title !== '' &&
-								values.description !== '' &&
-								values.place_of_issue !== '' &&
-								values.side_of_issue !== ''
+								values.description !== ''
 							) {
 								if (imageSource.length === 0) {
 									FlashMessage.message('Alert', 'Please upload image or video to continue', 'red');
+								} else if(placeOfIssue.length === 0) {
+									FlashMessage.message('Alert', 'Please select place of issue', 'red');
+								} else if (sideOfIssue.length === 0) {
+									FlashMessage.message('Alert', 'Please select side of issue', 'red');
 								} else {
 									actions.resetForm();
-									setSaveDetails({ ...saveDetails, title: values.title, description: values.description, place_of_issue: values.place_of_issue, side_of_issue: values.side_of_issue });
+									setSaveDetails({ ...saveDetails, title: values.title, description: values.description });
 									showStep2Screen('two');
 								}
 							} else {
@@ -575,31 +603,25 @@ function AddQuestion(props) {
 									<View style={ styles.questionContainer }>
 										<CustomButton
 											button={
-												props.values.place_of_issue === 'teeth'
+												placeOfIssue.indexOf('teeth') !== -1
 													? 'activeButton'
 													: 'issueButton'
 											}
 											place_of_issue="teeth"
-											onPress={ () =>
-												props.setFieldValue('place_of_issue', 'teeth')
-											}
-											value={ props.values.place_of_issue }
-											onBlur={ props.handleBlur('place_of_issue') }
+											onPress={ () => changePlaceOfIssue('teeth') }
+											value={ placeOfIssue.indexOf('teeth') !== -1 ? 'teeth' : '' }
 											secureTextEntry={ false }
 											custom_style={ true }
 										/>
 										<CustomButton
 											button={
-												props.values.place_of_issue === 'gums'
+												placeOfIssue.indexOf('gums') !== -1
 													? 'activeButton'
 													: 'issueButton'
 											}
 											place_of_issue="gums"
-											onPress={ () =>
-												props.setFieldValue('place_of_issue', 'gums')
-											}
-											value={ props.values.place_of_issue }
-											onBlur={ props.handleBlur('place_of_issue') }
+											onPress={() => changePlaceOfIssue('gums') }
+											value={ placeOfIssue.indexOf('gums') !== -1 ? 'gums' : '' }
 											secureTextEntry={ false }
 											custom_style={ true }
 										/>
@@ -613,58 +635,46 @@ function AddQuestion(props) {
 									<View style={ styles.questionContainer }>
 										<CustomButton
 											button={
-												props.values.side_of_issue === 'upper'
+												sideOfIssue.indexOf('upper') !== -1
 													? 'activeButton'
 													: 'issueButton'
 											}
 											place_of_issue="upper"
-											onPress={ () =>
-												props.setFieldValue('side_of_issue', 'upper')
-											}
-											value={ props.values.side_of_issue }
-											onBlur={ props.handleBlur('side_of_issue') }
+											onPress={ () => changeSideOfIssue('upper')}
+											value={ sideOfIssue.indexOf('upper') !== -1 ? 'upper' : '' }
 											secureTextEntry={ false }
 										/>
 										<CustomButton
 											button={
-												props.values.side_of_issue === 'lower'
+												sideOfIssue.indexOf('lower') !== -1
 													? 'activeButton'
 													: 'issueButton'
 											}
 											place_of_issue="lower"
-											onPress={ () =>
-												props.setFieldValue('side_of_issue', 'lower')
-											}
-											value={ props.values.side_of_issue }
-											onBlur={ props.handleBlur('side_of_issue') }
+											onPress={ () => changeSideOfIssue('lower')}
+											value={ sideOfIssue.indexOf('lower') !== -1 ? 'lower' : '' }
 											secureTextEntry={ false }
 										/>
 										<CustomButton
 											button={
-												props.values.side_of_issue === 'left'
+												sideOfIssue.indexOf('left') !== -1
 													? 'activeButton'
 													: 'issueButton'
 											}
 											place_of_issue="left"
-											onPress={ () =>
-												props.setFieldValue('side_of_issue', 'left')
-											}
-											value={ props.values.side_of_issue }
-											onBlur={ props.handleBlur('side_of_issue') }
+											onPress={ () => changeSideOfIssue('left')}
+											value={ sideOfIssue.indexOf('left') !== -1 ? 'left' : '' }
 											secureTextEntry={ false }
 										/>
 										<CustomButton
 											button={
-												props.values.side_of_issue === 'right'
+												sideOfIssue.indexOf('right') !== -1
 													? 'activeButton'
 													: 'issueButton'
 											}
 											place_of_issue="right"
-											onPress={ () =>
-												props.setFieldValue('side_of_issue', 'right')
-											}
-											value={ props.values.side_of_issue }
-											onBlur={ props.handleBlur('side_of_issue') }
+											onPress={ () => changeSideOfIssue('right')}
+											value={ sideOfIssue.indexOf('right') !== -1 ? 'right' : '' }
 											secureTextEntry={ false }
 										/>
 									</View>
